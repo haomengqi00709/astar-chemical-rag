@@ -9,5 +9,11 @@ cmds = [
   "cd frontend/AK_chemetics_Company_rag && npm install"
 ]
 
+[phases.build]
+cmds = [
+  "cd frontend/AK_chemetics_Company_rag && npm run build",
+  "/opt/venv/bin/python3 load_vectorstore.py"
+]
+
 [start]
-cmd = "cd frontend/AK_chemetics_Company_rag && npm run build && PYTHON_PATH=/opt/venv/bin/python3 node server.js"
+cmd = "PYTHON_PATH=/opt/venv/bin/python3 node frontend/AK_chemetics_Company_rag/server.js"

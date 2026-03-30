@@ -1,0 +1,27 @@
+.git
+.env
+.env.local
+.env.*.local
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Vector DB — rebuilt during Docker build
+chroma_db/
+
+# Node
+frontend/AK_chemetics_Company_rag/node_modules/
+frontend/AK_chemetics_Company_rag/dist/
+
+# OS / temp
+.DS_Store
+Thumbs.db
+*.tmp
+~$*
+/tmp/
+
+# Drive downloads
+drive-download-*/
