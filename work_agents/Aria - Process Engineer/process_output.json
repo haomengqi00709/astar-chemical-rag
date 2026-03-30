@@ -1,0 +1,79 @@
+{
+  "generated_at": "2026-03-29T23:51:28.095477",
+  "project_title": "MEG Transfer Pump Skid",
+  "client": "B Star Chemetics",
+  "project_summary": {
+    "client": "B Star Chemetics",
+    "project_title": "MEG Transfer Pump Skid",
+    "location": "Sarnia, Ontario, Canada",
+    "equipment_type": "horizontal centrifugal pump",
+    "fluid": "Monoethylene Glycol (MEG), 95% by weight",
+    "flow_rate_m3h": 45,
+    "design_pressure_bar": 10,
+    "temperature_c": 65,
+    "fluid_density_kgm3": 1095,
+    "suction_pressure_barg": 1.5,
+    "discharge_pressure_barg": 3.2,
+    "suction_static_head_m": 3,
+    "discharge_static_head_m": 8,
+    "suction_friction_loss_m": 0.8,
+    "discharge_friction_loss_m": 2.5,
+    "special_requirements": "pump and motor selection in accordance with API 610, mechanical seal API Plan 11, TEFC enclosure, hydraulic design and pump sizing per 4-PRC-0007, process design basis and fluid property assessment per 1-PRC-0001"
+  },
+  "fluid_properties": {
+    "fluid_name": "Monoethylene Glycol (MEG), 95% by weight",
+    "fluid_code": "MEG",
+    "fluid_code_source": "estimated",
+    "density_kgm3": 1095,
+    "specific_gravity": 1.095,
+    "dynamic_viscosity_mPas": 6,
+    "vapor_pressure_kPa_at_temp": 0.5,
+    "corrosive": false,
+    "notes": "MEG is hygroscopic and can degrade at elevated temperatures or in the presence of oxygen, forming corrosive organic acids. Regular monitoring of fluid quality (e.g., pH) is recommended.",
+    "rag_sources": [
+      "4-PDS-XXXX-R1 (Template Lamella).xls",
+      "4-PDS-XXXX-R1 (Template Lixator).xls",
+      "1-LST-0002",
+      "4-PDS-XXXX-R1 (Template Demineralized-Softener).xls",
+      "4-PDS-XXXX-R1 (Template Mist Separator).xls"
+    ]
+  },
+  "design_criteria": {
+    "flow_margin_pct": 20,
+    "flow_margin_source": "4-PDS-XXXX-R1 (Template Brine Ion Exchange Pkg).xls",
+    "pressure_class": "PN10",
+    "corrosion_allowance_mm": 0,
+    "corrosion_allowance_source": "5-LST-0003-2",
+    "material_note": "Material selection depends on fluid properties. For non-corrosive service, 316L Stainless Steel (0mm corrosion allowance) is an option per 5-LST-0003-2.",
+    "pressure_test_note": "A mandatory hydrostatic test is not required based on the 'high_pressure' flag not being active.",
+    "normal_flow_m3h": 45,
+    "rated_flow_m3h": 54,
+    "design_pressure_bar": 10,
+    "design_temperature_c": 65,
+    "rag_sources": [
+      "5-LST-0003",
+      "5-LST-0003-1",
+      "5-LST-0003-2",
+      "4-PDS-XXXX-R1 (Template Eductor).xls",
+      "4-PDS-XXXX-R1 (Template Brine Ion Exchange Pkg).xls",
+      "4-PDS-XXXX-R1 (Template Demineralized-Softener).xls",
+      "4-PDS-XXXX-R2 (Template Heat Exchanger).xls"
+    ]
+  },
+  "hydraulic_results": {
+    "rated_flow_m3h": 54,
+    "fluid_density_kgm3": 1095,
+    "specific_gravity": 1.095,
+    "pressure_differential_head_m": 15.8,
+    "static_head_m": 5,
+    "friction_loss_m": 3.3,
+    "total_dynamic_head_m": 24.1,
+    "tdh_display": "24.1 m",
+    "NPSHa_m": 25.6,
+    "vapor_pressure_kPa": 0.5,
+    "calculation_notes": []
+  },
+  "risk_flags": [],
+  "calc_summary": "**Process Calculation Summary: MEG Transfer Pump Skid**\n\n**Project:** MEG Transfer Pump Skid — B Star Chemetics\n**Location:** Sarnia, Ontario, Canada\n**Date:** [Insert Current Date]\n\n---\n\n**1. Scope**\nThis document summarizes the process calculations for the Monoethylene Glycol (MEG) Transfer Pump Skid at the B Star Chemetics facility in Sarnia, Ontario. It outlines the fluid properties, design criteria, hydraulic performance, and key parameters for mechanical design and procurement.\n\n**2. Fluid Identification**\n*   **Fluid:** Monoethylene Glycol (MEG), 95% by weight (code: MEG, source: estimated from RAG / 1-LST-0002).\n*   **Density:** 1095 kg/m³ (Specific Gravity: 1.095).\n*   **Viscosity:** 6 mPa·s.\n*   **Vapour Pressure:** 0.5 kPa at 65°C.\n*   **Corrosive:** False.\n\n**Engineering Significance:**\nThe fluid is non-corrosive, which simplifies material selection and allows for standard materials like 316L Stainless Steel. The density is critical for head-to-pressure conversions and pump sizing. The viscosity is low, indicating suitability for standard centrifugal pump applications without significant derating. The low vapour pressure at the specified temperature is favourable for Net Positive Suction Head (NPSH) considerations, minimizing the risk of cavitation.\n\n**3. Design Criteria Summary**\nThe following design criteria were applied based on project specifications (RAG / 1-PRC-0001) and referenced documents:\n\n*   **Normal Flow:** 45 m³/h\n*   **Rated Flow:** 54.0 m³/h (A 20% margin was applied to the normal flow to establish the rated flow, as per 4-PDS-XXXX-R1 (Template Brine Ion Exchange Pkg).xls).\n*   **Design Pressure:** 10 bar (corresponding to a PN10 pressure rating).\n*   **Corrosion Allowance:** 0 mm (as specified in 5-LST-0003-2).\n*   **Material Selection:** Given the non-corrosive nature of MEG and a 0 mm corrosion allowance, 316L Stainless Steel is an acceptable material option for wetted parts, consistent with 5-LST-0003-2.\n*   **Pressure Test:** A mandatory hydrostatic test is not required for this service, as the 'high_pressure' flag is not active.\n\n**4. Hydraulic Calculation**\nThe following hydraulic performance parameters have been calculated:\n\n*   **Pressure Differential Head:** 15.8 m\n*   **Static Head:** 5.0 m\n*   **Friction Losses:** 3.3 m\n*   **Total Dynamic Head (TDH):** 24.1 m\n*   **Net Positive Suction Head Available (NPSHa):** 25.6 m\n\n**5. Risk Considerations**\nNo active risk flags (e.g., high pressure, corrosive service, high viscosity, flashing) were identified for this service. Therefore, no specific engineering mitigations beyond standard design practices are required based on this assessment.\n\n**6. Handover to Mechanical Engineer**\nThe following parameters are to be used by the Mechanical Engineer for the selection and detailed design of the MEG Transfer Pump:\n\n*   **Project:** MEG Transfer Pump Skid — B Star Chemetics\n*   **Fluid:** Monoethylene Glycol (MEG), 95% by weight\n*   **Density:** 1095 kg/m³\n*   **Specific Gravity:** 1.095\n*   **Viscosity:** 6 mPa·s\n*   **Vapour Pressure (at 65°C):** 0.5 kPa\n*   **Rated Flow:** 54.0 m³/h\n*   **Total Dynamic Head (TDH):** 24.1 m\n*   **Net Positive Suction Head Available (NPSHa):** 25.6 m\n*   **Design Pressure:** 10 bar (PN10)\n*   **Corrosion Allowance:** 0 mm\n*   **Recommended Material (Wetted Parts):** 316L Stainless Steel\n*   **Pressure Test Requirement:** Hydrostatic test not mandatory.",
+  "ready_for_mechanical": true
+}

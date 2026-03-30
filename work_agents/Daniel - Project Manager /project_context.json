@@ -1,0 +1,471 @@
+{
+  "generated_at": "2026-03-29T23:48:34.555555",
+  "project_end_date": "2026-08-01",
+  "project_type": "centrifugal_pump",
+  "project_summary": {
+    "client": "B Star Chemetics",
+    "project_title": "MEG Transfer Pump Skid",
+    "location": "Sarnia, Ontario, Canada",
+    "equipment_type": "horizontal centrifugal pump",
+    "fluid": "Monoethylene Glycol (MEG), 95% by weight",
+    "flow_rate_m3h": 45,
+    "design_pressure_bar": 10,
+    "temperature_c": 65,
+    "fluid_density_kgm3": 1095,
+    "suction_pressure_barg": 1.5,
+    "discharge_pressure_barg": 3.2,
+    "suction_static_head_m": 3,
+    "discharge_static_head_m": 8,
+    "suction_friction_loss_m": 0.8,
+    "discharge_friction_loss_m": 2.5,
+    "special_requirements": "pump and motor selection in accordance with API 610, mechanical seal API Plan 11, TEFC enclosure, hydraulic design and pump sizing per 4-PRC-0007, process design basis and fluid property assessment per 1-PRC-0001"
+  },
+  "document_register": [
+    {
+      "doc_id": "0-LST-0001",
+      "type": "LST",
+      "title": "Document Register",
+      "discipline": 0,
+      "discipline_name": "Documentation",
+      "assigned_to": "PM",
+      "reason": "The Document Register is a key planning and control document to record all documents that will be produced on a project. It is developed as part of project planning and maintained throughout the project by the respective disciplines. (filled_register_example Commentary)",
+      "inputs_from": [],
+      "outputs_to": [
+        "0-DAT-3001.0"
+      ],
+      "depends_on": [],
+      "weeks_before_end": 20,
+      "planned_date": "2026-03-14",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "0-PRC-2003",
+      "type": "PRC",
+      "title": "Project Execution Plan",
+      "discipline": 0,
+      "discipline_name": "Project Administration",
+      "assigned_to": "PM",
+      "reason": "This document is part of Project Administration (WBS 0-2) and outlines the plan for project execution. (filled_register_example Document Register)",
+      "inputs_from": [],
+      "outputs_to": [],
+      "depends_on": [],
+      "weeks_before_end": 18,
+      "planned_date": "2026-03-28",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "0-DAT-3001.0",
+      "type": "DAT",
+      "title": "Project Schedule",
+      "discipline": 0,
+      "discipline_name": "Planning",
+      "assigned_to": "PM",
+      "reason": "This document is part of Planning (WBS 0-3) and provides the project schedule, identifying the total number of documents (deliverables) required. (filled_register_example Document Register, Commentary)",
+      "inputs_from": [
+        "0-LST-0001"
+      ],
+      "outputs_to": [],
+      "depends_on": [
+        "0-LST-0001"
+      ],
+      "weeks_before_end": 18,
+      "planned_date": "2026-03-28",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "1-PRC-0001",
+      "type": "PRC",
+      "title": "Process Design Criteria",
+      "discipline": 1,
+      "discipline_name": "Process Technology",
+      "assigned_to": "Process Engineer",
+      "reason": "The purpose of this document is to record the owner’s process requirements for the project and present a summary of the process design criteria and contractual requirements for the project team. (1-PRC-0001_process_design_criteria)",
+      "inputs_from": [],
+      "outputs_to": [
+        "1-CAL-XXXX",
+        "4-CAL-0001",
+        "4-DST-XXXX"
+      ],
+      "depends_on": [],
+      "weeks_before_end": 6,
+      "planned_date": "2026-06-20",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "1-CAL-XXXX",
+      "type": "CAL",
+      "title": "Process Calculations",
+      "discipline": 1,
+      "discipline_name": "Process Technology",
+      "assigned_to": "Process Engineer",
+      "reason": "These calculations are part of Process Technology (WBS 1) and provide foundational process data derived from the Process Design Criteria. (filled_register_example Document Register, 1-PRC-0001_process_design_criteria)",
+      "inputs_from": [
+        "1-PRC-0001"
+      ],
+      "outputs_to": [
+        "4-CAL-0001"
+      ],
+      "depends_on": [
+        "1-PRC-0001"
+      ],
+      "weeks_before_end": 12,
+      "planned_date": "2026-05-09",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "4-PRC-0007",
+      "type": "PRC",
+      "title": "Pump Calculation Procedure",
+      "discipline": 4,
+      "discipline_name": "Equipment",
+      "assigned_to": "Mechanical Engineer",
+      "reason": "This procedure describes how project personnel will prepare pump calculations to provide a clear, checkable, technically adequate record of pump sizing. (4-PRC-0007_pump_calculation_procedure)",
+      "inputs_from": [],
+      "outputs_to": [
+        "4-CAL-0001"
+      ],
+      "depends_on": [],
+      "weeks_before_end": 14,
+      "planned_date": "2026-04-25",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "4-CAL-0001",
+      "type": "CAL",
+      "title": "Pump Calculations",
+      "discipline": 4,
+      "discipline_name": "Equipment",
+      "assigned_to": "Mechanical Engineer",
+      "reason": "These calculations are prepared by the Hydraulic Engineer to provide a clear, checkable, technically adequate record of pump sizing, following the Pump Calculation Procedure. (filled_register_example Document Register, 4-PRC-0007_pump_calculation_procedure)",
+      "inputs_from": [
+        "1-PRC-0001",
+        "1-CAL-XXXX",
+        "4-PRC-0007",
+        "4-SPC-0002"
+      ],
+      "outputs_to": [
+        "4-DST-XXXX",
+        "4-TAB-XXXX"
+      ],
+      "depends_on": [
+        "1-PRC-0001",
+        "1-CAL-XXXX",
+        "4-PRC-0007"
+      ],
+      "weeks_before_end": 3,
+      "planned_date": "2026-07-11",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "4-DST-XXXX",
+      "type": "DST",
+      "title": "Pump Data Sheets",
+      "discipline": 4,
+      "discipline_name": "Equipment",
+      "assigned_to": "Mechanical Engineer",
+      "reason": "Pump Data Sheets detail the process requirements for individual pumps and are used by the Requisition Originator to prepare requisitions for purchase enquiry/order. (filled_register_example Document Register, 4-SPC-0002_centrifugal_pump_spec, 4-PRC-0007_pump_calculation_procedure)",
+      "inputs_from": [
+        "1-PRC-0001",
+        "4-CAL-0001"
+      ],
+      "outputs_to": [
+        "4-SPC-0002",
+        "4-TAB-XXXX"
+      ],
+      "depends_on": [
+        "4-CAL-0001"
+      ],
+      "weeks_before_end": 8,
+      "planned_date": "2026-06-06",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "4-SPC-0002",
+      "type": "SPC",
+      "title": "Horizontal Centrifugal Pumps",
+      "discipline": 4,
+      "discipline_name": "Equipment",
+      "assigned_to": "Mechanical Engineer",
+      "reason": "This specification defines the general requirements for the design, fabrication and supply of horizontal centrifugal pumps, referencing individual Pump Data Sheets for process requirements. (filled_register_example Document Register, 4-SPC-0002_centrifugal_pump_spec)",
+      "inputs_from": [
+        "4-DST-XXXX"
+      ],
+      "outputs_to": [
+        "4-CAL-0001",
+        "4-TAB-XXXX"
+      ],
+      "depends_on": [
+        "4-DST-XXXX"
+      ],
+      "weeks_before_end": 2,
+      "planned_date": "2026-07-18",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "4-SPC-0001",
+      "type": "SPC",
+      "title": "General Equipment Requirements",
+      "discipline": 4,
+      "discipline_name": "Equipment",
+      "assigned_to": "Mechanical Engineer",
+      "reason": "This document defines general equipment requirements, applicable when special service conditions exist, such as corrosive fluids. (Prompt instruction for corrosive_fluid risk flag)",
+      "inputs_from": [],
+      "outputs_to": [
+        "4-SPC-0002"
+      ],
+      "depends_on": [],
+      "weeks_before_end": 6,
+      "planned_date": "2026-06-20",
+      "status": "Not Started"
+    },
+    {
+      "doc_id": "4-TAB-XXXX",
+      "type": "TAB",
+      "title": "Equipment Bid Tabulations",
+      "discipline": 4,
+      "discipline_name": "Equipment",
+      "assigned_to": "Mechanical Engineer",
+      "reason": "This document is used to tabulate and compare bids for equipment, based on calculations, data sheets, and specifications. (filled_register_example Document Register)",
+      "inputs_from": [
+        "4-CAL-0001",
+        "4-DST-XXXX",
+        "4-SPC-0002"
+      ],
+      "outputs_to": [],
+      "depends_on": [
+        "4-SPC-0002"
+      ],
+      "weeks_before_end": 1,
+      "planned_date": "2026-07-25",
+      "status": "Not Started"
+    }
+  ],
+  "task_assignments": {
+    "process_task": {
+      "agent": "Process Engineer",
+      "deliverables": [
+        {
+          "doc_id": "1-PRC-0001",
+          "type": "PRC",
+          "title": "Process Design Criteria",
+          "discipline": 1,
+          "discipline_name": "Process Technology",
+          "assigned_to": "Process Engineer",
+          "reason": "The purpose of this document is to record the owner’s process requirements for the project and present a summary of the process design criteria and contractual requirements for the project team. (1-PRC-0001_process_design_criteria)",
+          "inputs_from": [],
+          "outputs_to": [
+            "1-CAL-XXXX",
+            "4-CAL-0001",
+            "4-DST-XXXX"
+          ],
+          "depends_on": [],
+          "weeks_before_end": 6,
+          "planned_date": "2026-06-20",
+          "status": "Not Started"
+        },
+        {
+          "doc_id": "1-CAL-XXXX",
+          "type": "CAL",
+          "title": "Process Calculations",
+          "discipline": 1,
+          "discipline_name": "Process Technology",
+          "assigned_to": "Process Engineer",
+          "reason": "These calculations are part of Process Technology (WBS 1) and provide foundational process data derived from the Process Design Criteria. (filled_register_example Document Register, 1-PRC-0001_process_design_criteria)",
+          "inputs_from": [
+            "1-PRC-0001"
+          ],
+          "outputs_to": [
+            "4-CAL-0001"
+          ],
+          "depends_on": [
+            "1-PRC-0001"
+          ],
+          "weeks_before_end": 12,
+          "planned_date": "2026-05-09",
+          "status": "Not Started"
+        }
+      ],
+      "project_summary": {
+        "client": "B Star Chemetics",
+        "project_title": "MEG Transfer Pump Skid",
+        "location": "Sarnia, Ontario, Canada",
+        "equipment_type": "horizontal centrifugal pump",
+        "fluid": "Monoethylene Glycol (MEG), 95% by weight",
+        "flow_rate_m3h": 45,
+        "design_pressure_bar": 10,
+        "temperature_c": 65,
+        "fluid_density_kgm3": 1095,
+        "suction_pressure_barg": 1.5,
+        "discharge_pressure_barg": 3.2,
+        "suction_static_head_m": 3,
+        "discharge_static_head_m": 8,
+        "suction_friction_loss_m": 0.8,
+        "discharge_friction_loss_m": 2.5,
+        "special_requirements": "pump and motor selection in accordance with API 610, mechanical seal API Plan 11, TEFC enclosure, hydraulic design and pump sizing per 4-PRC-0007, process design basis and fluid property assessment per 1-PRC-0001"
+      },
+      "instructions": "Complete process engineering deliverables for the horizontal centrifugal pump project. Fluid: Monoethylene Glycol (MEG), 95% by weight. Flow rate: 45 m³/h. 1. Identify fluid code from 1-LST-0002. 2. Fill in 1-PRC-0001 Process Design Criteria. 3. Produce 1-CAL-6510 process calculation summary."
+    },
+    "mechanical_task": {
+      "agent": "Mechanical Engineer",
+      "deliverables": [
+        {
+          "doc_id": "4-PRC-0007",
+          "type": "PRC",
+          "title": "Pump Calculation Procedure",
+          "discipline": 4,
+          "discipline_name": "Equipment",
+          "assigned_to": "Mechanical Engineer",
+          "reason": "This procedure describes how project personnel will prepare pump calculations to provide a clear, checkable, technically adequate record of pump sizing. (4-PRC-0007_pump_calculation_procedure)",
+          "inputs_from": [],
+          "outputs_to": [
+            "4-CAL-0001"
+          ],
+          "depends_on": [],
+          "weeks_before_end": 14,
+          "planned_date": "2026-04-25",
+          "status": "Not Started"
+        },
+        {
+          "doc_id": "4-CAL-0001",
+          "type": "CAL",
+          "title": "Pump Calculations",
+          "discipline": 4,
+          "discipline_name": "Equipment",
+          "assigned_to": "Mechanical Engineer",
+          "reason": "These calculations are prepared by the Hydraulic Engineer to provide a clear, checkable, technically adequate record of pump sizing, following the Pump Calculation Procedure. (filled_register_example Document Register, 4-PRC-0007_pump_calculation_procedure)",
+          "inputs_from": [
+            "1-PRC-0001",
+            "1-CAL-XXXX",
+            "4-PRC-0007",
+            "4-SPC-0002"
+          ],
+          "outputs_to": [
+            "4-DST-XXXX",
+            "4-TAB-XXXX"
+          ],
+          "depends_on": [
+            "1-PRC-0001",
+            "1-CAL-XXXX",
+            "4-PRC-0007"
+          ],
+          "weeks_before_end": 3,
+          "planned_date": "2026-07-11",
+          "status": "Not Started"
+        },
+        {
+          "doc_id": "4-DST-XXXX",
+          "type": "DST",
+          "title": "Pump Data Sheets",
+          "discipline": 4,
+          "discipline_name": "Equipment",
+          "assigned_to": "Mechanical Engineer",
+          "reason": "Pump Data Sheets detail the process requirements for individual pumps and are used by the Requisition Originator to prepare requisitions for purchase enquiry/order. (filled_register_example Document Register, 4-SPC-0002_centrifugal_pump_spec, 4-PRC-0007_pump_calculation_procedure)",
+          "inputs_from": [
+            "1-PRC-0001",
+            "4-CAL-0001"
+          ],
+          "outputs_to": [
+            "4-SPC-0002",
+            "4-TAB-XXXX"
+          ],
+          "depends_on": [
+            "4-CAL-0001"
+          ],
+          "weeks_before_end": 8,
+          "planned_date": "2026-06-06",
+          "status": "Not Started"
+        },
+        {
+          "doc_id": "4-SPC-0002",
+          "type": "SPC",
+          "title": "Horizontal Centrifugal Pumps",
+          "discipline": 4,
+          "discipline_name": "Equipment",
+          "assigned_to": "Mechanical Engineer",
+          "reason": "This specification defines the general requirements for the design, fabrication and supply of horizontal centrifugal pumps, referencing individual Pump Data Sheets for process requirements. (filled_register_example Document Register, 4-SPC-0002_centrifugal_pump_spec)",
+          "inputs_from": [
+            "4-DST-XXXX"
+          ],
+          "outputs_to": [
+            "4-CAL-0001",
+            "4-TAB-XXXX"
+          ],
+          "depends_on": [
+            "4-DST-XXXX"
+          ],
+          "weeks_before_end": 2,
+          "planned_date": "2026-07-18",
+          "status": "Not Started"
+        },
+        {
+          "doc_id": "4-SPC-0001",
+          "type": "SPC",
+          "title": "General Equipment Requirements",
+          "discipline": 4,
+          "discipline_name": "Equipment",
+          "assigned_to": "Mechanical Engineer",
+          "reason": "This document defines general equipment requirements, applicable when special service conditions exist, such as corrosive fluids. (Prompt instruction for corrosive_fluid risk flag)",
+          "inputs_from": [],
+          "outputs_to": [
+            "4-SPC-0002"
+          ],
+          "depends_on": [],
+          "weeks_before_end": 6,
+          "planned_date": "2026-06-20",
+          "status": "Not Started"
+        },
+        {
+          "doc_id": "4-TAB-XXXX",
+          "type": "TAB",
+          "title": "Equipment Bid Tabulations",
+          "discipline": 4,
+          "discipline_name": "Equipment",
+          "assigned_to": "Mechanical Engineer",
+          "reason": "This document is used to tabulate and compare bids for equipment, based on calculations, data sheets, and specifications. (filled_register_example Document Register)",
+          "inputs_from": [
+            "4-CAL-0001",
+            "4-DST-XXXX",
+            "4-SPC-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "4-SPC-0002"
+          ],
+          "weeks_before_end": 1,
+          "planned_date": "2026-07-25",
+          "status": "Not Started"
+        }
+      ],
+      "project_summary": {
+        "client": "B Star Chemetics",
+        "project_title": "MEG Transfer Pump Skid",
+        "location": "Sarnia, Ontario, Canada",
+        "equipment_type": "horizontal centrifugal pump",
+        "fluid": "Monoethylene Glycol (MEG), 95% by weight",
+        "flow_rate_m3h": 45,
+        "design_pressure_bar": 10,
+        "temperature_c": 65,
+        "fluid_density_kgm3": 1095,
+        "suction_pressure_barg": 1.5,
+        "discharge_pressure_barg": 3.2,
+        "suction_static_head_m": 3,
+        "discharge_static_head_m": 8,
+        "suction_friction_loss_m": 0.8,
+        "discharge_friction_loss_m": 2.5,
+        "special_requirements": "pump and motor selection in accordance with API 610, mechanical seal API Plan 11, TEFC enclosure, hydraulic design and pump sizing per 4-PRC-0007, process design basis and fluid property assessment per 1-PRC-0001"
+      },
+      "wait_for": [
+        "1-PRC-0001",
+        "1-CAL-XXXX"
+      ],
+      "instructions": "Perform pump engineering deliverables for the horizontal centrifugal pump project. Wait for Process Calculations before starting. 1. Run full pump hydraulic calculation using Pump_Calculation_Template. 2. Check corrosion allowance against 5-LST-0003. 3. Generate pump datasheet (4-DST-XXXX). 4. Assemble technical bid package."
+    }
+  },
+  "risk_flags_fired": [],
+  "handoff_brief": "**Project Handoff Brief: MEG Transfer Pump Skid (B Star Chemetics)**\n\n**1. Project Overview**\nThis project involves the engineering design and specification of a MEG Transfer Pump Skid for B Star Chemetics' facility in Sarnia, Ontario. The primary objective is to deliver a fully specified horizontal centrifugal pump system capable of transferring 95% Monoethylene Glycol at defined process conditions, adhering to stringent industry standards.\n\n**2. Process Engineer Tasks**\nThe Process Engineering team is responsible for establishing the fundamental design basis for the MEG Transfer Pump Skid. This includes performing a comprehensive fluid property assessment and defining the process design criteria as per internal procedure 1-PRC-0001. Based on these criteria, you will then execute the necessary process calculations, documented under 1-CAL-XXXX, which will serve as critical inputs for the Mechanical Engineering team's subsequent pump sizing and selection activities.\n\n**3. Mechanical Engineer Tasks**\nMechanical Engineering will lead the detailed design and specification of the horizontal centrifugal pump. Your work will commence upon receipt of the Process Design Criteria (1-PRC-0001) and Process Calculations (1-CAL-XXXX) from the Process team. Key tasks include developing the Pump Calculation Procedure (4-PRC-0007), performing detailed Pump Calculations (4-CAL-0001), and generating comprehensive Pump Data Sheets (4-DST-XXXX). You will also be responsible for preparing the General Equipment Requirements (4-SPC-0001) and the specific Horizontal Centrifugal Pumps specification (4-SPC-0002), ensuring all aspects comply with API 610, API Plan 11 for the mechanical seal, and a TEFC motor enclosure. The final deliverable will be the Equipment Bid Tabulations (4-TAB-XXXX), consolidating all technical requirements for procurement.\n\n**4. Risk Flags & Engineering Implications**\nThere are currently no active risk flags identified for this project, indicating a clear path forward for engineering execution based on current information.\n\n**5. Key Dates**\nHere are the critical milestones for this project:\n\n*   2026-04-25: 4-PRC-0007 — Pump Calculation Procedure\n*   2026-05-09: 1-CAL-XXXX — Process Calculations\n*   2026-06-06: 4-DST-XXXX — Pump Data Sheets\n*   2026-06-20: 1-PRC-0001 — Process Design Criteria\n*   2026-06-20: 4-SPC-0001 — General Equipment Requirements\n*   2026-07-11: 4-CAL-0001 — Pump Calculations\n*   2026-07-18: 4-SPC-0002 — Horizontal Centrifugal Pumps\n*   2026-07-25: 4-TAB-XXXX — Equipment Bid Tabulations\n*   2026-08-01: Project End Date",
+  "deliverables": {
+    "0-LST-0001": "# 0-LST-0001 — Document Register\n\n## 1.0 Document Information\n\n| Field                 | Value                                  |\n| :-------------------- | :------------------------------------- |\n| **Document ID**       | 0-LST-0001                             |\n| **Document Title**    | Document Register                      |\n| **Document Type**     | LST (Documentation)                    |\n| **Due Date**          | 2026-03-14                             |\n| **Project**           | MEG Transfer Pump Skid                 |\n| **Client**            | B Star Chemetics                       |\n| **Location**          | Sarnia, Ontario, Canada                |\n| **Project End Date**  | 2026-08-01                             |\n| **Risk Flags Active** | None                                   |\n\n## 2.0 Purpose\n\nThe Document Register is a key planning and control document to record all documents that will be produced on a project. It is developed as part of project planning and maintained throughout the project by the respective disciplines.\n\n## 3.0 Project Overview\n\nThis document register pertains to the MEG Transfer Pump Skid project for B Star Chemetics in Sarnia, Ontario, Canada. The project involves the design and supply of a skid-mounted horizontal centrifugal pump system.\n\n| Parameter          | Value                                |\n| :----------------- | :----------------------------------- |\n| **Equipment**      | Horizontal Centrifugal Pump          |\n| **Fluid**          | Monoethylene Glycol (MEG), 95% by wt |\n| **Flow Rate**      | 45 m³/h                              |\n| **Design Pressure**| 10 bar                               |\n| **Design Temp.**   | 65 °C                                |\n\n## 4.0 Revision History\n\n| Rev. | Date         | Status                | Prepared By  | Checked By | Approved By | Comments             |\n| :--- | :----------- | :-------------------- | :----------- | :--------- | :---------- | :------------------- |\n| 0.0  | 2026-03-14   | Issued for Planning   | Project Manager |            |             | Initial Issue        |\n\n## 5.0 Document Register\n\nThis register lists all planned deliverables for the MEG Transfer Pump Skid project, detailing their unique identification, responsible discipline, target due date, and current status. The document numbering convention follows the project's established standard, breaking down the ID into Area, Type, and Number components.\n\n| Document ID | Area | Type | Number | Title                               | Responsible Discipline | Due Date   | Status      | Remarks |\n| :---------- | :--- | :--- | :----- | :---------------------------------- | :--------------------- | :--------- | :---------- | :------ |\n| 0-LST-0001  | 0    | LST  | 0001   | Document Register                   | PM                     | 2026-03-14 | Issued      |         |\n| 0-PRC-2003  | 0    | PRC  | 2003   | Project Execution Plan              | PM                     | 2026-03-28 | Planned     |         |\n| 0-DAT-3001.0| 0    | DAT  | 3001   | Project Schedule                    | PM                     | 2026-03-28 | Planned     |         |\n| 1-PRC-0001  | 1    | PRC  | 0001   | Process Design Criteria             | Process Engineer       | 2026-06-20 | Planned     |         |\n| 1-CAL-XXXX  | 1    | CAL  | XXXX   | Process Calculations                | Process Engineer       | 2026-05-09 | Planned     |         |\n| 4-PRC-0007  | 4    | PRC  | 0007   | Pump Calculation Procedure          | Mechanical Engineer    | 2026-04-25 | Planned     |         |\n| 4-CAL-0001  | 4    | CAL  | 0001   | Pump Calculations                   | Mechanical Engineer    | 2026-07-11 | Planned     |         |\n| 4-DST-XXXX  | 4    | DST  | XXXX   | Pump Data Sheets                    | Mechanical Engineer    | 2026-06-06 | Planned     |         |\n| 4-SPC-0002  | 4    | SPC  | 0002   | Horizontal Centrifugal Pumps        | Mechanical Engineer    | 2026-07-18 | Planned     |         |\n| 4-SPC-0001  | 4    | SPC  | 0001   | General Equipment Requirements      | Mechanical Engineer    | 2026-06-20 | Planned     |         |\n| 4-TAB-XXXX  | 4    | TAB  | XXXX   | Equipment Bid Tabulations           | Mechanical Engineer    | 2026-07-25 | Planned     |         |\n\n## 6.0 Signature Page\n\n| Rev: | Date:        | Status:             | Prepared By:      | Checked By: | Approved By: |\n| :--- | :----------- | :------------------ | :---------------- | :---------- | :----------- |\n| 0.0  | 2026-03-14   | Issued for Planning | [Your Name/PM]    |             |              |\n\n---\n**Client:** B Star Chemetics\n**Project:** MEG Transfer Pump Skid\n**Location:** Sarnia, Ontario, Canada\n**Client Document Number:** 0-LST-0001",
+    "0-PRC-2003": "# 0-PRC-2003 — Project Execution Plan\n\n---\n\n| Document ID: | 0-PRC-2003                               |\n| :------------- | :--------------------------------------- |\n| Title:         | Project Execution Plan                   |\n| Type:          | PRC (Project Administration)             |\n| Project:       | MEG Transfer Pump Skid                   |\n| Client:        | B Star Chemetics                         |\n| Location:      | Sarnia, Ontario, Canada                  |\n| Prepared By:   | [Your Name/PM Department]                |\n| Date:          | 2024-05-15                               |\n| Revision:      | 0.0                                      |\n| Due Date:      | 2026-03-28                               |\n\n---\n\n**Revision History**\n\n| Revision | Date         | Prepared By | Description                               |\n| :------- | :----------- | :---------- | :---------------------------------------- |\n| 0.0      | 2024-05-15   | PM          | Issued for Internal Review and Approval   |\n\n---\n\n**Table of Contents**\n\n1.0 Introduction\n    1.1 Purpose\n    1.2 Scope\n2.0 Project Overview\n    2.1 Project Identification\n    2.2 Client and Location\n    2.3 Technical Data\n    2.4 Key Project Dates\n    2.5 Risk Assessment Summary\n3.0 Project Organization and Responsibilities\n4.0 Project Deliverables\n5.0 Project Schedule\n6.0 Project Control and Reporting\n    6.1 Progress Monitoring and Reporting\n    6.2 Change Management\n    6.3 Risk Management\n    6.4 Quality Management\n7.0 Procurement and Subcontracting Strategy\n    7.1 Procurement Activities\n    7.2 Subcontract Activities\n    7.3 Expediting\n8.0 Health, Safety, and Environment (HSE)\n9.0 Project Closeout\n\n---\n\n## 1.0 Introduction\n\n### 1.1 Purpose\n\nThis Project Execution Plan (PEP) is a formal deliverable (WBS 0-2) that outlines the comprehensive strategy and methodology for executing the MEG Transfer Pump Skid project. It serves as a foundational document for all project participants, ensuring a common understanding of project objectives, scope, organization, and control mechanisms.\n\n### 1.2 Scope\n\nThis document defines the framework for project execution, encompassing project management, engineering, procurement, and construction (EPC) oversight activities. It details how the project will be managed from initiation through closeout, including key deliverables, scheduling, control processes, and stakeholder responsibilities. This PEP applies to all personnel and contractors involved in the MEG Transfer Pump Skid project.\n\n## 2.0 Project Overview\n\n### 2.1 Project Identification\n\nThe project involves the design, procurement, fabrication, and delivery of a Monoethylene Glycol (MEG) Transfer Pump Skid.\n\n### 2.2 Client and Location\n\n*   **Client:** B Star Chemetics\n*   **Location:** Sarnia, Ontario, Canada\n\n### 2.3 Technical Data\n\nThe primary equipment for this project is a horizontal centrifugal pump designed for MEG transfer.\n\n*   **Fluid:** Monoethylene Glycol (MEG), 95% by weight\n*   **Flow Rate:** 45 m³/h\n*   **Discharge Pressure:** 10 bar\n*   **Operating Temperature:** 65 °C\n\n### 2.4 Key Project Dates\n\n*   **Project Execution Plan Due Date:** 2026-03-28\n*   **Overall Project End Date:** 2026-08-01\n\n### 2.5 Risk Assessment Summary\n\nAs of the issuance of this document, there are no active risk flags identified that require immediate mitigation actions beyond standard project management practices. A comprehensive risk management process will be maintained throughout the project lifecycle.\n\n## 3.0 Project Organization and Responsibilities\n\nThe project will be managed by a dedicated Project Management team, supported by specialized engineering disciplines including Process, Mechanical, and Instrumentation/Control. The Project Manager is ultimately responsible for the overall success of the project, ensuring adherence to scope, schedule, budget, and quality requirements. Detailed roles, responsibilities, and the project organizational chart will be maintained in a separate Project Organization document.\n\n## 4.0 Project Deliverables\n\nThe following table lists the key deliverables for the MEG Transfer Pump Skid project, outlining their ID, responsible discipline, due date, and title. This register will be regularly updated and maintained as per document control procedures (refer to 0-LST-0001, Document Register).\n\n| Document ID        | Discipline            | Due Date     | Title                                   |\n| :----------------- | :-------------------- | :----------- | :-------------------------------------- |\n| 0-LST-0001         | PM                    | 2026-03-14   | Document Register                       |\n| 0-PRC-2003         | PM                    | 2026-03-28   | Project Execution Plan                  |\n| 0-DAT-3001.0       | PM                    | 2026-03-28   | Project Schedule                        |\n| 1-PRC-0001         | Process Engineer      | 2026-06-20   | Process Design Criteria                 |\n| 1-CAL-XXXX         | Process Engineer      | 2026-05-09   | Process Calculations                    |\n| 4-PRC-0007         | Mechanical Engineer   | 2026-04-25   | Pump Calculation Procedure              |\n| 4-CAL-0001         | Mechanical Engineer   | 2026-07-11   | Pump Calculations                       |\n| 4-DST-XXXX         | Mechanical Engineer   | 2026-06-06   | Pump Data Sheets                        |\n| 4-SPC-0002         | Mechanical Engineer   | 2026-07-18   | Horizontal Centrifugal Pumps            |\n| 4-SPC-0001         | Mechanical Engineer   | 2026-06-20   | General Equipment Requirements          |\n| 4-TAB-XXXX         | Mechanical Engineer   | 2026-07-25   | Equipment Bid Tabulations               |\n\n## 5.0 Project Schedule\n\nThe detailed project schedule, outlining all activities, milestones, and critical paths, is documented in 0-DAT-3001.0, Project Schedule. The overall project is targeted for completion by 2026-08-01. The schedule will be regularly monitored and updated to reflect actual progress and any approved changes. Key phases include:\n\n*   **Phase 1: Project Management & Engineering:** Initial planning, detailed design, and documentation.\n*   **Phase 2: Procurement:** Vendor selection, purchase order issuance, and material expediting.\n*   **Phase 3: Fabrication & Assembly:** Skid fabrication, equipment installation, and testing.\n*   **Phase 4: Commissioning & Handover:** Final testing, client acceptance, and project closeout.\n\n## 6.0 Project Control and Reporting\n\n### 6.1 Progress Monitoring and Reporting\n\nProject progress will be monitored weekly through team meetings and reported monthly to the client. Reporting will include progress against schedule, earned value analysis, expenditure tracking, and identification of any deviations or potential issues.\n\n### 6.2 Change Management\n\nAll changes to the approved project scope, schedule, or budget will be managed through a formal Change Management Procedure. This procedure ensures that all changes are properly documented, assessed for impact, approved by relevant stakeholders, and communicated to the project team.\n\n### 6.3 Risk Management\n\nA continuous risk management process will be implemented to identify, assess, mitigate, and monitor project risks. While no active risk flags are currently identified, potential risks related to technical challenges, procurement delays, or external factors will be proactively managed.\n\n### 6.4 Quality Management\n\nThe project will adhere to established quality management procedures to ensure that all deliverables meet the specified technical requirements and client expectations. This includes design reviews, vendor quality surveillance, inspection and test plans (ITPs), and final documentation verification.\n\n## 7.0 Procurement and Subcontracting Strategy\n\nProcurement and subcontracting activities are critical to the successful delivery of the MEG Transfer Pump Skid. A structured approach will be followed to ensure timely acquisition of materials and services, cost-effectiveness, and quality assurance.\n\n### 7.1 Procurement Activities\n\nProcurement activities will cover all necessary equipment, materials, and services required for the project. This includes:\n\n*   **Vendor Prequalification:** Assessment of potential suppliers based on technical capability, financial stability, and past performance.\n*   **Request for Quotation (RFQ) / Tender Process:** Issuance of detailed specifications and commercial terms to qualified vendors.\n*   **Technical and Commercial Bid Evaluation:** Thorough review of proposals to ensure compliance with project requirements.\n*   **Purchase Order (PO) Issuance:** Formal contracting with selected vendors.\n\n### 7.2 Subcontract Activities\n\nSubcontracts will be issued for specialized services such as fabrication, testing, and potentially installation support. The management of subcontracts will follow a similar rigorous process to procurement, ensuring clear scopes of work, performance monitoring, and adherence to project standards.\n\n### 7.3 Expediting\n\nExpediting will be a key activity across Process Engineering, Mechanical & Equipment Engineering (Including Material Engineering), and Instrumentation/Control disciplines to ensure the timely delivery of critical equipment and materials. This involves:\n\n*   **Regular Communication:** Maintaining close contact with vendors and subcontractors.\n*   **Progress Monitoring:** Tracking manufacturing progress against agreed schedules.\n*   **Issue Resolution:** Proactively addressing any potential delays or bottlenecks.\n*   **Site Visits:** Conducting inspections at vendor facilities as required.\n\n## 8.0 Health, Safety, and Environment (HSE)\n\nThe health and safety of all personnel involved in the project, as well as the protection of the environment, are paramount. The project will operate under a strict HSE management system, ensuring compliance with all applicable regulations, client requirements, and industry best practices. All project activities will be planned and executed with a \"safety first\" mindset.\n\n## 9.0 Project Closeout\n\nUpon completion of all project activities, a formal project closeout process will be initiated. This includes:\n\n*   **Final Documentation:** Compilation and submission of all project records, including as-built drawings, operation manuals, and maintenance procedures.\n*   **Financial Closeout:** Reconciliation of all accounts and final payments.\n*   **Lessons Learned:** Conducting a review to identify successes and areas for improvement for future projects.\n*   **Client Handover:** Formal transfer of the completed MEG Transfer Pump Skid to B Star Chemetics.",
+    "0-DAT-3001.0": "# 0-DAT-3001.0 — Project Schedule\n\n---\n\n**Project:** MEG Transfer Pump Skid\n**Client:** B Star Chemetics\n**Document ID:** 0-DAT-3001.0\n**Document Title:** Project Schedule\n**Type:** DAT (Planning)\n**Revision:** 0 (Initial Release)\n**Date:** 2023-10-27\n**Prepared By:** Project Manager\n\n---\n\n## 1.0 Introduction\n\n### 1.1 Purpose\nThis document, 0-DAT-3001.0 Project Schedule, is a key deliverable within the Planning (WBS 0-3) phase of the MEG Transfer Pump Skid project. Its primary purpose is to formally establish and communicate the project schedule, identifying all required project documents (deliverables) and their respective due dates. It serves as a foundational reference for project planning, execution, and control.\n\n### 1.2 Scope\nThis Project Schedule encompasses all identified formal deliverables for the MEG Transfer Pump Skid project, as detailed in the Project Document Register (0-LST-0001). It outlines the planned dates for completion of these deliverables, providing a chronological roadmap for project activities leading up to the Project End Date.\n\n## 2.0 Project Overview\n\n### 2.1 Project Identification\n*   **Project Name:** MEG Transfer Pump Skid\n*   **Client:** B Star Chemetics\n*   **Location:** Sarnia, Ontario, Canada\n\n### 2.2 Technical Data\n*   **Equipment:** Horizontal centrifugal pump\n*   **Fluid:** Monoethylene Glycol (MEG), 95% by weight\n*   **Flow Rate:** 45 m³/h\n*   **Pressure:** 10 bar\n*   **Temperature:** 65 °C\n\n### 2.3 Key Project Dates\n*   **Project End Date:** 2026-08-01\n\n### 2.4 Risk Status\n*   **Active Risk Flags:** None\n\n## 3.0 Project Schedule Summary\n\nThe MEG Transfer Pump Skid project involves the generation of a total of **11 formal deliverables**. These deliverables are scheduled to be completed progressively, commencing in March 2026 and concluding by July 2026, in alignment with the overall Project End Date of 2026-08-01. This Project Schedule document itself is due on 2026-03-28.\n\n## 4.0 Project Deliverable Register\n\nThe following table presents the detailed schedule for all identified project deliverables, sorted chronologically by their planned due dates. This register forms the core of the project schedule and is maintained as a living document.\n\n| Document ID | Responsible Engineer | Due Date   | Document Title                       |\n| :---------- | :------------------- | :--------- | :----------------------------------- |\n| 0-LST-0001  | PM                   | 2026-03-14 | Document Register                    |\n| 0-PRC-2003  | PM                   | 2026-03-28 | Project Execution Plan               |\n| 0-DAT-3001.0| PM                   | 2026-03-28 | Project Schedule                     |\n| 4-PRC-0007  | Mechanical Engineer  | 2026-04-25 | Pump Calculation Procedure           |\n| 1-CAL-XXXX  | Process Engineer     | 2026-05-09 | Process Calculations                 |\n| 4-DST-XXXX  | Mechanical Engineer  | 2026-06-06 | Pump Data Sheets                     |\n| 1-PRC-0001  | Process Engineer     | 2026-06-20 | Process Design Criteria              |\n| 4-SPC-0001  | Mechanical Engineer  | 2026-06-20 | General Equipment Requirements       |\n| 4-CAL-0001  | Mechanical Engineer  | 2026-07-11 | Pump Calculations                    |\n| 4-SPC-0002  | Mechanical Engineer  | 2026-07-18 | Horizontal Centrifugal Pumps         |\n| 4-TAB-XXXX  | Mechanical Engineer  | 2026-07-25 | Equipment Bid Tabulations            |\n\n## 5.0 Schedule Management & Control\n\nThis Project Schedule is a dynamic document that will be regularly reviewed and updated as the project progresses. The official record of all project deliverables and their current status is maintained in the Project Document Register (0-LST-0001).\n\nAny proposed changes to the established schedule, including modifications to due dates or the introduction of new deliverables, must be formally processed through a Project Variance Change Notice (PVN) in accordance with the Project Variance Change Notice Form (0-PRC-4003-R1). This ensures proper documentation, approval, and communication of all schedule adjustments to maintain project control and transparency."
+  }
+}
