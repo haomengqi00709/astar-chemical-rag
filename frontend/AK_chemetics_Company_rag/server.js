@@ -899,6 +899,13 @@ Keep replies concise and professional.`;
 });
 
 
+// Serve the Vite production build for all non-API routes
+const DIST = path.join(__dirname, 'dist');
+if (fs.existsSync(DIST)) {
+  app.use(express.static(DIST));
+  app.get('*', (_req, res) => res.sendFile(path.join(DIST, 'index.html')));
+}
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`API server → http://localhost:${PORT}`);
