@@ -1,0 +1,6 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "cd frontend/AK_chemetics_Company_rag && npm run build && node server.js"
+restartPolicyType = "on_failure"

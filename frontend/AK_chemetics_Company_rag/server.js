@@ -10,7 +10,7 @@ import { GoogleGenAI } from '@google/genai';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const RAG_ROOT   = path.resolve(__dirname, '..', '..');
-const PYTHON     = path.join(RAG_ROOT, 'venv', 'bin', 'python3');
+const PYTHON     = process.env.PYTHON_PATH || path.join(RAG_ROOT, 'venv', 'bin', 'python3');
 const AGENT      = path.join(RAG_ROOT, 'agent.py');
 const SKILLS_DIR = path.join(RAG_ROOT, 'skills');
 const INIT_FILE  = path.join(SKILLS_DIR, '__init__.py');
@@ -899,7 +899,7 @@ Keep replies concise and professional.`;
 });
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`API server → http://localhost:${PORT}`);
   console.log(`RAG root   → ${RAG_ROOT}`);

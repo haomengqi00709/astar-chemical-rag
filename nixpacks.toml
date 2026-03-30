@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "python312", "python312Packages.pip"]
+
+[phases.install]
+cmds = [
+  "pip install -r requirements.txt",
+  "cd frontend/AK_chemetics_Company_rag && npm install"
+]
+
+[start]
+cmd = "cd frontend/AK_chemetics_Company_rag && npm run build && PYTHON_PATH=python3 node server.js"
