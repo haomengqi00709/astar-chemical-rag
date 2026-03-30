@@ -18,8 +18,7 @@ chroma_db/
 frontend/AK_chemetics_Company_rag/node_modules/
 frontend/AK_chemetics_Company_rag/dist/
 
-# Parsed data caches (regenerated from source docs)
-parsed_chunks*.json
+# Parsed data caches
 llm_review_queue.json
 
 # Temp/OS files
