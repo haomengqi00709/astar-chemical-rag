@@ -554,13 +554,21 @@ app.post('/api/agents/process', (req, res) => {
             step3: { status: 'done', result: result.hydraulic_results, completedAt: new Date().toISOString() },
             step4: { status: 'done', result: result.calc_summary,      completedAt: new Date().toISOString() },
           };
-          // Write calc sheet to deliverables
-          const calcDocId = findCalcDocId(arr[idx].context?.document_register);
           if (!arr[idx].context) arr[idx].context = {};
           if (!arr[idx].context.deliverables) arr[idx].context.deliverables = {};
+          // Write structured calc sheet for 1-CAL-XXXX
+          const calcDocId = findCalcDocId(arr[idx].context?.document_register);
           arr[idx].context.deliverables[calcDocId] = JSON.stringify(
             buildCalcSheet(arr[idx].processSteps, arr[idx].context?.document_register), null, 2
           );
+          // Store markdown content for other process deliverables (e.g. 1-PRC-0001)
+          if (result.deliverables) {
+            for (const [docId, content] of Object.entries(result.deliverables)) {
+              if (!String(content).startsWith('[Generation failed')) {
+                arr[idx].context.deliverables[docId] = content;
+              }
+            }
+          }
           saveProjects(arr);
         }
       }
@@ -686,6 +694,14 @@ app.post('/api/agents/mechanical', (req, res) => {
           if (!arr[idx].context) arr[idx].context = {};
           if (!arr[idx].context.deliverables) arr[idx].context.deliverables = {};
           arr[idx].context.deliverables[pumpCalcDocId] = JSON.stringify(pumpCalcSheet, null, 2);
+          // Store text deliverables (4-PDS-XXXX markdown) for in-app viewing
+          if (result.deliverables) {
+            for (const [docId, content] of Object.entries(result.deliverables)) {
+              if (!String(content).startsWith('[Generation failed')) {
+                arr[idx].context.deliverables[docId] = content;
+              }
+            }
+          }
           saveProjects(arr);
         }
       }
@@ -829,6 +845,43 @@ app.put('/api/projects/:id/deliverable', (req, res) => {
 
 
 // ---------------------------------------------------------------------------
+// POST /api/projects/:id/export-docx
+// Body: { docId, content }  — regenerates the .docx from updated markdown
+// ---------------------------------------------------------------------------
+const EXPORT_DOCX_SCRIPT = path.join(RAG_ROOT, 'export_docx.py');
+
+// Map doc ID prefix to deliverable directory and static URL base
+function resolveDeliverableDir(docId) {
+  const disc = docId.split('-')[0];
+  if (disc === '0') return { dir: path.join(PM_DIR,      'deliverables'), urlBase: '/files/pm-deliverables' };
+  if (disc === '1') return { dir: path.join(PROCESS_DIR, 'deliverables'), urlBase: '/files/process-deliverables' };
+  if (disc === '4') return { dir: path.join(MECH_DIR,    'deliverables'), urlBase: '/files/mechanical-deliverables' };
+  return                  { dir: path.join(PM_DIR,       'deliverables'), urlBase: '/files/pm-deliverables' };
+}
+
+app.post('/api/projects/:id/export-docx', (req, res) => {
+  const { docId, content } = req.body;
+  if (!docId || content == null) return res.status(400).json({ error: 'docId and content are required' });
+
+  const safeId               = docId.replace(/\//g, '_').replace(/\./g, '_');
+  const { dir, urlBase }     = resolveDeliverableDir(docId);
+  const outputPath           = path.join(dir, `${safeId}.docx`);
+
+  const py = spawn(PYTHON, [EXPORT_DOCX_SCRIPT, '--output', outputPath]);
+  py.stdin.write(content, 'utf-8');
+  py.stdin.end();
+
+  let stderr = '';
+  py.stderr.on('data', d => { stderr += d.toString(); });
+
+  py.on('close', code => {
+    if (code !== 0) return res.status(500).json({ error: stderr || 'export_docx.py failed' });
+    res.json({ success: true, url: `${urlBase}/${safeId}.docx` });
+  });
+});
+
+
+// ---------------------------------------------------------------------------
 // POST /api/projects/:id/deliverable-chat
 // Body: { docId, message, content, history }
 // Uses Gemini with the document as context for AI-assisted revisions.
@@ -898,6 +951,11 @@ Keep replies concise and professional.`;
   }
 });
 
+
+// Serve deliverable files (docx, md) for direct download
+app.use('/files/pm-deliverables',           express.static(path.join(PM_DIR,      'deliverables')));
+app.use('/files/process-deliverables',      express.static(path.join(PROCESS_DIR, 'deliverables')));
+app.use('/files/mechanical-deliverables',   express.static(path.join(MECH_DIR,    'deliverables')));
 
 // Serve the Vite production build for all non-API routes
 const DIST = path.join(__dirname, 'dist');

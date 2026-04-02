@@ -397,6 +397,74 @@ def print_thinking(summary: dict, project_type: str, ptype_data: dict,
 
 DELIVERABLES_DIR = AGENT_DIR / 'deliverables'
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Markdown → Word converter
+# ─────────────────────────────────────────────────────────────────────────────
+
+def md_to_docx(md_text: str, output_path: Path) -> None:
+    """Convert a markdown string to a .docx file using python-docx."""
+    from docx import Document as DocxDocument
+
+    doc = DocxDocument()
+    lines = md_text.split('\n')
+    i = 0
+
+    def strip_inline(text: str) -> str:
+        text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+        text = re.sub(r'\*(.+?)\*',     r'\1', text)
+        text = re.sub(r'`(.+?)`',       r'\1', text)
+        return text
+
+    while i < len(lines):
+        line   = lines[i]
+        s      = line.strip()
+
+        if s.startswith('### '):
+            doc.add_heading(strip_inline(s[4:]), level=3)
+            i += 1
+        elif s.startswith('## '):
+            doc.add_heading(strip_inline(s[3:]), level=2)
+            i += 1
+        elif s.startswith('# '):
+            doc.add_heading(strip_inline(s[2:]), level=1)
+            i += 1
+        elif s.startswith('|'):
+            # Collect all consecutive table rows
+            table_lines: list[str] = []
+            while i < len(lines) and lines[i].strip().startswith('|'):
+                table_lines.append(lines[i].strip())
+                i += 1
+            # Drop separator rows like | :--- | --- |
+            data_rows = [r for r in table_lines
+                         if not re.match(r'^\|[-:| ]+\|$', r.replace(' ', ''))]
+            if data_rows:
+                first_cols = [c.strip() for c in data_rows[0].strip('|').split('|')]
+                ncols = len(first_cols)
+                tbl = doc.add_table(rows=len(data_rows), cols=ncols)
+                tbl.style = 'Table Grid'
+                for ri, row_str in enumerate(data_rows):
+                    cells = [c.strip() for c in row_str.strip('|').split('|')]
+                    for ci in range(ncols):
+                        cell_text = strip_inline(cells[ci]) if ci < len(cells) else ''
+                        cell = tbl.rows[ri].cells[ci]
+                        cell.text = cell_text
+                        if ri == 0:
+                            for run in cell.paragraphs[0].runs:
+                                run.bold = True
+        elif s.startswith('- ') or s.startswith('* '):
+            doc.add_paragraph(strip_inline(s[2:]), style='List Bullet')
+            i += 1
+        elif s in ('', '---'):
+            i += 1
+        else:
+            if s:
+                doc.add_paragraph(strip_inline(s))
+            i += 1
+
+    doc.save(str(output_path))
+
+
 # Historical template files for specific PM documents
 PM_TEMPLATE_FILES: dict[str, Path] = {
     '0-LST-0001': AGENT_DIR / '0-LST-0001-1-R0 [Template] Document Register.xlsx',
@@ -526,10 +594,16 @@ def generate_pm_deliverables(register: list[dict], context: dict,
             # 3. Generate content with Gemini
             content = generate_deliverable_content(doc, context, rag_snippets, template_text, client)
 
-            # 4. Save .md file locally for reference
+            # 4. Save .md and .docx files locally for reference
             safe_id  = doc_id.replace('/', '_').replace('.', '_')
             filepath = DELIVERABLES_DIR / f'{safe_id}.md'
             filepath.write_text(content, encoding='utf-8')
+
+            docx_path = DELIVERABLES_DIR / f'{safe_id}.docx'
+            try:
+                md_to_docx(content, docx_path)
+            except Exception as docx_err:
+                print(f'  ⚠ docx export failed for {doc_id}: {docx_err}')
 
             generated[doc_id] = content
 

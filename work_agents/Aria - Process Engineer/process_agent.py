@@ -37,11 +37,12 @@ from google.genai import types
 
 load_dotenv()
 
-AGENT_DIR    = Path(__file__).parent                        # Aria - Process Engineer/
-WORK_AGENTS  = AGENT_DIR.parent                             # work_agents/
-RAG_ROOT     = WORK_AGENTS.parent                           # project root
-CHROMA_PATH  = RAG_ROOT / 'chroma_db'
-PM_DIR       = WORK_AGENTS / 'Daniel - Project Manager '
+AGENT_DIR        = Path(__file__).parent                    # Aria - Process Engineer/
+WORK_AGENTS      = AGENT_DIR.parent                         # work_agents/
+RAG_ROOT         = WORK_AGENTS.parent                       # project root
+CHROMA_PATH      = RAG_ROOT / 'chroma_db'
+PM_DIR           = WORK_AGENTS / 'Daniel - Project Manager '
+DELIVERABLES_DIR = AGENT_DIR / 'deliverables'
 
 COLLECTION_NAME  = 'compliance_docs'
 EMBEDDING_MODEL  = 'models/gemini-embedding-001'
@@ -495,6 +496,19 @@ def run_process_agent(context_path: Path, json_mode: bool = False) -> dict | Non
         print(calc_summary)
         print()
 
+    # Step 5 — Generate deliverable documents (1-PRC-0001.docx, 1-CAL-XXXX.docx)
+    if json_mode: emit_progress(5, 'Generating process deliverables...')
+    else: print('\nGenerating process deliverables...')
+    deliverables = save_process_deliverables(
+        pm_summary, fluid_props, design_criteria, hydraulics, risk_flags, calc_summary, client
+    )
+    if json_mode: emit_progress(5, 'Process Deliverables', status='done',
+                                data={'doc_ids': list(deliverables.keys())})
+    else:
+        for doc_id, content in deliverables.items():
+            ok = '✓' if not content.startswith('[Generation failed') else '✗'
+            print(f'  {ok} {doc_id}')
+
     output = {
         'generated_at':         datetime.now().isoformat(),
         'project_title':        pm_summary.get('project_title'),
@@ -505,6 +519,7 @@ def run_process_agent(context_path: Path, json_mode: bool = False) -> dict | Non
         'hydraulic_results':    hydraulics,
         'risk_flags':           risk_flags,
         'calc_summary':         calc_summary,
+        'deliverables':         deliverables,
         'ready_for_mechanical': True,
     }
 
@@ -566,6 +581,112 @@ def run_single_step(step_num: int, context_path: Path, prior_path: Path | None) 
         raise ValueError(f'Unknown step: {step_num}')
 
     return {'step': step_num, 'label': STEP_LABELS[step_num], 'result': result}
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Step 5 — Generate process deliverable documents
+# ─────────────────────────────────────────────────────────────────────────────
+
+def generate_prc_0001(pm_summary: dict, fluid_props: dict, design_criteria: dict,
+                      hydraulics: dict, risk_flags: list[dict], client: genai.Client) -> str:
+    """Generate 1-PRC-0001 Process Design Criteria as markdown."""
+    prompt = f"""You are a Process Engineer writing a formal Process Design Criteria document (1-PRC-0001).
+
+PROJECT:
+- Client: {pm_summary.get('client')}
+- Project: {pm_summary.get('project_title')}
+- Location: {pm_summary.get('location')}
+- Equipment: {pm_summary.get('equipment_type')}
+
+FLUID DATA (from 1-LST-0002):
+- Fluid: {fluid_props.get('fluid_name')} (Code: {fluid_props.get('fluid_code')}, source: {fluid_props.get('fluid_code_source')})
+- Density: {fluid_props.get('density_kgm3')} kg/m³  |  SG: {fluid_props.get('specific_gravity')}
+- Viscosity: {fluid_props.get('dynamic_viscosity_mPas')} mPa·s
+- Vapour pressure at {pm_summary.get('temperature_c')}°C: {fluid_props.get('vapor_pressure_kPa_at_temp')} kPa
+- Corrosive: {fluid_props.get('corrosive')}
+
+DESIGN CRITERIA (from 1-PRC-0001 / RAG):
+- Normal flow: {design_criteria.get('normal_flow_m3h')} m³/h → Rated: {design_criteria.get('rated_flow_m3h')} m³/h ({design_criteria.get('flow_margin_pct')}% margin, source: {design_criteria.get('flow_margin_source')})
+- Design pressure: {design_criteria.get('design_pressure_bar')} bar ({design_criteria.get('pressure_class')})
+- Design temperature: {design_criteria.get('design_temperature_c')} °C
+- Corrosion allowance: {design_criteria.get('corrosion_allowance_mm')} mm (source: {design_criteria.get('corrosion_allowance_source')})
+- Material note: {design_criteria.get('material_note')}
+- Pressure test: {design_criteria.get('pressure_test_note')}
+
+HYDRAULICS SUMMARY:
+- TDH: {hydraulics.get('tdh_display')}
+- NPSHa: {hydraulics.get('NPSHa_m')} m
+
+ACTIVE RISK FLAGS: {', '.join(f['condition'] for f in risk_flags) or 'None'}
+
+Write a complete Process Design Criteria document with these sections:
+1. Document Information — a table with: Document ID, Title, Project, Client, Location, Revision, Date, Prepared By
+2. Scope — what this document covers and its purpose on this project
+3. Fluid Data — fluid code, physical properties table (density, viscosity, vapour pressure, SG), engineering significance
+4. Design Conditions — table of: normal flow, rated flow (with margin), design pressure, design temperature, pressure class
+5. Design Basis — margins applied and their sources, corrosion allowance rationale, material selection rationale, pressure test requirements
+6. Risk Considerations — engineering implications of each active risk flag (or "None identified" if none)
+7. References — applicable company standards referenced (1-LST-0002, 5-LST-0003, etc.)
+
+The first line must be exactly: # 1-PRC-0001 — Process Design Criteria
+Format as markdown with clear headers and tables."""
+
+    resp = client.models.generate_content(
+        model=GENERATION_MODEL,
+        contents=prompt,
+        config=types.GenerateContentConfig(temperature=0.2),
+    )
+    return resp.text.strip()
+
+
+def save_process_deliverables(pm_summary: dict, fluid_props: dict, design_criteria: dict,
+                               hydraulics: dict, risk_flags: list[dict],
+                               calc_summary: str, client: genai.Client) -> dict[str, str]:
+    """Generate and save .md + .docx for each Process Engineer deliverable.
+    Returns dict of {doc_id: markdown_content} for storage in project context.
+    Only 1-PRC-0001 is returned for the project store — 1-CAL-XXXX stays as calc sheet.
+    """
+    import sys as _sys
+    _sys.path.insert(0, str(RAG_ROOT))
+    from export_docx import md_to_docx  # shared converter
+
+    DELIVERABLES_DIR.mkdir(exist_ok=True)
+    generated: dict[str, str] = {}
+
+    # 1-PRC-0001 — generate from process output data
+    try:
+        content = generate_prc_0001(pm_summary, fluid_props, design_criteria, hydraulics, risk_flags, client)
+        (DELIVERABLES_DIR / '1-PRC-0001.md').write_text(content, encoding='utf-8')
+        md_to_docx(content, DELIVERABLES_DIR / '1-PRC-0001.docx')
+        generated['1-PRC-0001'] = content
+    except Exception as e:
+        generated['1-PRC-0001'] = f'[Generation failed: {e}]'
+
+    # 1-CAL-XXXX — save calc summary as .docx + structured data as .xlsx
+    # (the project store keeps the structured calc sheet JSON — we don't override it)
+    try:
+        (DELIVERABLES_DIR / '1-CAL-XXXX.md').write_text(calc_summary, encoding='utf-8')
+        md_to_docx(calc_summary, DELIVERABLES_DIR / '1-CAL-XXXX.docx')
+    except Exception:
+        pass
+
+    try:
+        import sys as _sys2
+        _sys2.path.insert(0, str(RAG_ROOT))
+        from export_xlsx import build_process_calc_xlsx
+        # Build a full data dict to pass to the xlsx exporter
+        xlsx_data = {
+            'generated_at':    datetime.now().isoformat(),
+            'project_summary': pm_summary,
+            'fluid_properties': fluid_props,
+            'design_criteria':  design_criteria,
+            'hydraulic_results': hydraulics,
+        }
+        build_process_calc_xlsx(xlsx_data, DELIVERABLES_DIR / '1-CAL-XXXX.xlsx')
+    except Exception:
+        pass
+
+    return generated
 
 
 # ─────────────────────────────────────────────────────────────────────────────

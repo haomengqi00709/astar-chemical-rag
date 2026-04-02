@@ -31,6 +31,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# Allow importing sibling scripts at RAG root
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 import chromadb
 from dotenv import load_dotenv
 from google import genai
@@ -38,11 +41,12 @@ from google.genai import types
 
 load_dotenv()
 
-AGENT_DIR    = Path(__file__).parent
-WORK_AGENTS  = AGENT_DIR.parent
-RAG_ROOT     = WORK_AGENTS.parent
-CHROMA_PATH  = RAG_ROOT / 'chroma_db'
-PROCESS_DIR  = WORK_AGENTS / 'Aria - Process Engineer'
+AGENT_DIR       = Path(__file__).parent
+WORK_AGENTS     = AGENT_DIR.parent
+RAG_ROOT        = WORK_AGENTS.parent
+CHROMA_PATH     = RAG_ROOT / 'chroma_db'
+PROCESS_DIR     = WORK_AGENTS / 'Aria - Process Engineer'
+DELIVERABLES_DIR = AGENT_DIR / 'deliverables'
 
 COLLECTION_NAME  = 'compliance_docs'
 EMBEDDING_MODEL  = 'models/gemini-embedding-001'
@@ -427,6 +431,38 @@ def ask_confirmation(json_mode: bool) -> bool:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Deliverable generation — 4-PDS-XXXX (.docx) + 4-CAL-0001 (.xlsx)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def save_mechanical_deliverables(output: dict) -> dict:
+    """Generate 4-PDS-XXXX.docx and 4-CAL-0001.xlsx in the deliverables/ folder."""
+    from export_docx import md_to_docx
+    from export_xlsx import build_pump_calc_xlsx
+
+    DELIVERABLES_DIR.mkdir(parents=True, exist_ok=True)
+    deliverables = {}
+
+    # 4-PDS-XXXX — Pump Datasheet (.md + .docx)
+    ds_md = output.get('pump_datasheet', '')
+    if ds_md:
+        pds_md_path = DELIVERABLES_DIR / '4-PDS-XXXX.md'
+        pds_md_path.write_text(ds_md)
+        try:
+            md_to_docx(ds_md, DELIVERABLES_DIR / '4-PDS-XXXX.docx')
+        except Exception as e:
+            print(f'Warning: could not generate 4-PDS-XXXX.docx: {e}', file=sys.stderr)
+        deliverables['4-PDS-XXXX'] = ds_md
+
+    # 4-CAL-0001 — Pump Calculation Sheet (.xlsx)
+    try:
+        build_pump_calc_xlsx(output, DELIVERABLES_DIR / '4-CAL-0001.xlsx')
+    except Exception as e:
+        print(f'Warning: could not generate 4-CAL-0001.xlsx: {e}', file=sys.stderr)
+
+    return deliverables
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Main pipeline
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -483,6 +519,9 @@ def run_mechanical_agent(context_path: Path, json_mode: bool = False) -> dict | 
         'pump_datasheet':    datasheet,
         'ready_for_bid':     True,
     }
+
+    deliverables = save_mechanical_deliverables(output)
+    output['deliverables'] = deliverables
 
     return output
 

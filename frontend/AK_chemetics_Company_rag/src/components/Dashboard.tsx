@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import mammoth from 'mammoth';
 import {
   CheckCircle, Circle, Clock, AlertTriangle, ChevronRight,
   ArrowLeft, Upload, Play, Loader2, FlaskConical, Wrench,
@@ -162,15 +163,37 @@ const DocRow: React.FC<{
                   ))}
                 </div>
 
-                {/* Generated document — opens modal */}
+                {/* Generated document — opens modal + DOCX download */}
                 {generatedContent && (
-                  <button
-                    onClick={() => onViewDocument?.()}
-                    className="flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    {canEdit ? <FileText className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                    {canEdit ? 'View / Edit Generated Document' : 'View Generated Document'}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onViewDocument?.()}
+                      className="flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      {canEdit ? <FileText className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      {canEdit ? 'View / Edit Generated Document' : 'View Generated Document'}
+                    </button>
+                    {(doc.assigned_to === 'PM' || doc.assigned_to === 'Process Engineer' || (doc.assigned_to === 'Mechanical Engineer' && doc.type !== 'CAL')) && (
+                      <a
+                        href={`/files/${doc.assigned_to === 'Process Engineer' ? 'process' : doc.assigned_to === 'Mechanical Engineer' ? 'mechanical' : 'pm'}-deliverables/${doc.doc_id.replace(/\//g, '_').replace(/\./g, '_')}.docx`}
+                        download
+                        className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        Download .docx
+                      </a>
+                    )}
+                    {(doc.assigned_to === 'Process Engineer' || doc.assigned_to === 'Mechanical Engineer') && doc.type === 'CAL' && (
+                      <a
+                        href={`/files/${doc.assigned_to === 'Mechanical Engineer' ? 'mechanical' : 'process'}-deliverables/${doc.doc_id.replace(/\//g, '_').replace(/\./g, '_')}.xlsx`}
+                        download
+                        className="flex items-center gap-1.5 text-[11px] font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        Download .xlsx
+                      </a>
+                    )}
+                  </div>
                 )}
 
                 {/* Approve / undo */}
@@ -213,12 +236,32 @@ const DocRow: React.FC<{
             ) : (
               <div className="space-y-2">
                 {isMine && generatedContent && (
-                  <button
-                    onClick={() => onViewDocument?.()}
-                    className="flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    <FileText className="w-3.5 h-3.5" /> View / Edit Generated Document
-                  </button>
+                  <div className="flex items-center flex-wrap gap-2">
+                    <button
+                      onClick={() => onViewDocument?.()}
+                      className="flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" /> View / Edit Generated Document
+                    </button>
+                    {(doc.assigned_to === 'PM' || doc.assigned_to === 'Process Engineer' || (doc.assigned_to === 'Mechanical Engineer' && doc.type !== 'CAL')) && (
+                      <a
+                        href={`/files/${doc.assigned_to === 'Process Engineer' ? 'process' : doc.assigned_to === 'Mechanical Engineer' ? 'mechanical' : 'pm'}-deliverables/${doc.doc_id.replace(/\//g, '_').replace(/\./g, '_')}.docx`}
+                        download
+                        className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        <FileText className="w-3.5 h-3.5" /> Download .docx
+                      </a>
+                    )}
+                    {(doc.assigned_to === 'Process Engineer' || doc.assigned_to === 'Mechanical Engineer') && doc.type === 'CAL' && (
+                      <a
+                        href={`/files/${doc.assigned_to === 'Mechanical Engineer' ? 'mechanical' : 'process'}-deliverables/${doc.doc_id.replace(/\//g, '_').replace(/\./g, '_')}.xlsx`}
+                        download
+                        className="flex items-center gap-1.5 text-[11px] font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        <FileText className="w-3.5 h-3.5" /> Download .xlsx
+                      </a>
+                    )}
+                  </div>
                 )}
                 <p className="text-xs text-slate-500 italic py-1">Awaiting PM review before work begins.</p>
               </div>
@@ -226,15 +269,35 @@ const DocRow: React.FC<{
           ) : (
             /* ── Gate 2: Work tracking ── */
             <>
-              {/* Generated document button — visible in Gate 2 too */}
+              {/* Generated document + download buttons */}
               {generatedContent && (
-                <button
-                  onClick={() => onViewDocument?.()}
-                  className="flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
-                >
-                  {canEdit ? <FileText className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  {canEdit ? 'View / Edit Generated Document' : 'View Generated Document'}
-                </button>
+                <div className="flex items-center flex-wrap gap-2">
+                  <button
+                    onClick={() => onViewDocument?.()}
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                  >
+                    {canEdit ? <FileText className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    {canEdit ? 'View / Edit Generated Document' : 'View Generated Document'}
+                  </button>
+                  {(doc.assigned_to === 'PM' || doc.assigned_to === 'Process Engineer' || (doc.assigned_to === 'Mechanical Engineer' && doc.type !== 'CAL')) && (
+                    <a
+                      href={`/files/${doc.assigned_to === 'Process Engineer' ? 'process' : doc.assigned_to === 'Mechanical Engineer' ? 'mechanical' : 'pm'}-deliverables/${doc.doc_id.replace(/\//g, '_').replace(/\./g, '_')}.docx`}
+                      download
+                      className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" /> Download .docx
+                    </a>
+                  )}
+                  {(doc.assigned_to === 'Process Engineer' || doc.assigned_to === 'Mechanical Engineer') && doc.type === 'CAL' && (
+                    <a
+                      href={`/files/${doc.assigned_to === 'Mechanical Engineer' ? 'mechanical' : 'process'}-deliverables/${doc.doc_id.replace(/\//g, '_').replace(/\./g, '_')}.xlsx`}
+                      download
+                      className="flex items-center gap-1.5 text-[11px] font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" /> Download .xlsx
+                    </a>
+                  )}
+                </div>
               )}
 
               {canEdit && (
@@ -1119,6 +1182,39 @@ const DeliverableModal: React.FC<{
   const [saveState,   setSaveState]   = useState<'idle' | 'saving' | 'saved'>('idle');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Word preview — available for PM, Process Engineer, and Mechanical Engineer text docs (not calc sheets)
+  const isTextDoc = !isCalcSheet && (doc.assigned_to === 'PM' || doc.assigned_to === 'Process Engineer' || doc.assigned_to === 'Mechanical Engineer');
+  const isPmDoc   = isTextDoc; // kept as alias used throughout
+  const [viewMode,     setViewMode]     = useState<'markdown' | 'word'>('markdown');
+  const [wordHtml,     setWordHtml]     = useState<string>('');
+  const [wordLoading,  setWordLoading]  = useState(false);
+  const [wordError,    setWordError]    = useState('');
+
+  const docxUrlBase = doc.assigned_to === 'Process Engineer'
+    ? '/files/process-deliverables'
+    : doc.assigned_to === 'Mechanical Engineer'
+    ? '/files/mechanical-deliverables'
+    : '/files/pm-deliverables';
+
+  const loadWordPreview = async () => {
+    if (wordHtml) { setViewMode('word'); return; }
+    setWordLoading(true);
+    setWordError('');
+    try {
+      const safeId = doc.doc_id.replace(/\//g, '_').replace(/\./g, '_');
+      const res = await fetch(`${docxUrlBase}/${safeId}.docx`);
+      if (!res.ok) throw new Error(`File not found (${res.status})`);
+      const buf = await res.arrayBuffer();
+      const result = await mammoth.convertToHtml({ arrayBuffer: buf });
+      setWordHtml(result.value);
+      setViewMode('word');
+    } catch (e: any) {
+      setWordError(e.message || 'Failed to load Word preview');
+    } finally {
+      setWordLoading(false);
+    }
+  };
+
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
   const handleSave = async () => {
@@ -1133,6 +1229,15 @@ const DeliverableModal: React.FC<{
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ docId: doc.doc_id, content: saveContent }),
       });
+      // Regenerate .docx from updated markdown for PM documents
+      if (isPmDoc) {
+        await fetch(`/api/projects/${projectId}/export-docx`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ docId: doc.doc_id, content: saveContent }),
+        });
+        setWordHtml('');  // clear cache so next Word Preview loads fresh file
+      }
     } catch (e) { console.error(e); }
     setSaveState('saved');
     setTimeout(() => setSaveState('idle'), 2500);
@@ -1227,18 +1332,59 @@ const DeliverableModal: React.FC<{
               </>
             ) : (
               <>
-                <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 shrink-0">
+                <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 shrink-0 flex items-center justify-between">
                   <p className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-                    {readOnly ? 'Document Viewer' : 'Markdown Editor'}
+                    {viewMode === 'word' ? 'Word Preview' : (readOnly ? 'Document Viewer' : 'Markdown Editor')}
                   </p>
+                  {isPmDoc && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setViewMode('markdown')}
+                        className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-colors ${viewMode === 'markdown' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-200'}`}
+                      >
+                        Markdown
+                      </button>
+                      <button
+                        onClick={loadWordPreview}
+                        disabled={wordLoading}
+                        className={`flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-colors ${viewMode === 'word' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-200'}`}
+                      >
+                        {wordLoading && <Loader2 className="w-3 h-3 animate-spin" />}
+                        Word Preview
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <textarea
-                  value={content}
-                  onChange={e => !readOnly && setContent(e.target.value)}
-                  readOnly={readOnly}
-                  className={`flex-1 p-5 font-mono text-xs text-slate-700 resize-none outline-none leading-relaxed ${readOnly ? 'bg-slate-50 cursor-default select-text' : ''}`}
-                  spellCheck={false}
-                />
+                {viewMode === 'word' ? (
+                  <div className="flex-1 overflow-y-auto p-6 bg-white">
+                    {wordError ? (
+                      <p className="text-xs text-red-500 font-mono">{wordError}</p>
+                    ) : (
+                      <div
+                        className="text-sm text-slate-800 leading-relaxed
+                          [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-2
+                          [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-4
+                          [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-3
+                          [&_p]:mb-3
+                          [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3
+                          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3
+                          [&_li]:mb-1
+                          [&_table]:border-collapse [&_table]:w-full [&_table]:mb-4 [&_table]:text-xs
+                          [&_td]:border [&_td]:border-slate-200 [&_td]:px-3 [&_td]:py-2
+                          [&_th]:border [&_th]:border-slate-200 [&_th]:px-3 [&_th]:py-2 [&_th]:bg-slate-50 [&_th]:font-semibold [&_th]:text-left"
+                        dangerouslySetInnerHTML={{ __html: wordHtml }}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <textarea
+                    value={content}
+                    onChange={e => !readOnly && setContent(e.target.value)}
+                    readOnly={readOnly}
+                    className={`flex-1 p-5 font-mono text-xs text-slate-700 resize-none outline-none leading-relaxed ${readOnly ? 'bg-slate-50 cursor-default select-text' : ''}`}
+                    spellCheck={false}
+                  />
+                )}
               </>
             )}
           </div>
@@ -1272,7 +1418,14 @@ const DeliverableModal: React.FC<{
                   </div>
                   {msg.revisedContent && (
                     <button
-                      onClick={() => isCalcSheet ? setCalcNotes(msg.revisedContent!) : setContent(msg.revisedContent!)}
+                      onClick={() => {
+                        if (isCalcSheet) {
+                          setCalcNotes(msg.revisedContent!);
+                        } else {
+                          setContent(msg.revisedContent!);
+                          setViewMode('markdown'); // switch to markdown so the change is visible
+                        }
+                      }}
                       className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
                     >
                       <CheckCircle className="w-3 h-3" /> {isCalcSheet ? 'Apply to notes' : 'Apply revision to editor'}
