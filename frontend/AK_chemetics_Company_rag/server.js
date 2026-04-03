@@ -10,7 +10,13 @@ import { GoogleGenAI } from '@google/genai';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const RAG_ROOT   = path.resolve(__dirname, '..', '..');
-const PYTHON     = process.env.PYTHON_PATH || path.join(RAG_ROOT, 'venv', 'bin', 'python3');
+const _localPython = path.join(RAG_ROOT, 'venv', 'bin', 'python3');
+const PYTHON = (() => {
+  const envPath = process.env.PYTHON_PATH;
+  if (envPath && fs.existsSync(envPath)) return envPath;   // production (Docker/Railway)
+  if (fs.existsSync(_localPython))       return _localPython; // local dev venv
+  return 'python3';                                           // system fallback
+})();
 const AGENT      = path.join(RAG_ROOT, 'agent.py');
 const SKILLS_DIR = path.join(RAG_ROOT, 'skills');
 const INIT_FILE  = path.join(SKILLS_DIR, '__init__.py');
