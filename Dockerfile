@@ -24,13 +24,14 @@ COPY . .
 # ── Build React frontend ──────────────────────────────────────────────────────
 RUN cd frontend/AK_chemetics_Company_rag && npm run build
 
+# ── Build ChromaDB vector store ───────────────────────────────────────────────
+# GOOGLE_API_KEY must be set as a Railway Variable (passed as build arg automatically)
+ARG GOOGLE_API_KEY
+RUN GOOGLE_API_KEY=${GOOGLE_API_KEY} python3 load_vectorstore.py
+
 # ── Runtime ───────────────────────────────────────────────────────────────────
-# ChromaDB is built at first startup (not build time) so GOOGLE_API_KEY stays
-# a runtime secret and Docker builds are fast. Mount a Railway volume at
-# /app/chroma_db so the vector store persists across redeploys.
 ENV PYTHON_PATH=/usr/local/bin/python3
 
 EXPOSE 3001
 
-# Entrypoint: build vector store if DB is empty, then start server
-CMD ["sh", "-c", "python3 load_vectorstore.py --skip-if-exists && node frontend/AK_chemetics_Company_rag/server.js"]
+CMD ["node", "frontend/AK_chemetics_Company_rag/server.js"]
