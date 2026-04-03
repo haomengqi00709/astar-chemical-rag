@@ -211,7 +211,20 @@ if __name__ == '__main__':
         action='store_true',
         help='Do not drop existing collection (append instead)',
     )
+    parser.add_argument(
+        '--skip-if-exists',
+        action='store_true',
+        help='Do nothing if the collection already has data (used at container startup)',
+    )
     args = parser.parse_args()
+
+    if args.skip_if_exists:
+        chroma = chromadb.PersistentClient(path=str(CHROMA_PATH))
+        existing = [c.name for c in chroma.list_collections()]
+        if COLLECTION_NAME in existing and chroma.get_collection(COLLECTION_NAME).count() > 0:
+            print(f'Vector store already populated ({chroma.get_collection(COLLECTION_NAME).count()} chunks). Skipping build.')
+            exit(0)
+        print('Vector store empty or missing — building now...')
 
     load_vectorstore(
         chunks_path=Path(args.chunks),
