@@ -1356,6 +1356,14 @@ app.get('/api/user-projects/:id/status', (req, res) => {
   catch { res.json({ status: 'unknown' }); }
 });
 
+// GET /api/user-projects/:id/log — fetch pipeline log
+app.get('/api/user-projects/:id/log', (req, res) => {
+  const logFile = path.join(USER_PROJECTS_DIR, req.params.id, 'pipeline.log');
+  if (!fs.existsSync(logFile)) return res.json({ log: '' });
+  const content = fs.readFileSync(logFile, 'utf-8');
+  res.json({ log: content.slice(-5000) });
+});
+
 // POST /api/user-projects — create + upload files + start pipeline
 app.post('/api/user-projects', upload.array('files'), (req, res) => {
   const name = (req.body.name || 'Untitled Project').trim();
@@ -1393,14 +1401,22 @@ app.post('/api/user-projects', upload.array('files'), (req, res) => {
     '--stage', 'all',
   ], { cwd: path.join(RAG_ROOT, 'wiki_kb') });
 
+  const stderrChunks = [];
   proc.stdout.pipe(logStream);
-  proc.stderr.pipe(logStream);
+  proc.stderr.on('data', chunk => { stderrChunks.push(chunk.toString()); logStream.write(chunk); });
 
   proc.on('close', code => {
     logStream.end();
     const finalStatus = code === 0 ? 'ready' : 'failed';
-    fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify({ status: finalStatus, exit_code: code }));
-    // Update meta list
+    const statusObj = { status: finalStatus, exit_code: code };
+    if (code !== 0) {
+      const logPath = path.join(projDir, 'pipeline.log');
+      try {
+        const fullLog = fs.readFileSync(logPath, 'utf-8');
+        statusObj.error = stderrChunks.join('').slice(-2000) || fullLog.slice(-2000);
+      } catch { statusObj.error = stderrChunks.join('').slice(-2000); }
+    }
+    fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify(statusObj, null, 2));
     const projects = loadUserProjects();
     const p = projects.find(x => x.id === id);
     if (p) { p.status = finalStatus; saveUserProjects(projects); }
@@ -1515,17 +1531,26 @@ app.post('/api/user-projects/:id/rebuild', (req, res) => {
 
   // Spawn pipeline
   const logStream = fs.createWriteStream(path.join(projDir, 'pipeline.log'));
+  const rebuildStderr = [];
   const proc = spawn(PYTHON, [
     ORCHESTRATOR, '--project-root', projDir, '--source', sourceDir, '--stage', 'all',
   ], { cwd: path.join(RAG_ROOT, 'wiki_kb') });
 
   proc.stdout.pipe(logStream);
-  proc.stderr.pipe(logStream);
+  proc.stderr.on('data', chunk => { rebuildStderr.push(chunk.toString()); logStream.write(chunk); });
 
   proc.on('close', code => {
     logStream.end();
     const finalStatus = code === 0 ? 'ready' : 'failed';
-    fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify({ status: finalStatus, exit_code: code }));
+    const statusObj = { status: finalStatus, exit_code: code };
+    if (code !== 0) {
+      const logPath = path.join(projDir, 'pipeline.log');
+      try {
+        const fullLog = fs.readFileSync(logPath, 'utf-8');
+        statusObj.error = rebuildStderr.join('').slice(-2000) || fullLog.slice(-2000);
+      } catch { statusObj.error = rebuildStderr.join('').slice(-2000); }
+    }
+    fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify(statusObj, null, 2));
     const projects = loadUserProjects();
     const p = projects.find(x => x.id === id);
     if (p) { p.status = finalStatus; saveUserProjects(projects); }

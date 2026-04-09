@@ -585,6 +585,21 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
         <div className="px-6 py-4 bg-red-50 border-b border-red-100 shrink-0">
           <p className="text-sm font-medium text-red-800">Build failed</p>
           <p className="text-xs text-red-600 mt-1">Check files and try rebuilding, or delete and recreate the project.</p>
+          {status.error && (
+            <pre className="mt-2 text-[10px] font-mono text-red-700 bg-red-100 rounded p-2 max-h-40 overflow-auto whitespace-pre-wrap">{status.error}</pre>
+          )}
+          <button
+            onClick={async () => {
+              try {
+                const r = await fetch(`/api/user-projects/${project.id}/log`);
+                const d = await r.json();
+                if (d.log) { setMessages(prev => [...prev, { role: 'error', content: '--- Pipeline Log ---\n' + d.log }]); }
+              } catch {}
+            }}
+            className="mt-2 text-[10px] font-semibold text-red-700 hover:text-red-900 underline"
+          >
+            View Full Log
+          </button>
         </div>
       )}
 
