@@ -1,0 +1,20 @@
+# doc_id=4-PRC-0008 table=2 inline=true
+,Hot (internal),Cold,Cold Reheat,Inter Reheat,Preheat,SO3 Cooler
+Top Vestibule (Note 1),3,4,4,4,4,4
+Shell Type (Note 2),5,1,1,4,1,1
+Bottom Vestibule  (Note 3),3,4,4,"1,2",4,4
+Flow Arrangement,counter,counter,counter,counter,counter,counter
+Shell side Flow,up,up,up,down,up,up
+Pressure Drop,(Note 4),(Note 4),(Note 4),(Note 4),(Note 4),(Note 4)
+Tube side Material,S.S.,C.S./S.S.,C.S./S.S.,S.S.,S.S.,S.S.
+Tube Diameter     (Note 5),1¼”-3”,1¼”-3”,1¼”-3”,1¼”-3”,1”-2½”,1¼”-3”
+Tube Wall Thickness,(Note 6),(Note 6),(Note 6),(Note 6),(Note 6),(Note 6)
+Maximum Tube Length (Note 7),40’,40’,40’,40’,40’,40’
+Minimum Tube Pitch,(Note 8),(Note 8),(Note 8),(Note 8),(Note 8),(Note 8)
+No. of Tube Groups,(Note 9),(Note 9),(Note 9),(Note 9),(Note 9),(Note 9)
+No. of Shell Passes (Note 10),"2,4,6,8","2,4,6,8","2,4,6,8","3,5,7","2,4,6,8","2,4,6,8"
+Shell Diameter,(Note 11),(Note 11),(Note 11),(Note 11),(Note 11),(Note 11)
+Minimum Tubesheet Thickness (Note 12),¾”,¾”,¾”,¾”,¾”,¾”
+Baffle Thickness,(Note 13),(Note 13),(Note 13),(Note 13),(Note 13),(Note 13)
+Duct Diameters,(Note 14),(Note 14),(Note 14),(Note 14),(Note 14),(Note 14)
+Safety Factor       (Note 15),1.15,1.20,1.20,1.15,1.00,1.15

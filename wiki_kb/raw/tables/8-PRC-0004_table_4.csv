@@ -1,0 +1,25 @@
+# doc_id=8-PRC-0004 table=4 inline=true
+Description of document,Prepared by,Checked by,Approved by
+Requisition for Quotation (REQ),DDE,,n/a
+Vendor Document Requirements (VDR),DDE,Quality Assurance,DDE
+Quality Documentation Sheets (QDS),DDE,,Quality Assurance
+Request for Quotation (RFQ),Procurement,,
+Bid Evaluation,,,
+Preliminary Cost Tabulation,,,
+Order value < CAD 10 K,DDE,,DDE
+Order value < CAD 200 K,DDE,,Project Engineer
+Order value > CAD 200 K,DDE,,Project Engineer
+Final Cost Tabulation,DDE,,Project Manager
+Commercial Bid Tabulation,Procurement,,Manager of Procurement
+Financial Evaluation,Finance,,
+Technical Bid Tabulation,DDE,Other disciplines,DDE
+Order risk assessment,,,
+Risk Assessment - Value < CAD 10K,n/a,,
+Risk Assessment - Value < CAD 200K,DDE,,Project Engineer
+Risk Assessment - Value > CAD 200K,DDE,,Project Manager
+Final Review and Vendor Selection,Instrument,,Project Engineer
+,,,Project Manager
+,,,Procurement
+Requisition for Purchase Order (REQ),DDE,n/a,n/a
+Purchase Order,Procurement,Project Engineer,Project Manager
+Vendor Document Review,,,DDE

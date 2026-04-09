@@ -6,6 +6,7 @@ import os from 'os';
 import { randomBytes } from 'crypto';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
+import multer from 'multer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -455,7 +456,8 @@ function runPmAgentSSE(res, args) {
     try {
       const ctx = JSON.parse(stdout);
       const id = 'proj_' + randomBytes(4).toString('hex');
-      upsertProject({ id, createdAt: new Date().toISOString(), status: 'active', context: ctx, docStatus: buildDocStatus(ctx.document_register), processOutput: null, mechanicalOutput: null });
+      const sessionsConfig = ctx.sessions_config || {};
+      upsertProject({ id, createdAt: new Date().toISOString(), status: 'active', context: ctx, docStatus: buildDocStatus(ctx.document_register), processOutput: null, mechanicalOutput: null, sessionsConfig, sharing: {} });
       fs.writeFileSync(path.join(PM_DIR, 'project_context.json'), JSON.stringify(ctx, null, 2));
       fs.writeFileSync(path.join(PM_DIR, 'handoff_brief.md'), ctx.handoff_brief || '');
       res.write(`event: result\ndata: ${JSON.stringify({ ...ctx, id })}\n\n`);
@@ -724,8 +726,30 @@ app.post('/api/agents/mechanical', (req, res) => {
 // ---------------------------------------------------------------------------
 // GET /api/projects  — list all projects
 // ---------------------------------------------------------------------------
+// Return project list without heavy content (deliverables text + session content)
 app.get('/api/projects', (_req, res) => {
-  res.json(loadProjects());
+  const projects = loadProjects().map(p => {
+    // Strip deliverable text content — just keep the keys so frontend knows which docs exist
+    const deliverableKeys = Object.keys(p.context?.deliverables ?? {});
+    const context = p.context ? { ...p.context, deliverables: Object.fromEntries(deliverableKeys.map(k => [k, true])) } : p.context;
+    // Strip session content from sessionsConfig
+    const sessionsConfig = Object.fromEntries(
+      Object.entries(p.sessionsConfig ?? {}).map(([docId, sessions]) => [
+        docId,
+        (sessions || []).map(s => { const { content: _c, ...rest } = s; return rest; }),
+      ])
+    );
+    return { ...p, context, sessionsConfig };
+  });
+  res.json(projects);
+});
+
+// Full project detail (with deliverable content + session content)
+app.get('/api/projects/:id', (req, res) => {
+  const arr = loadProjects();
+  const proj = arr.find(p => p.id === req.params.id);
+  if (!proj) return res.status(404).json({ error: 'Project not found' });
+  res.json(proj);
 });
 
 
@@ -957,6 +981,568 @@ Keep replies concise and professional.`;
   }
 });
 
+
+// ---------------------------------------------------------------------------
+// PUT /api/projects/:id/sessions-config
+// Body: { docId, sessions: [...] }  — PM saves updated session list (release toggles etc.)
+// ---------------------------------------------------------------------------
+app.put('/api/projects/:id/sessions-config', (req, res) => {
+  const { docId, sessions } = req.body;
+  if (!docId || !Array.isArray(sessions)) return res.status(400).json({ error: 'docId and sessions array are required' });
+
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+
+  if (!arr[idx].sessionsConfig) arr[idx].sessionsConfig = {};
+  arr[idx].sessionsConfig[docId] = sessions;
+
+  saveProjects(arr);
+  res.json({ success: true, sessionsConfig: arr[idx].sessionsConfig });
+});
+
+
+// ---------------------------------------------------------------------------
+// PUT /api/projects/:id/session-content
+// Body: { docId, sessionId, content }  — engineer/PM saves edits to a session slice
+// ---------------------------------------------------------------------------
+app.put('/api/projects/:id/session-content', (req, res) => {
+  const { docId, sessionId, content } = req.body;
+  if (!docId || !sessionId || content == null) return res.status(400).json({ error: 'docId, sessionId, and content are required' });
+
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+
+  if (!arr[idx].sessionsConfig) arr[idx].sessionsConfig = {};
+  const sessions = arr[idx].sessionsConfig[docId] ?? [];
+  arr[idx].sessionsConfig[docId] = sessions.map(s =>
+    s.id === sessionId ? { ...s, content, lastEditedAt: new Date().toISOString() } : s
+  );
+
+  saveProjects(arr);
+  res.json({ success: true });
+});
+
+
+// ---------------------------------------------------------------------------
+// PUT /api/projects/:id/sharing
+// Body: { docId, role, shared }  — PM toggles sharing a document with a role
+// ---------------------------------------------------------------------------
+app.put('/api/projects/:id/sharing', (req, res) => {
+  const { docId, role, shared } = req.body;
+  if (!docId || !role || typeof shared !== 'boolean') return res.status(400).json({ error: 'docId, role, and shared (boolean) are required' });
+
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+
+  if (!arr[idx].sharing) arr[idx].sharing = {};
+  if (!arr[idx].sharing[docId]) arr[idx].sharing[docId] = {};
+  arr[idx].sharing[docId][role] = shared;
+
+  saveProjects(arr);
+  res.json({ success: true, sharing: arr[idx].sharing });
+});
+
+
+// ---------------------------------------------------------------------------
+// POST /api/projects/:id/suggest-sessions
+// Body: { docId }  — PM triggers LLM session splitting for one document
+// ---------------------------------------------------------------------------
+app.post('/api/projects/:id/suggest-sessions', async (req, res) => {
+  const { docId, role } = req.body;
+  if (!docId) return res.status(400).json({ error: 'docId is required' });
+
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+
+  const content = arr[idx].context?.deliverables?.[docId];
+  if (!content || typeof content !== 'string') return res.status(400).json({ error: 'No deliverable content found for this doc' });
+
+  // Run a small inline Python script that imports pm_agent and calls suggest_sessions_config
+  const pmDir = path.join(RAG_ROOT, 'work_agents', 'Daniel - Project Manager ');
+  const envPath = path.join(RAG_ROOT, '.env');
+  const script = `
+import sys, json
+sys.path.insert(0, ${JSON.stringify(RAG_ROOT)})
+sys.path.insert(0, ${JSON.stringify(pmDir)})
+import re, os
+from dotenv import load_dotenv
+load_dotenv(${JSON.stringify(envPath)})
+from google import genai
+from pm_agent import suggest_sessions_config, extract_session_content_py
+client = genai.Client(api_key=os.environ['GOOGLE_API_KEY'])
+doc_id = sys.argv[1]
+content = open(sys.argv[2]).read()
+sessions = suggest_sessions_config(doc_id, content, client)
+for s in sessions:
+    s['content'] = extract_session_content_py(content, s.get('headings', []))
+    s.setdefault('released', False)
+print(json.dumps(sessions))
+`;
+
+  const { tmpdir } = await import('os');
+  const tmpScript = path.join(tmpdir(), `suggest_sessions_${Date.now()}.py`);
+  const tmpContent = path.join(tmpdir(), `doc_content_${Date.now()}.txt`);
+
+  try {
+    fs.writeFileSync(tmpScript, script);
+    fs.writeFileSync(tmpContent, content, 'utf-8');
+
+    const { promisify } = await import('util');
+    const execFile = promisify((await import('child_process')).execFile);
+    const { stdout } = await execFile(PYTHON, [tmpScript, docId, tmpContent], { timeout: 120000 });
+
+    let sessions = JSON.parse(stdout.trim());
+
+    // If a specific role was requested, only keep sessions owned by that role
+    if (role) {
+      sessions = sessions.filter(s => s.owner === role);
+    }
+
+    if (!arr[idx].sessionsConfig) arr[idx].sessionsConfig = {};
+    // Merge into existing sessions for this doc (don't overwrite other roles)
+    const existing = arr[idx].sessionsConfig[docId] || [];
+    const existingOtherRoles = existing.filter(s => !sessions.some(ns => ns.owner === s.owner));
+    arr[idx].sessionsConfig[docId] = [...existingOtherRoles, ...sessions];
+    saveProjects(arr);
+
+    res.json({ success: true, sessions: arr[idx].sessionsConfig[docId] });
+  } catch (e) {
+    res.status(500).json({ error: e.message || 'suggest-sessions failed' });
+  } finally {
+    try { fs.unlinkSync(tmpScript); } catch {}
+    try { fs.unlinkSync(tmpContent); } catch {}
+  }
+});
+
+
+// ---------------------------------------------------------------------------
+// Wiki Knowledge Base — paths & in-memory index
+// ---------------------------------------------------------------------------
+const WIKI_KB_DIR  = path.join(RAG_ROOT, 'wiki_kb');
+const WIKI_DIR     = path.join(WIKI_KB_DIR, 'wiki');
+const WIKI_ASK     = path.join(WIKI_KB_DIR, 'src', 'ask.py');
+
+let _wikiIndex = null;  // cached on first request
+
+function buildWikiIndex() {
+  if (_wikiIndex) return _wikiIndex;
+
+  const indexPath = path.join(WIKI_DIR, 'Index.md');
+  if (!fs.existsSync(indexPath)) return { disciplines: [], totalPages: 0, totalTables: 0, raw: '' };
+
+  const raw = fs.readFileSync(indexPath, 'utf-8');
+
+  const disciplines = [];
+  let current = null;
+  let currentCategory = null;
+
+  for (const line of raw.split('\n')) {
+    // Discipline header: ## 0 Administration
+    const discMatch = line.match(/^## (\d+)\s+(.+)/);
+    if (discMatch) {
+      current = { id: parseInt(discMatch[1]), name: discMatch[2].trim(), description: '', categories: [] };
+      currentCategory = null;
+      disciplines.push(current);
+      continue;
+    }
+    if (!current) continue;
+
+    // Discipline description (italic)
+    if (line.startsWith('_') && line.endsWith('_') && !currentCategory) {
+      current.description = line.slice(1, -1);
+      continue;
+    }
+
+    // Category header: **Procedure** or **SQL Tables**
+    const catMatch = line.match(/^\*\*(.+?)\*\*/);
+    if (catMatch) {
+      currentCategory = { name: catMatch[1].replace(/ _.*$/, ''), items: [] };
+      current.categories.push(currentCategory);
+      continue;
+    }
+
+    if (!currentCategory) continue;
+
+    // Wiki page entry: - [[slug]] — Title
+    const wikiMatch = line.match(/^- \[\[(.+?)\]\]\s*(?:—|-)\s*(.+)/);
+    if (wikiMatch) {
+      currentCategory.items.push({ type: 'page', slug: wikiMatch[1], title: wikiMatch[2].trim() });
+      continue;
+    }
+
+    // SQL table entry: - `doc_id` → table `table_name` (N rows) — cols: ...
+    const sqlMatch = line.match(/^- `(.+?)` → table `(.+?)` \((\d+) rows?\)/);
+    if (sqlMatch) {
+      currentCategory.items.push({ type: 'sql', docId: sqlMatch[1], table: sqlMatch[2], rows: parseInt(sqlMatch[3]) });
+      continue;
+    }
+  }
+
+  // Build filename index for search (slug → first line as title)
+  const slugIndex = [];
+  try {
+    for (const f of fs.readdirSync(WIKI_DIR)) {
+      if (!f.endsWith('.md') || f === 'Index.md') continue;
+      const slug = f.replace(/\.md$/, '');
+      const first = fs.readFileSync(path.join(WIKI_DIR, f), 'utf-8').split('\n').slice(0, 10).join('\n');
+      const titleMatch = first.match(/^title:\s*"?(.+?)"?\s*$/m) || first.match(/^#\s+(.+)/m);
+      slugIndex.push({ slug, title: titleMatch ? titleMatch[1] : slug.replace(/_/g, ' ') });
+    }
+  } catch {}
+
+  const totalPages  = slugIndex.length;
+  const totalTables = disciplines.reduce((n, d) =>
+    n + d.categories.reduce((m, c) => m + c.items.filter(i => i.type === 'sql').length, 0), 0);
+
+  _wikiIndex = { disciplines, totalPages, totalTables, slugIndex };
+  return _wikiIndex;
+}
+
+
+// ---------------------------------------------------------------------------
+// GET /api/wiki/index
+// ---------------------------------------------------------------------------
+app.get('/api/wiki/index', (_req, res) => {
+  try {
+    const idx = buildWikiIndex();
+    res.json({ disciplines: idx.disciplines, totalPages: idx.totalPages, totalTables: idx.totalTables });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ---------------------------------------------------------------------------
+// GET /api/wiki/page/:slug
+// ---------------------------------------------------------------------------
+app.get('/api/wiki/page/:slug', (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const filePath = path.join(WIKI_DIR, `${slug}.md`);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: `Page "${slug}" not found` });
+
+    const raw = fs.readFileSync(filePath, 'utf-8');
+
+    // Parse frontmatter
+    let content = raw;
+    let meta = {};
+    const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (fmMatch) {
+      content = fmMatch[2];
+      for (const line of fmMatch[1].split('\n')) {
+        const kv = line.match(/^(\w+):\s*"?(.+?)"?\s*$/);
+        if (kv) meta[kv[1]] = kv[2];
+      }
+    }
+
+    // Extract wiki links
+    const links = [...content.matchAll(/\[\[(.+?)\]\]/g)].map(m => m[1]);
+
+    res.json({ slug, title: meta.title || slug.replace(/_/g, ' '), meta, content, links });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ---------------------------------------------------------------------------
+// GET /api/wiki/search?q=...
+// ---------------------------------------------------------------------------
+app.get('/api/wiki/search', (req, res) => {
+  try {
+    const q = (req.query.q || '').toLowerCase().trim();
+    if (!q) return res.json({ results: [] });
+
+    const idx = buildWikiIndex();
+    const terms = q.split(/\s+/);
+    const results = (idx.slugIndex || [])
+      .filter(entry => {
+        const haystack = (entry.slug + ' ' + entry.title).toLowerCase();
+        return terms.every(t => haystack.includes(t));
+      })
+      .slice(0, 30)
+      .map(e => ({ slug: e.slug, title: e.title }));
+
+    res.json({ results });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ---------------------------------------------------------------------------
+// POST /api/wiki/query
+// Body: { question }  — runs ask.py with --json-stream (for retry support) and returns JSON
+// ---------------------------------------------------------------------------
+app.post('/api/wiki/query', (req, res) => {
+  const { question } = req.body;
+  if (!question?.trim()) return res.status(400).json({ error: 'question is required' });
+
+  const proc = spawn(PYTHON, [WIKI_ASK, '--json-stream', question.trim()], { cwd: WIKI_KB_DIR });
+  let stdout = '';
+  let stderr = '';
+
+  proc.stdout.on('data', chunk => { stdout += chunk; });
+  proc.stderr.on('data', chunk => { stderr += chunk; });
+
+  proc.on('close', code => {
+    if (code !== 0) {
+      console.error('[wiki ask stderr]', stderr.slice(-500));
+      return res.status(500).json({ error: 'Wiki query failed', detail: stderr.slice(-500) });
+    }
+    // Parse JSON lines — find the answer event
+    let answer = '';
+    for (const line of stdout.split('\n')) {
+      if (!line.trim()) continue;
+      try {
+        const evt = JSON.parse(line);
+        if (evt.type === 'answer') { answer = evt.content; break; }
+      } catch { /* skip non-JSON lines */ }
+    }
+    res.json({ answer: answer || '[No answer generated]' });
+  });
+
+  proc.on('error', err =>
+    res.status(500).json({ error: 'Failed to start Python', detail: err.message })
+  );
+});
+
+
+// ---------------------------------------------------------------------------
+// User Projects — custom Karpathy RAG per project
+// ---------------------------------------------------------------------------
+const USER_PROJECTS_DIR  = path.join(RAG_ROOT, 'user_projects');
+const USER_PROJECTS_META = path.join(USER_PROJECTS_DIR, 'meta.json');
+const ORCHESTRATOR       = path.join(RAG_ROOT, 'wiki_kb', 'src', 'orchestrator.py');
+
+if (!fs.existsSync(USER_PROJECTS_DIR)) fs.mkdirSync(USER_PROJECTS_DIR, { recursive: true });
+
+function loadUserProjects() {
+  if (!fs.existsSync(USER_PROJECTS_META)) return [];
+  try { return JSON.parse(fs.readFileSync(USER_PROJECTS_META, 'utf-8')); } catch { return []; }
+}
+function saveUserProjects(arr) {
+  fs.writeFileSync(USER_PROJECTS_META, JSON.stringify(arr, null, 2));
+}
+
+const upload = multer({ dest: path.join(USER_PROJECTS_DIR, '_uploads') });
+
+// GET /api/user-projects — list all
+app.get('/api/user-projects', (_req, res) => {
+  res.json(loadUserProjects());
+});
+
+// GET /api/user-projects/:id — detail + status
+app.get('/api/user-projects/:id', (req, res) => {
+  const proj = loadUserProjects().find(p => p.id === req.params.id);
+  if (!proj) return res.status(404).json({ error: 'Not found' });
+  // Read latest status from disk
+  const statusFile = path.join(USER_PROJECTS_DIR, proj.id, 'status.json');
+  if (fs.existsSync(statusFile)) {
+    try { Object.assign(proj, JSON.parse(fs.readFileSync(statusFile, 'utf-8'))); } catch {}
+  }
+  res.json(proj);
+});
+
+// GET /api/user-projects/:id/status — lightweight poll
+app.get('/api/user-projects/:id/status', (req, res) => {
+  const statusFile = path.join(USER_PROJECTS_DIR, req.params.id, 'status.json');
+  if (!fs.existsSync(statusFile)) return res.json({ status: 'unknown' });
+  try { res.json(JSON.parse(fs.readFileSync(statusFile, 'utf-8'))); }
+  catch { res.json({ status: 'unknown' }); }
+});
+
+// POST /api/user-projects — create + upload files + start pipeline
+app.post('/api/user-projects', upload.array('files'), (req, res) => {
+  const name = (req.body.name || 'Untitled Project').trim();
+  const id = 'uproj_' + randomBytes(6).toString('hex');
+  const projDir    = path.join(USER_PROJECTS_DIR, id);
+  const sourceDir  = path.join(projDir, 'source');
+
+  fs.mkdirSync(sourceDir, { recursive: true });
+  fs.mkdirSync(path.join(projDir, 'raw'), { recursive: true });
+  fs.mkdirSync(path.join(projDir, 'wiki'), { recursive: true });
+  fs.mkdirSync(path.join(projDir, 'db'), { recursive: true });
+
+  const files = (req.files || []).map(f => {
+    const dest = path.join(sourceDir, f.originalname);
+    fs.renameSync(f.path, dest);
+    return { name: f.originalname, size: f.size };
+  });
+
+  const meta = { id, name, files, status: 'processing', created_at: new Date().toISOString() };
+
+  // Write initial status
+  fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify({ status: 'processing', stage: 'starting' }));
+
+  // Save to meta list
+  const all = loadUserProjects();
+  all.push(meta);
+  saveUserProjects(all);
+
+  // Spawn pipeline in background
+  const logStream = fs.createWriteStream(path.join(projDir, 'pipeline.log'));
+  const proc = spawn(PYTHON, [
+    ORCHESTRATOR,
+    '--project-root', projDir,
+    '--source', sourceDir,
+    '--stage', 'all',
+  ], { cwd: path.join(RAG_ROOT, 'wiki_kb') });
+
+  proc.stdout.pipe(logStream);
+  proc.stderr.pipe(logStream);
+
+  proc.on('close', code => {
+    logStream.end();
+    const finalStatus = code === 0 ? 'ready' : 'failed';
+    fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify({ status: finalStatus, exit_code: code }));
+    // Update meta list
+    const projects = loadUserProjects();
+    const p = projects.find(x => x.id === id);
+    if (p) { p.status = finalStatus; saveUserProjects(projects); }
+  });
+
+  res.json(meta);
+});
+
+// POST /api/user-projects/:id/query — run ask.py against project wiki
+app.post('/api/user-projects/:id/query', (req, res) => {
+  const { question } = req.body;
+  if (!question?.trim()) return res.status(400).json({ error: 'question is required' });
+
+  const projDir = path.join(USER_PROJECTS_DIR, req.params.id);
+  if (!fs.existsSync(projDir)) return res.status(404).json({ error: 'Project not found' });
+
+  const proc = spawn(PYTHON, [WIKI_ASK, '--json-stream', question.trim()], {
+    cwd: path.join(RAG_ROOT, 'wiki_kb'),
+    env: { ...process.env, WIKI_KB_ROOT: projDir },
+  });
+
+  let stdout = '';
+  let stderr = '';
+  proc.stdout.on('data', chunk => { stdout += chunk; });
+  proc.stderr.on('data', chunk => { stderr += chunk; });
+
+  proc.on('close', code => {
+    if (code !== 0) {
+      console.error('[user-project query stderr]', stderr.slice(-500));
+      return res.status(500).json({ error: 'Query failed', detail: stderr.slice(-500) });
+    }
+    let answer = '';
+    for (const line of stdout.split('\n')) {
+      if (!line.trim()) continue;
+      try {
+        const evt = JSON.parse(line);
+        if (evt.type === 'answer') { answer = evt.content; break; }
+      } catch {}
+    }
+    res.json({ answer: answer || '[No answer generated]' });
+  });
+
+  proc.on('error', err =>
+    res.status(500).json({ error: 'Failed to start Python', detail: err.message })
+  );
+});
+
+// POST /api/user-projects/:id/files — add files to existing project
+app.post('/api/user-projects/:id/files', upload.array('files'), (req, res) => {
+  const id = req.params.id;
+  const projDir = path.join(USER_PROJECTS_DIR, id);
+  const sourceDir = path.join(projDir, 'source');
+  if (!fs.existsSync(sourceDir)) return res.status(404).json({ error: 'Project not found' });
+
+  const added = (req.files || []).map(f => {
+    const dest = path.join(sourceDir, f.originalname);
+    fs.renameSync(f.path, dest);
+    return { name: f.originalname, size: f.size };
+  });
+
+  // Update meta file list
+  const all = loadUserProjects();
+  const proj = all.find(p => p.id === id);
+  if (proj) {
+    const existing = new Set((proj.files || []).map(f => f.name));
+    added.forEach(f => { if (!existing.has(f.name)) proj.files.push(f); });
+    saveUserProjects(all);
+  }
+
+  res.json({ files: proj?.files || added });
+});
+
+// DELETE /api/user-projects/:id/files/:filename — remove a file
+app.delete('/api/user-projects/:id/files/:filename', (req, res) => {
+  const { id, filename } = req.params;
+  const filePath = path.join(USER_PROJECTS_DIR, id, 'source', filename);
+  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+  const all = loadUserProjects();
+  const proj = all.find(p => p.id === id);
+  if (proj) {
+    proj.files = (proj.files || []).filter(f => f.name !== filename);
+    saveUserProjects(all);
+    return res.json({ files: proj.files });
+  }
+  res.json({ files: [] });
+});
+
+// POST /api/user-projects/:id/rebuild — re-run pipeline after file changes
+app.post('/api/user-projects/:id/rebuild', (req, res) => {
+  const id = req.params.id;
+  const projDir = path.join(USER_PROJECTS_DIR, id);
+  const sourceDir = path.join(projDir, 'source');
+  if (!fs.existsSync(sourceDir)) return res.status(404).json({ error: 'Project not found' });
+
+  // Clean old build artefacts but keep source/
+  for (const sub of ['raw', 'wiki', 'db', '_tmp']) {
+    const p = path.join(projDir, sub);
+    if (fs.existsSync(p)) fs.rmSync(p, { recursive: true, force: true });
+    fs.mkdirSync(p, { recursive: true });
+  }
+  for (const f of ['corpus_map.json', 'manifest.json', 'compile_status.json']) {
+    const p = path.join(projDir, f);
+    if (fs.existsSync(p)) fs.unlinkSync(p);
+  }
+
+  // Update status
+  fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify({ status: 'processing', stage: 'starting' }));
+  const all = loadUserProjects();
+  const proj = all.find(p => p.id === id);
+  if (proj) { proj.status = 'processing'; saveUserProjects(all); }
+
+  // Spawn pipeline
+  const logStream = fs.createWriteStream(path.join(projDir, 'pipeline.log'));
+  const proc = spawn(PYTHON, [
+    ORCHESTRATOR, '--project-root', projDir, '--source', sourceDir, '--stage', 'all',
+  ], { cwd: path.join(RAG_ROOT, 'wiki_kb') });
+
+  proc.stdout.pipe(logStream);
+  proc.stderr.pipe(logStream);
+
+  proc.on('close', code => {
+    logStream.end();
+    const finalStatus = code === 0 ? 'ready' : 'failed';
+    fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify({ status: finalStatus, exit_code: code }));
+    const projects = loadUserProjects();
+    const p = projects.find(x => x.id === id);
+    if (p) { p.status = finalStatus; saveUserProjects(projects); }
+  });
+
+  res.json({ status: 'processing' });
+});
+
+// DELETE /api/user-projects/:id
+app.delete('/api/user-projects/:id', (req, res) => {
+  const id = req.params.id;
+  const projDir = path.join(USER_PROJECTS_DIR, id);
+  if (fs.existsSync(projDir)) fs.rmSync(projDir, { recursive: true, force: true });
+  const all = loadUserProjects().filter(p => p.id !== id);
+  saveUserProjects(all);
+  res.json({ ok: true });
+});
 
 // Serve deliverable files (docx, md) for direct download
 app.use('/files/pm-deliverables',           express.static(path.join(PM_DIR,      'deliverables')));

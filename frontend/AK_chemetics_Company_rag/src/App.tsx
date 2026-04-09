@@ -47,11 +47,11 @@ export default function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-surface">
+    <div className="flex h-screen bg-surface overflow-hidden">
       <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} user={user} />
-      <main className="flex-1 ml-64 flex flex-col">
+      <main className="flex-1 ml-64 flex flex-col min-h-0">
         <TopBar title={getPageTitle()} subtitle={getPageSubtitle()} user={user} onSignOut={() => setUser(null)} />
-        <div className="flex-1">
+        <div className="flex-1 min-h-0 overflow-auto">
           {renderPage()}
         </div>
       </main>

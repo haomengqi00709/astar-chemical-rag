@@ -1,0 +1,8 @@
+# doc_id=8-LST-0111 discipline=8 revision=R1
+Instrument No,col_1,P&ID,Fluid,"Composition
+(%w/w)",Physical Properties @ N.O.C.,col_6,col_7,Flowrate (m3/h),col_9,col_10,Temperature (°C),col_12,col_13,Inlet Pressure (kPa(g)) @,col_15,col_16,Pressure Drop (kPa) @,col_18,col_19,"Shut-off press
+(kPa
+(g))",Fail Action,Control Type,col_23,Leakage Class,Material of Construction,col_26,col_27,Operating Case Reference,Comments,col_30,col_31,col_32,col_33,col_34,col_35,col_36,col_37,col_38,col_39,col_40,col_41,col_42,col_43,col_44,col_45,col_46,Chemetics
+Aker Kvaerner Chemetics,Owner,,,,"Visc.
+(Cp)","Dens.
+(kg/m3)",Vap Pres (kPa(a)),Min.,Norm.,Max.,Min.,Norm.,Max.,Min. Flow,Norm. Flow,Max. Flow,Min. Flow,Norm. Flow,Max. Flow,,,,Control Loop Accuracy,,Wetted parts,Non-Wetted Parts,Gasket/Seal,,,,,,,,,,,,,,,,,,,,A Division of Aker Kvaerner Canada Inc.

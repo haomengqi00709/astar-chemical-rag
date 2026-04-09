@@ -1,0 +1,37 @@
+# doc_id=7-SPC-0001 table=3 inline=true
+"Table 2
+Coatings Systems","Table 2
+Coatings Systems","Table 2
+Coatings Systems","Table 2
+Coatings Systems","Table 2
+Coatings Systems","Table 2
+Coatings Systems","Table 2
+Coatings Systems","Table 2
+Coatings Systems","Table 2
+Coatings Systems"
+System,Manufacturer,Surface Preparation,Primer,DFT µm (mil),Intermediate Coat,DFT µm (mil),Top Coat,DFT µm (mil)
+1,Carboline,"NACE No. 2 /
+SSPC SP-10",Carbozinc 859,50-75 (2-3),-,-,Carboguard 890,100-150 (4-6)
+1,ICI/Devoe,"NACE No. 2 /
+SSPC SP-10",Catha-Coat 303H,50-75 (2-3),-,-,Devran 224 HS,100-150 (4-6)
+1,International,"NACE No. 2 /
+SSPC SP-10",Interzinc 52,50-75 (2-3),-,-,Interseal 670HS,100-150 (4-6)
+1,PPG,"NACE No. 2 /
+SSPC SP-10",Amercoat 68HS,50-75 (2-3),-,-,Amercoat 385,100-150 (4-6)
+2,Carboline,"NACE No. 2 /
+SSPC SP-10",Carboguard 893,50-75 (2-3),Carboguard 893,125-150 (5-6),Carbothane 134 HB,50-75 (2-3)
+2,International,"NACE No. 2 /
+SSPC SP-10",Intergard 251,50-75 (2-3),Interseal 670HS,125-150 (5-6),Interthane 990HS,50-75 (2-3)
+2,PPG,"NACE No. 2 /
+SSPC SP-10",Amercoat 385,125-150 (5-6),Amercoat 385,125-150 (5-6),Amercoat 450HS,50-75 (2-3)
+3,Carboline,"NACE No. 1 /
+SSPC SP-5",Thermaline 450,200-250 (8-10),-,-,Thermaline 450,200-250 (8-10)
+4,Carboline,"NACE No. 1 /
+SSPC SP-5",Carbozinc 11,75 (3),-,-,Thermaline 4700,50 (2)
+4,ICI/Devoe,"NACE No. 1 /
+SSPC SP-5",Catha-Coat 304L,50-100 (2-4),-,-,HT-10,25 (1)
+4,International,"NACE No. 1 /
+SSPC SP-5",Interzinc 22,50-75 (2-3),-,-,Intertherm 50,25 (1)
+4,PPG,"NACE No. 1 /
+SSPC SP-5",Dimetcote 9H,75 (3),-,-,Amercoat 878,25 (1)
+5,All,Abrasion with sandpaper,White latex paint,100 (4),-,-,White latex paint,100 (4)

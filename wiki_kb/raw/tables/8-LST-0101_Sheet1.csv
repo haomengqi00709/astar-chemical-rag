@@ -1,0 +1,42 @@
+# doc_id=8-LST-0101 discipline=8 revision=R0
+Tag,Device,Model #,Installation,col_4,col_5,Loop Check,col_7,Fail Action,Initials KC,Initials Owner,col_11,Comments
+,,,"Impulse
+Tubed","Inst
+ Air
+Tubed","Installed
+Located","Field 
+Term
+Check","DCS Term
+Check",,,,P&I REF.,
+II-1101AP1,CURRENT INDICATOR,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+IT-1101AP1,CURRENT TRANSMITTER,-,n/a,n/a,,,,n/a,,,2330.0,
+XAL-1101AP1,RUN STATUS,-,n/a,n/a,n/a,,,n/a,,,2330.0,
+II-1101BP1,CURRENT INDICATOR,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+IT-1101BP1,CURRENT TRANSMITTER,-,n/a,n/a,,,,n/a,,,2330.0,
+XAL-1101BP1,RUN STATUS,-,n/a,n/a,n/a,,,n/a,,,2330.0,
+LAH-1101D1,LEVEL ALARM Hi,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+LAHH-1101D1,LEVEL ALARM HiHi,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,Interlock
+LAL-1101D1,LEVEL ALARM Lo,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+LALL-1101D1,LEVEL ALARM LoLo,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,Interlock
+LIC-1101D1,LEVEL CONTROLLER,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+LT-1101D1,LEVEL TRANSMITTER,APEXBC1A1SC3NO4A101M1E5,n/a,n/a,,,,?,,,2330.0,
+YXA-1101D1,SAFETY SHOWER ALARM,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2340.0,
+YXS-1101D1,SAFETY SHOWER SWITCH,-,n/a,n/a,,,,FO,,,2340.0,Provided with Gas Seal Package
+LG-1101D2,LEVEL GAUGE,"KM26S/SS4/GXXG/SR21/M1G/D/110""",n/a,n/a,,n/a,n/a,n/a,,,2330.0,
+FAL-1101P1,FLOW ALARM Lo,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+FALL-1101P1,FLOW ALARM LoLo,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,Interlock
+FE-1101P1,MAGNETIC FLOW TUBE,8711STA015R1N5,n/a,n/a,,,n/a,n/a,,,2330.0,
+FIC-1101P1,FLOW CONTROLLER,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+FT-1101P1,MAG FLOW TRANSMITTER,8712CR12N5B6M4,n/a,n/a,,,,?,,,2330.0,
+FV-1101P1,CONTROL VALVE,88-21121,n/a,,,,,FC,,,2330.0,
+HS-1101P1,BYPASS LOW FLOW ALARM/STARTUP,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2330.0,
+PSL-1101P1,PRESSURE SWITCH Lo,"REVISED TO  PSL-P1101P5, JULY 13/00.",----------,----------,----------,----------,----------,----------,----------,----------,2340.0,
+TI-1101P1,TEMPERATURE GAUGE,50EI60E090-SG-NH,n/a,n/a,,n/a,n/a,n/a,,,2330.0,
+TW-1101P1,THERMOWELL,TW31A32JJ09,n/a,n/a,,n/a,n/a,n/a,,,2330.0,
+FO-1101P2,FLOW ORIFICE (Mechanical),-,n/a,n/a,,n/a,n/a,n/a,,,2333.0,
+FO-1101P3,FLOW ORIFICE (Mechanical),-,n/a,n/a,,n/a,n/a,n/a,,,2330.0,
+FO-1101P4,FLOW ORIFICE (Mechanical),-,n/a,n/a,,n/a,n/a,n/a,,,2330.0,
+PCV-1101P4,REGULATOR,-,n/a,n/a,,n/a,n/a,n/a,,,2340.0,Provided with Gas Seal Package
+FAH-1101P5,FLOW ALARM Hi,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2340.0,
+FSH-1101P5,FLOW SWITCH Hi,-,n/a,n/a,,,,?,,,2340.0,Provided with Gas Seal Package
+PAL-1101P5,PRESSURE ALARM Lo,-,n/a,n/a,n/a,n/a,n/a,n/a,,,2340.0,

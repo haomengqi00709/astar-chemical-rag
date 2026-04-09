@@ -1,0 +1,180 @@
+# doc_id=5-LST-0003 discipline=5 revision=R0
+1.0,Service Code,Client Service Code,Fluid,Fluid Composition,"Material
+Description",B31.3 Fluid Class,Pressure Test Method,Flange Guard,Corr. Allow. (mm),"Service Pres (kPag)
+[max]","Service Temp (oC)
+[max]",Pipe Spec,Gasket Spec,Valve Application,Valve Code,Valve Size (Min),Valve Size (Max),"Instrument
+Connection
+Type",Notes
+,AA,,Atmospheric Air,,carbon steel duct,n/a,service,no,1.5,-7 / 7,343,CD7,W,On-Off / Isolation (ball),V1214,15,150,flanged,V1214 <260ºC only
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1213,15,150,,V1213 >260ºC
+,,,,,,,,,,,,,,Damper,V2411,400,1800,,
+,AC,,Plant Air,,"carbon steel
+ galvanised",D,service,no,0,1034,100,CS4,B,On-Off / Isolation (ball),V1112,15,50,threaded,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,,
+,,,,,,,,,,,,,,Check,V4131,15,50,,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,flanged,
+,AI,,Instrument Air,,"carbon steel
+ galvanised",D,service,no,0,1034,100,CS4,B,On-Off / Isolation (ball),V1112,15,50,threaded,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,,
+,,,,,,,,,,,,,,Check,V4131,15,50,,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,flanged,
+,AM,,Mask Air,,,D,service,no,0,900,amb,S44,B,On-Off / Isolation (ball),V1331,15,50,threaded,
+,CG,,Calciner Off Gas,,carbon steel duct,n/a,service,no,1.5,±7,340,CD7,R,,,,,,
+,CLP,,"Condensate
+Low Pressure",,carbon steel,N,hydro,no,1.5,500,160,CS6,B,PI Isolation,V1112,15,50,threaded,
+,,,,,,,,,,,,,,Check (lift),V4142,15,50,,
+,,,,,,,,,,,,,,Check (swing),V4211,50,300,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,300,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,,
+,CMP,,"Condensate
+Med. Pressure",,carbon steel,N,hydro,no,1.5,ASME Class 150*,,CS6,Y,Check (lift),V4142,15,50,threaded,*Pressure -Temp ratings:
+,,,,,,,,,,,,,,Check (swing),V4211,50,600,,1960 kPa @ 38ºC
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,600,,1770 kPa @ 100ºC
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,1440 kPa @ 200ºC
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,300,,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,,
+,CYS,,Milk of Lime,CaO / Ca(OH)2,carbon steel,N,hydro,no,1.5,1034,90,CS7*,B,On-Off / Isolation (ball),V1216,25,150,flanged,*6D bends
+,,,,Slurry,,,,,,,,,,Control (pinch),V9251,25,100,,
+,EN,,Neutralized Effluent,Treated effluent from ETP,316L SS,D,service,no,3.2,1034,93,S65*,U,On-Off / Isolation (ball),V1216,25,100,flanged,[*S65 spec is for pigged or high-pressure effluent discharge lines.  CP3 is suitable for low-pressure effluent discharge.]
+,ET,,Thickened Effluent,,CPVC,N,hydro,no,0,600,80,CP3*,U,On-Off / Isolation (ball),V1259,40,200,flanged,*6D bends
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1353,25,100,,
+,,,,,,,,,,,,,,Control or On-Off (b'fly),V2866,80,300,flanged,
+,,,,,,,,,,,,,,On-Off / Isolation (pinch),V9253,25,200,,
+,EV,,Effluent Vent,,CPVC,D,service,no,0,±7,80,CP3,U,On-Off / Isolation (ball),V1259,25,200,flanged,
+,,,,,,,,,,,,,,Control or On-Off (b'fly),V2866,80,300,,
+,FL,,Flocculent,,PVC,D,hydro,no,0,1034,amb,PV6,U,On-Off / Isolation (ball),V1259,25,200,flanged,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,80,100,,
+,,,,,,,,,,,,,,Check,V4252,15,80,,
+,,,,,,,,,,,,,,Check,V4352,15,80,,
+,FSL,,Ferric Sulphate,,PVC,N,hydro,no,0,1034,amb,PV6,U,On-Off / Isolation (ball),V1259,25,200,flanged,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,80,100,,
+,JSH,,"Steam - 
+HP Superheated",,Cr-Mo steel,n/a*,hydro,no,1.5,7000.0,500,CS18,Y†,Check,V4481,80,400,,*Design code ASME B31.1
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7381,15,50,,† Avoid bolted connections
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7481,80,600,,
+,JHP,,"Steam - 
+High Pressure",,carbon steel,n/a*,hydro,no,1.5,7000.0,315,CS15,Y†,Check,V4481,80,400,,*Design code ASME B31.1
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7381,15,50,,† Avoid bolted connections
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7481,80,600,,
+,JLP,,"Steam
+Low Pressure",,carbon steel,N,hydro,no,1.5,500,160,CS6,P,PI Isolation / vent /  drain,V1112,15,20,threaded,
+,,,,,,,,,,,,,,Check (lift),V4142,15,50,,
+,,,,,,,,,,,,,,Check (swing),V4211,50,600,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,600,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,,
+,JMP,,"Steam
+Med. Pressure",,carbon steel,N,hydro,no,1.5,ASME Class 150,,CS6,Y,Check (lift),V4142,15,50,threaded,*Pressure -Temp ratings:
+,,,,,,,,,,,,,,Check (swing),V4211,50,600,,1960 kPa @ 38ºC
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,600,,1770 kPa @ 100ºC
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,1440 kPa @ 200ºC
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,300,,1020 kPa @ 300ºC
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,,650 kPa @ 400ºC
+,NG,,Natural Gas,,carbon steel,N*,,no,1.5,1034,150,CS6,Y,Throttling (b'fly),V2813,150,300,,*and to applicable
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5115,15,50,,local codes and standards
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5215,80,300,,"(e.g. CSA B149, NFPA 54)"
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,100,,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,,
+,OD,,Diesel Oil,#2 Fuel,carbon steel,D*,service,no,1.5,1034,amb,CS7,P,On-Off / Isolation (gate),V7211,50,300,,*and to NFPA 30 or local
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,codes and standards
+,OF,,Fuel Oil,#6 Fuel,carbon steel,D*,service,no,1.5,1034,100,CS7,P,On-Off / Isolation (gate),V7211,50,300,,*and NFPA 30 or local
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,codes and standards
+,PRG,,Propane Gas,,carbon steel,N*,,no,1.5,1034,150,CS6,Y,Throttling (b'fly),V2813,150,300,,*and to applicable
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5115,15,50,,local codes and standards
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5215,80,300,,"(e.g. CSA B149, NFPA 54)"
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,100,,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,,
+,SAD,,Sulphuric acid drain,>94% H2SO4,316L stainless steel,N,hydro,yes,3.2,150,55,S65,U,On-Off / Isolation (ball),V1281,15,50,flanged,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15,100,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7281,50,100,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,50,600,,
+,SAS,,"Sulphuric Acid,
+Strong",>98%  H2SO4,316 SS,N,hydro +  pneumatic,yes,3.2,1034,55,S65,U,On-Off / Isolation (ball),V1281,15,50,flanged,
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,,
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,
+,,,,,,,,,,,,,,On-Off Isolation (plug),V5261,15,300,,
+,,,,,,,,,,,,,,On-Off Isolation (gate),V7282,15,600,,
+,,,,>96%  H2SO4,Saramet® 23,N,hydro + pneumatic,yes,0,1034,120,S23,U,On-Off / Isolation (ball),V1281,15,50,flanged,
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,100,750,,
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,
+,,,,,,,,,,,,,,On-Off Isolation (plug),V5261,15,300,,
+,,,,,,,,,,,,,,On-Off Isolation (gate),V7282,15,600,,
+,,,,>94%  H2SO4,Saramet® 35,N,hydro + pneumatic,yes,0,1034,120,S35,U,On-Off / Isolation (ball),V1281,15,50,,
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,100,750,,
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,
+,,,,,,,,,,,,,,On-Off Isolation (plug),V5261,15,300,,
+,,,,,,,,,,,,,,On-Off Isolation (gate),V7282,15,600,,
+,,,,,Alloy 20,N,hydro + pneumatic,Yes,1.5,1034,120,S20,U,On-Off / Isolation (ball),V1281,15,50,,Ø≤50mm only
+,,,,,PTFE-lined steel,N,hydro + pneumatic,Yes,0,1034,150,TC3,U,On-Off / Isolation (ball),V1281,15,50,,Ø≤50mm only
+,SAW,,"Sulphuric Acid, Weak",<65%  H2SO4,FRP,N,hydro,,3.2,see note,82,FR22,U,On-Off / Isolation (ball),V1266,15,150,flanged,"1034 kPag Ø25-300mm
+700 kPag Ø350-600mm"
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1267,15,150,,350 kPag Ø≥750mm
+,,,,,,,,,,,,,,Control or On-Off (b'fly),V2866,100,500,,
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,,
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,
+,,,,,,,,,,,,,,Check (wafer swing),V4763,80,300,,
+,SAV,,"Sulphuric Acid, Vent",,316L stainless steel,n/a,n/a,no,3.2,10,150,S65,U,Control or On-Off (b'fly),V2866,80,600,,
+,SCE,,Sodium Carbonate,Na2CO3 solution,PVC,D,service,no,0,1034,amb,PV6,U,On-Off / Isolation (ball),V1259,25,200,,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,15,100,,
+,,,,,,,,,,,,,,Control or On-Off (b'fly),V2866,80,300,,
+,,,,,,,,,,,,,,Throttling (pinch),V9252,25,100,,
+,SDD,,"SO2 Gas, Dry",,carbon steel duct,n/a,service,no,1.5,-30 /85,450,CD6,R,On-Off / Isolation (ball),V1214,15,250,flanged,V1214 <260ºC only
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1213,15,250,,
+,,,,,,,,,,,,,,PP Isolation,V1533,15,,,
+,,,,,,,,,,,,,,Damper,V2411,400,,,
+,,,,,304H SS duct,n/a,service,no,0,85,650,SD4,R,On-Off / Isolation (ball),V1235,15,300,flanged,
+,,,,,,,,,,,,,,Damper,V2431,400,,,
+,,,,,316L SS duct,n/a,service,no,0,85,300,SD3,R,,,,,flanged,
+,SDW,,"SO2 Gas, Wet",,FRP duct,n/a,service,no,,-17 / 17,82,FD23,C,On-Off / Isolation (ball),V1266,15,150,,
+,,,,,,,,,,,,,,Control or On-Off (b'fly),V2866,100,350,,
+,,,,,,,,,,,,,,Damper,V2251,400,,,
+,SIL,,Sodium Silicate,,carbon steel,D,service,no,1.5,1034,90,CS7,B,On-Off / Isolation (ball),V1112,15,50,,
+,SL,,Molten Sulphur,,"carbon steel 
+w/ bolt-on jacket",N,hydro,,1.5,500,135,CS20,Y,On-Off Isolation (plug),V5266,15,200,,
+,STG,,SO3 Gas,,carbon steel duct,n/a,service,no,1.5,-30 /85,450,CD6,R,On-Off / Isolation (ball),V1214,15,250,,V1214 <260ºC only
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1213,15,250,,
+,,,,,,,,,,,,,,PP Isolation,V1533,15,,,
+,,,,,,,,,,,,,,Damper,V2411,400,,,
+,,,,,304H SS duct,n/a,service,no,0,85,650,SD4,R,On-Off / Isolation (ball),V1235,15,250,,
+,,,,,,,,,,,,,,Damper,V2431,400,,,
+,,,,,316L SS,n/a,service,no,0,85,650,S65,R,On-Off / Isolation (ball),V1235,15,250,,Ø≤50mm
+,WBF,,Boiler Feedwater,Demineralised Water,Carbon Steel,n/a*,hydro,no,1.5,11050.0,150.0,CS16,Y†,Check,V4412,80,400,,*Design code ASME B31.1
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,† Avoid bolted connections
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7412,80,600,,
+,,,,,,,,,,,,,,Throttling (globe),V8412,80.0,200.0,,
+,WCR,,"Cooling Water
+Return",<2000 ppm Cl-,carbon steel,D,service,no,1.5,1034,90,CS9,B,On-Off / Isolation (ball),V1112,15,50,,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,25,100,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,80,500,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2838,600,750,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7221,80,200,,
+,WCS,,"Cooling Water
+Supply",<2000 ppm Cl-,carbon steel,D,service,no,1.5,1034,90,CS9,B,On-Off / Isolation (ball),V1112,15,50,,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,25,100,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,80,500,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2838,600,750,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7221,80,200,,
+,WM,,Process Water,,carbon steel,D,service,no,1.5,1034,90,CS9,B,On-Off / Isolation (ball),V1112,15,50,,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,25,100,,
+,,,,,,,,,,,,,,Check (swing),V4141,15,50,,
+,,,,,,,,,,,,,,Check (swing),V4221,50,300,,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7221,80,200,,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,,
+,WF,,Fire Protection Water,,carbon steel,n/a*,hydro,no,1.5,1034,,CS9*,B,,,,,,Design  per local  code (e.g. NFPA) or FM  standards
+,WP,,Potable Water,,"carbon steel
+ galvanised",D,service,no,,1034,,CS4,B,On-Off / Isolation (ball),V1112,15,50,,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,,
+,WSR,,"Sea Water
+Return",,FRP,D,service,no,3,1034,82,FR5,U,On-Off / Isolation (ball),V1259,40,200,,
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm),V3264,15,100,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,50,500,,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15.0,50,,
+,WSS,,"Sea Water
+Supply",,FRP,D,service,no,3,1034,82,FR5,U,On-Off / Isolation (ball),V1259,40,200,,
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm),V3264,15,100,,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,50,500,,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15.0,50,,

@@ -1,0 +1,32 @@
+# doc_id=9-LST-0729 discipline=9 revision=R0
+Starters,
+Correct size and settings of C/B’s (C/B type),
+Correct size of disconnect switch and fuses (FDS type),
+Check mechanical interlock with door,
+Check control fuses,
+Check control power transformer for proper VA rating,
+Check over load device(s) for proper size and/or adjustment,
+Check correct CT ratio,
+Check correct metering scale,
+"Check other protection devices (dry cut relay wiring)
+Note:	Testing of dry kut relays including adjustments will be done during water batching",
+Miscellaneous,
+"Check cables (correct sizes, proper labelling and correct terminations).",
+Check connectors.,
+Check wire markings.,
+"Check control devices (PB’s, SS’s, lights, etc).",
+Check auxiliary relays.,
+Testing,
+Incoming phase rotation with phase rotation meter.,
+Functional test of all starter circuits *,
+Test of all electrical interlocks *,
+"Megger test all LV switchgear using a 500/1000 V megger.  (Use 500 V setting for  380 V, and 1000 V setting for < 380 – 600 V).  Incoming and outgoing switchgear shall be in the open position to exclude cables and other equipment from this test.",
+"Test results:
+Phase A to End:	_________ M
+Phase B to End:	_________ M
+Phase C to End:	_________ M
+Phase A to Phase B:	_________ M
+Phase B to Phase C:	_________ M
+Phase A to Phase C:	_________ M",
+Test results acceptable.,
+System ready for water batching,

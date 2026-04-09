@@ -1,0 +1,19 @@
+# doc_id=0-PRC-2005 table=5 inline=true
+COMMISSIONING,PROJECT MANAGER,PROJECT ENGINEER,COMMISSIONING MANAGER,TECHNOLOGY MANAGER
+GENERAL,"Deliver the project to the Owner in accordance with the contracted requirements for scope, schedule, and quality.",,"Manage the commissioning work to meet the project requirements for scope, schedule and quality.",
+PLANNING,Approve commissioning schedule,,Prepare detailed commissioning schedule.,
+RESOURCES,Approve any re-assignments of Commissioning Managers.,,Review resource requirements with Discipline Managers; establish skill needs and assignment schedule.,
+TECHNICAL,,"Co-ordinate queries to ensure effective, timely resolution.","Establish an in-depth understanding of the commissioning scope, performance guarantees and warrantee provisions in the Contract. Co-ordinate the commissioning team and provide necessary instructions to the commissioning team.",
+,Authorise required changes to the plant if within budget. Obtain senior level approval for changes that will exceed budget.,"Prepare cost estimates of any suggested modifications to the plant.
+Co-ordinate rectification work.",Identify modifications necessary to meet requirements set out in the Contract. Provide technical justification and supporting cost analyses.,Review and approve the proposed modifications and technical justification.
+QUALITY,,,Draft modifications to standard Quality Plan to meet Contract requirements.,
+SCOPE,"Authorise required changes to the plant if within budget. Obtain senior level approval for changes that will exceed budget. Pursue means for cost recovery if available.
+Notify Owner as required by Contract.",Prepare cost estimates of changes to the scope of supply resulting from other than Owner requests or directives.,Identify when a change to the scope of supply as set out in the Contract is required to meet the requirements of the Contract. Provide technical justification including a discussion of possible alternatives and risks.,Review and approve the proposed change to the scope of supply and the technical justification.
+,"Provide quotations for changes requested by the Owner. 
+Present claims to the Owner when directed to take an action that will result in a change to the scope of supply.",Prepare cost estimates of changes to the plant resulting from Owner requests or directives.,Provide a full description and quantification of changes to the plant resulting from Owner requests or directives.,Review and approve the proposed  change to the scope of supply.
+PROGRESS,,,Update the schedule to indicate the completion status of the work.,
+,Present delay claims to the Owner.,,"Provide a full description, quantification of delay and quantification of changes to costs resulting from Owner requests, directives or delays.",
+COST,,,Execute commissioning work within the established cost budget.,
+COMMUNICATION,Send and receive all commercial communications with Owner.,,"Interface with Owner on site.
+Communicate with Project Manager between site and home office.",
+RECORDS,,,Maintain commissioning files and archive upon project completion.,

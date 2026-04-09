@@ -1,0 +1,58 @@
+# doc_id=5-PRC-0003 table=3 inline=true
+"Tie Point List
+    Typ. Doc. Number
+    Issue for Procurement",5-LST-0002,5-LST-0002,5-LST-0002,,5-LST-0002
+"Material Specifications
+    Typ. Doc. Number
+    Issue for Procurement",5-SPC-0001,5-SPC-0004,5-SPC-0005,5-SPC-0006,5-SPC-0004
+"Fab. and Install. Specs.
+    Typ. Doc. Number
+    Issue for Procurement",5-SPC-0102,5-SPC-0102,5-SPC-0102,5-SPC-0006,5-SPC-0105
+"PDMS Catalogue
+    Typ. Doc. Number
+    Issue for Procurement",n/a,n/a,n/a,n/a,n/a
+"Hydraulic Calculation
+    Typ. Doc. Number
+    Issue for Procurement",5-CAL-102001,5-CAL-102001,5-CAL-102001,,5-CAL-600101
+"Pipe Isometric
+    Typ. Doc. Number
+    Issue for Procurement",5-ISO-102001,5-ISO-102001,5-ISO-102001,5-ISO-102001,
+"System Isometric
+    Type. Doc. Number
+    Issue for Procurement",5-ISO-0101,5-ISO-0101,5-ISO-0101,5-ISO-0101,
+"Piping GA Drawings
+    Typ. Doc. Number
+    Issue for Procurement",5-GAD-0101,5-GAD-0101,5-GAD-0101,5-GAD-0101,5-GAD-0101
+"PSI Detail Drawings
+    Typ. Doc. Number
+    Issue for Procurement",,,5-PSI-102001,,
+"Duct Detail Drawing
+    Typ. Doc. Number
+    Issue for Procurement",,,,,"5-DTL-600101
+√"
+"Instrument Installation Dwg.
+    Typ. Doc. Number
+    Issue for Procurement",8-DTL-102001,8-DTL-102001,8-DTL-102001,8-DTL-102001,8-DTL-102001
+"Pipe Stress Analysis Calc.
+    Typ. Doc. Number
+    Issue for Procurement",5-CAL-102001,5-CAL-102001,5-CAL-102001,5-CAL-102001,5-CAL-102001
+"Pipe Support Detail Dwg.
+    Typ. Doc. Number
+    Issue for Procurement",,,,5-SUP-SH01,5-SUP-DA04
+"Bill of Quantity
+    Typ. Doc. Number
+    Issue for Procurement",5-LST-0100,5-LST-0101,5-LST-0102,5-LST-0103,5-LST-0104
+"Quality Data Sheets
+    Typ. Doc. Number
+    Issue for Procurement",5-QDS-5005,5-QDS-5006,5-QDS-5007,5-QDS-5008,5-QDS-5009
+"Vendor Doc. Requirements
+    Typ. Doc. Number
+    Issue for Procurement",5-VDR-5001,5-VDR-5002,5-VDR-5003,5-VDR-5004,5-VDR-5005
+"Vendor Documents
+    Typ. Doc. Number
+    Document Review","5-VEN-5001
+Mechanical","5-VEN-5002
+Mechanical","5- VEN -5003
+Mechanical","5- VEN -5004
+Mechanical","5- VEN -5005
+Mechanical"

@@ -1,0 +1,11 @@
+# doc_id=8-LST-0103 discipline=8 revision=R0
+|,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0
+,Client Name,,,,,,,,List,,,,,,,,Aker Kvaerner,,,,,,,
+,Project Title,,,,,,,,"Alarm, Interlocks & Set Points",,,,,,,,Chemetics,,,,,,,
+,Location,,,,,,,,,,,,,,,,A Division of Aker Kvaerner Canada Inc.,,,,,,,
+,Client Document Number,,,,,,,,,,,,,,,,Standard-8-LST-0103-R0,,,,,,,
+,Rev:,Issue Date:,,,Reason For Issue,,,,,,,,Prepared By:,,,,Checked By:,,,,Approved By:,,,
+,0.0,38108.0,,,Comments Requested,,,,,,,,A. Bacon,,,,J. Feeney,,,,D. Clarke,,,
+,Instrument Type,,,,,,,,,,,,,,,,,,,,,,,
+,Instrument Number,,,Description,,,,,Units,"Set Point/
+Normal Condition",,LoLo,Lo,Hi,HiHi,Misc.,Interlock Action,,,,,P&ID Reference,,

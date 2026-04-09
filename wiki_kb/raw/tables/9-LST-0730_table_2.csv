@@ -1,0 +1,10 @@
+# doc_id=9-LST-0730 discipline=9 revision=R0
+Items to be checked,
+The following describes the actions required to be taken before water batching,
+Complete system installation accepted by Aker Kvaerner Chemetics Field Supervisor. (See signed Contractor Field Check List),
+"After auxiliary transformer, PDC and MCC’s have been checked out and tested, starter has been energized and interlocks have been temporarily bypassed, push the field start push button and verify that the motor starts and DCS display confirms that the motor is running.",
+Stop the motor by pushing the field stop push button.  Verify motor stops and DCS display confirms that the motor has stopped.,
+Start motor again from the field and stop it from the DCS.  Confirm correct action.  (Motor stopped and DCS shows motor stopped).,
+Start motor from DCS (if applicable) and observe proper action of motor and DCS display.,
+Check interlocks by forcing them on/off in the DCS and observing action by on motor and DCS display.  (Motor may have to be started before or stopped before.  See logic diagrams for proper action of interlocks).,
+System ready for water batching,

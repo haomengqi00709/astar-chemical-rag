@@ -1,0 +1,182 @@
+[
+  {
+    "id": "Q01",
+    "difficulty": "easy",
+    "discipline": 0,
+    "question": "What is document 0-PRC-0001 about?",
+    "expected_keywords": ["standard document", "management", "procedure", "creation", "use"],
+    "source_doc": "0-PRC-0001",
+    "ground_truth": "0-PRC-0001 is the Standard Document Management Procedure, covering the creation, use, revision, and management of standard documents."
+  },
+  {
+    "id": "Q02",
+    "difficulty": "easy",
+    "discipline": 1,
+    "question": "What are the publishing stages for Process Flow Diagrams (PFDs)?",
+    "expected_keywords": ["stage 1", "stage 2", "stage 3", "internal design", "hazop"],
+    "source_doc": "1-PRC-0002",
+    "ground_truth": "Stage 1: Issued for Internal Design. Stage 2: Issued for Hazop. Stage 3: Approved for Operating Manual."
+  },
+  {
+    "id": "Q03",
+    "difficulty": "easy",
+    "discipline": 7,
+    "question": "What is the minimum curing time for painted surfaces before they can enter service?",
+    "expected_keywords": ["2 days", "21", "70"],
+    "source_doc": "7-SPC-0001",
+    "ground_truth": "Minimum curing is 2 days at 21°C (70°F) and 50% RH before service, unless the manufacturer's data sheet differs."
+  },
+  {
+    "id": "Q04",
+    "difficulty": "easy",
+    "discipline": 0,
+    "question": "What PPE must construction site advisors bring to site?",
+    "expected_keywords": ["steel-toe", "long sleeves", "long pants"],
+    "source_doc": "0-PRC-8400",
+    "ground_truth": "Steel-toe shoes, long sleeves, and long pants, plus other PPE as required."
+  },
+  {
+    "id": "Q05",
+    "difficulty": "easy",
+    "discipline": 9,
+    "question": "What tools are required for the electrical field checkout procedure?",
+    "expected_keywords": ["multimeter", "loop signal generator", "calibrator"],
+    "source_doc": "9-PRC-0004",
+    "ground_truth": "A multimeter and a loop signal generator (calibrator)."
+  },
+  {
+    "id": "Q06",
+    "difficulty": "easy",
+    "discipline": 0,
+    "question": "What does the Job Hazard Analysis procedure apply to?",
+    "expected_keywords": ["medium", "extreme", "risk", "tasks"],
+    "source_doc": "0-PRC-8007",
+    "ground_truth": "JHA applies to all medium to extreme risk tasks in all operations areas."
+  },
+  {
+    "id": "Q07",
+    "difficulty": "medium",
+    "discipline": 0,
+    "question": "What are the Purchase Order authorization limits by role?",
+    "expected_keywords": ["100,000", "500,000", "2,000,000", "buyer", "procurement", "president"],
+    "source_doc": "0-PRC-5005",
+    "ground_truth": "Buyer: < CAD 100,000. Manager of Procurement: < CAD 500,000. Director of Projects: < CAD 2,000,000. President: > CAD 2,000,000."
+  },
+  {
+    "id": "Q08",
+    "difficulty": "medium",
+    "discipline": 4,
+    "question": "What is the maximum interpass welding temperature for 300-series stainless steel per 4-SPC-0016?",
+    "expected_keywords": ["300", "interpass"],
+    "source_doc": "4-SPC-0016",
+    "ground_truth": "The maximum interpass temperature for 300-series stainless steel must not exceed 300°F."
+  },
+  {
+    "id": "Q09",
+    "difficulty": "medium",
+    "discipline": 4,
+    "question": "What is the minimum alloy cladding thickness required for clad steel fabrications?",
+    "expected_keywords": ["1/8", "3 mm", "SA240"],
+    "source_doc": "4-SPC-0016",
+    "ground_truth": "Minimum alloy cladding thickness is 1/8 in (3 mm) per SA240 for 300-series stainless or SB463 for Alloy 20-Cb3."
+  },
+  {
+    "id": "Q10",
+    "difficulty": "medium",
+    "discipline": 9,
+    "question": "What NEC gas group classification does hydrogen fall under for hazardous locations?",
+    "expected_keywords": ["group B", "hydrogen"],
+    "source_doc": "9-PRC-0005",
+    "ground_truth": "Hydrogen is classified as NEC Gas Group B."
+  },
+  {
+    "id": "Q11",
+    "difficulty": "medium",
+    "discipline": 4,
+    "question": "What is the minimum refractory brick lining thickness for furnace vessels?",
+    "expected_keywords": ["228", "114", "mullite", "insulating"],
+    "source_doc": "4-SPC-0082",
+    "ground_truth": "Minimum 228 mm mullite-bonded high-alumina firebrick plus 114 mm insulating firebrick, unless drawings specify more."
+  },
+  {
+    "id": "Q12",
+    "difficulty": "medium",
+    "discipline": 9,
+    "question": "What is the hazardous area classification zone around the main vent stack on a chloralkali plant (NEC)?",
+    "expected_keywords": ["class I", "div 1", "1.5", "radius", "sphere"],
+    "source_doc": "9-PRC-0005",
+    "ground_truth": "Class I, Division 1, with a 1.5 m (5'-0\") radius sphere around the main vent stack."
+  },
+  {
+    "id": "Q13",
+    "difficulty": "medium",
+    "discipline": 5,
+    "question": "What are the four types of piping components (A through D) in Chemetics piping design?",
+    "expected_keywords": ["type A", "type B", "type C", "type D", "national standards", "vendor", "chemetics", "supports"],
+    "source_doc": "5-PRC-0003",
+    "ground_truth": "Type A = standard piping/fittings per national standards. Type B = vendor standard (e.g. valves). Type C = Chemetics-designed custom fabricated. Type D = pipe supports (vendor or custom)."
+  },
+  {
+    "id": "Q14",
+    "difficulty": "medium",
+    "discipline": 9,
+    "question": "What are the adequate ventilation criteria per NFPA 497 for hazardous area classification?",
+    "expected_keywords": ["6 air changes", "1 cfm", "25%", "LFL"],
+    "source_doc": "9-PRC-0005",
+    "ground_truth": "6 air changes/hour OR 1 cfm/ft² floor area OR equivalent keeping vapour-air mixture at or below 25% LFL."
+  },
+  {
+    "id": "Q15",
+    "difficulty": "hard",
+    "discipline": 8,
+    "question": "What are the instrument air supply specifications including pressure range, dew point, and minimum reserve time?",
+    "expected_keywords": ["500", "750", "-35", "20 min"],
+    "source_doc": "8-PRC-0002",
+    "ground_truth": "Instrument air supply: 500-750 kPa. Dew point: -35°C before receivers. Minimum reserve: not less than 20 minutes for compressor failure scenario."
+  },
+  {
+    "id": "Q16",
+    "difficulty": "hard",
+    "discipline": 9,
+    "question": "What procedures and conditions must be completed before starting the electrical field checkout (9-PRC-0004)?",
+    "expected_keywords": ["8-PRC-0014", "DCS", "field wiring", "9-PRC-0020"],
+    "source_doc": "9-PRC-0004",
+    "ground_truth": "DCS hardware must be fully installed and checked per 8-PRC-0014. Field wiring including remote I/O sub systems must be completed. DCS Control Functions must be ready per 8-PRC-0004. Electrical Systems Contractor Checkout Procedure 9-PRC-0020 must be completed."
+  },
+  {
+    "id": "Q17",
+    "difficulty": "hard",
+    "discipline": 8,
+    "question": "When should a quadrant edge orifice be used instead of a square edge concentric orifice for flow measurement?",
+    "expected_keywords": ["reynolds", "20,000", "quadrant", "square edge", "BS 1042"],
+    "source_doc": "8-PRC-0002",
+    "ground_truth": "When Reynolds number is less than 20,000, use quadrant edge per BS 1042. Otherwise use square edge concentric per AS 2360. The bore ratio d/D must be between 0.2 and 0.7."
+  },
+  {
+    "id": "Q18",
+    "difficulty": "hard",
+    "discipline": 8,
+    "question": "What is the maximum allowable control valve noise level?",
+    "expected_keywords": ["82", "dB", "1 m"],
+    "source_doc": "8-PRC-0002",
+    "ground_truth": "Control valve noise must not exceed 82 dB(A) measured at 1 m."
+  },
+  {
+    "id": "Q19",
+    "difficulty": "hard",
+    "discipline": 9,
+    "question": "What is the refractory vendor guarantee period for furnace linings per 4-SPC-0082?",
+    "expected_keywords": ["5 year", "20", "no repairs"],
+    "source_doc": "4-SPC-0082",
+    "ground_truth": "Vendor must guarantee no repairs for 5 years and 20-year life with minimal maintenance repairs."
+  },
+  {
+    "id": "Q20",
+    "difficulty": "hard",
+    "discipline": 8,
+    "question": "What is the preferred velocity range for liquid magnetic flow meters in solids-laden service, and what brand is specified near electrolysis cells?",
+    "expected_keywords": ["1.5", "3", "m/s", "foxboro"],
+    "source_doc": "8-PRC-0002",
+    "ground_truth": "Preferred velocity 1.5-3 m/s for solids-laden service. Foxboro AC magnetic tubes are specified near cells due to high magnetic fields."
+  }
+]

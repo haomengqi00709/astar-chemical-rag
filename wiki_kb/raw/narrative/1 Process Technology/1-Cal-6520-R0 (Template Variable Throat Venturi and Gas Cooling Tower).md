@@ -1,0 +1,448 @@
+---
+doc_id: 1-Cal-6520-R0 (Template Variable Throat Venturi and Gas Cooling Tower)
+doc_type: CAL
+discipline: 1
+discipline_name: Process Technology
+source_folder: Unknown
+revision: R0
+is_template: True
+track: A
+---
+
+# 1-Cal-6520-R0 (Template Variable Throat Venturi and Gas Cooling Tower) — Unknown
+
+
+## Sheet: Signature Sheet Scrubber
+- | | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 | 11.0 | 12.0 | 13.0 | 14.0 | 15.0 | 16.0 | 17.0 | 18.0 | 19.0 | 20.0 | 21.0 | 22.0 | 23.0 | 24.0
+- Client Name | Calculation | CHEMETICS
+- Project Title | Scrubber Venturi
+- A Division of Aker Kvaerner Canada Inc.
+Vancouver, Canada
+- Location
+- Tag. No.: | 6520D
+- Client Document # | Standard-1-CAL-6520-R0
+- Rev: | Date: | Status: | Prepared By: | Checked By: | Approved By:
+- 0.0 | 38135.0 | Comments Requested | A. Stegmann | J. Thomson | C. Moser
+- |
+
+## Sheet: Max Flow
+- VARIABLE THROAT VENTURI | Version | 2.0
+- (Maximum flow case) | Last update | April, 2004
+- Client: | Client Name | Project No.: | Standard
+- Project Title: | Project Title | Client Document #: | Client Document #
+- Location: | Location | Date: | 38135.0
+- Tag No.: | 6520D | Revision: | 0.0
+- Service: | Scrubber Venturi | By: | AS
+- Case Description: | Case Description
+- Design Basis: | Design Basis
+- Exit Gas Flow 1 | 155831.03129645792 | ft3/min | 264761.0 | m3/h
+- Exit Temperature | 144.536 | oF | 62.52 | oC
+- Exit Gas Density | 0.05190301431485795 | lb/ft3 | 0.8314 | kg/m3
+- Exit Gas Viscosity | 0.0174 | cP
+- Inlet Gas Flow 1 | 155831.03129645792 | ft3/min | 264761.0 | m3/h
+- Inlet Temperture | 144.536 | oF | 62.52 | oC
+- InletGas Density | 0.05190301431485795 | lb/ft3 | 0.8314 | kg/m3
+- Inlet Gas Viscosity | 0.0174 | cP
+- Inlet Pressure | -14.052151871502593 | in WC | -356.9257340241797 | mm H2O
+- Liquid Density 2 | 64.89062929929752 | lb/ft3 | 1039.44 | kg/m3
+- Liquid Viscosity | 1.2 | cP
+- Liquid Surface Tension | 65.0 | dynes/cm | 0.065 | N/m
+- Liquid Flow to Throat | 1168.7327347234343 | USGPM | 265.4480717542396 | m3/h | 7.5 | USGPM/1000CFM
+- Liquid to Separator | 1558.3103129645792 | USGPM | 353.9307623389862 | m3/h | 10.0 | USGPM/1000CFM
+- Liquid Flow Total | 2727.0430476880138 | USGPM | 619.3788340932258 | m3/h | 17.5 | USGPM/1000CFM
+- Irrigation rate (Inlet Conditions/ ID Shell) | 45.35671568098156 | USGPM/ft
+- Exit Liquid/Gas Ratio 3 | 7.5 | USG/1000 ACF | 1.0025950640549008 | m3/1000 m3
+- Exit Throat Velocity 4 | 300.0 | ft/s | 91.44027578387174 | m/s
+- Inlet Liquid/Gas Ratio | 7.5 | USG/1000 ACF | 1.0025950640549008 | m3/1000 m3
+- Inlet Throat Velocity | 299.99999999999994 | ft/s | 91.44027578387174 | m/s
+- Liquid Injection Vel. 5 | 0.0 | ft/s | 0.0 | m/s
+- Outlet Gas Velocity 6 | 58.07506252915516 | ft/s | 18.28805515677435 | m/s
+- Inlet Gas Velocity | 58.07506252915516 | ft/s | 18.28805515677435 | m/s
+- Transition Duct Velocity 7 | 15.171213865641024 | ft/s | 4.572013789193588 | m/s
+- Throat Length 8 | 0.49212449999999996 | ft | 0.15 | m
+- Throat diameter | 39.840705951929415 | in | 1011.9569832412687 | mm
+- Throat Area | 8.657279516469886 | ft2 | 0.8042924366944446 | m2
+- Pressure Drop | Gauge Pressure
+- Scrubber Venturi | 23.50751166195926 | in H2O | 597.0925970450379 | mm H2O | -954.0183310692175 | mm H2O
+- Bottom Section GCT | 0.7837710969187863 | in H2O | 19.90784590380042 | mm H2O | -973.926176973018 | mm H2O
+- Total | 24.291282758878047 | in H2O | 617.0004429488383 | mm H2O
+- Efficiency | Design | Expected
+- Semrau 9 | 95.80155429832732 | %
+- Yung (1 micon) 10 | 94.82250107856474 | % | 97.78814654578473 | %
+- As and SO3 11 | 87.71198278584282 | % | 90.45524141339355 | %
+- Notes:
+- 1. Obtain gas flows from mass balance program.  Review mass balance output to ensure it is consistent with venturi design
+- 2. Insert acid properties here
+- 3. SPS RR40 indicates that L/G ratio above 0.61 L/m3 shows no effect on performance
+- 4. Exit throat velocity should between 150 to 250 ft/s
+- 5. Inlet liquid velocity is usually set to zero at the throat
+- 6. Gas outlet velocity should between 60-90 ft/s
+- 7. This is the velocity in the lower body of the quench venturi, it is based on outlet gas flow and velocity reduced by a pre-set ratio
+- 8. Throat length is used to calculate the droplet to gas velocity ratio for pressure drop calculation.
+- 9. Based on the proposition that collection efficiency is a function of power dissipation across the venturi according to an exponential
+- correlation.  Coefficients of phosphoric acid is assumed.
+- 10. Yung's model does not predict collection efficiency very well above the steeply falling section of curve of particle size vs removal
+- efficiency.  Please check the curve below to ensure this is not the case.
+- 11. Use the same calculation as Yung (1 micron) for a smaller particle diameter (0.5 micron)
+- Pressure Drop  (Maximum flow case)
+- Calvert (1968)
+- Throat Pressure Drop 12 | 33.994042643314984 | in W.C. | 863.4512873092831 | mm W.C.
+- Modified Calvert (Yung et al. 1977)
+- Droplet Size 13 | 83.2121223883828 | microns
+- Reynold's Number | 363.5673697462251
+- Drag Coeff (CDo) | 0.6264744427937694
+- X | 1.1693635254045882
+- b | 0.6827842361940373
+- Throat Pressure Drop 14 | 23.21059644136335 | in W.C. | 589.550927696227 | mm W.C.
+- 90 bend | 0.035658188289646904 | in W.C. | 0.9057207142107053 | mm W.C.
+- Venturi Vessel Exit Loss | 0.2612570323062621 | in W.C. | 6.63594863460014 | mm W.C.
+- Total loss in venturi | 23.50751166195926 | in W.C. | 597.0925970450378 | mm W.C.
+- Separator Entrance Loss | 0.5225140646125243 | in W.C. | 13.271857241158115 | mm W.C.
+- Separator Pressure Loss | 0.0 | in W.C. | 0.0 | mm W.C.
+- Separator Exit Loss | 0.2612570323062621 | in W.C. | 6.635928620579057 | mm W.C.
+- Total | 24.291282758878044 | in W.C. | 617.000382906775 | mm W.C.
+- Notes:
+- 12. Calvert pressure drop is based on assumption that water drops are accelerated to bulk gas velocity in the throat.  This is usually not
+- the case thus it is a good conservative estimate on maximum possible pressure drop.
+- 13. Nukiyama-Tanasawa equation is only valid when gas velocity is between 60-230 m/s and L/G ratio between 0.08-1.01
+- 14. Assumptions in the Yung delP model:
+- Liquid has no initial velocity at the throat
+- ...(truncated)
+
+## Sheet: Min Flow
+- VARIABLE THROAT VENTURI
+- (Minimum flow case)
+- Exit Gas Flow | 50088.69291697478 | ft3/min | 85102.0 | m3/h
+- Exit Temperature | 145.4 | oF | 63.0 | oC
+- Exit Gas Density | 0.05278949832167895 | lb/ft3 | 0.8456 | kg/m3
+- Exit Gas Viscosity | 0.018 | cP
+- Inlet Gas Flow | 50088.69291697478 | ft3/min | 85102.0 | m3/h
+- Inlet Temperture | 145.4 | oF | 63.0 | oC
+- InletGas Density | 0.05278949832167895 | lb/ft3 | 0.8456 | kg/m3
+- Inlet Gas Viscosity | 0.018 | cP
+- Inlet Pressure | -9.84249 | in WC | -250.0 | mm H2O
+- Liquid Density | 61.3503118326201 | lb/ft3 | 982.73 | kg/m3
+- Liquid Viscosity | 0.3855 | cP
+- Liquid Surface Tension | 65.0 | dynes/cm | 0.065 | N/m
+- Liquid Flow to Throat | 1168.7327347234343 | USGPM | 265.44841640111804 | m3/h | 23.333264788136592 | USGPM/1000CFM
+- Liquid to Separator | 1558.3103129645792 | USGPM | 353.9312218681574 | m3/h | 31.111019717515457 | USGPM/1000CFM
+- Liquid Flow Total | 2727.0430476880138 | USGPM | 619.3796382692756 | m3/h | 54.44428450565206 | USGPM/1000CFM
+- Irrigation rate (Inlet Conditions/ ID Shell) | 45.35671568098156 | USGPM/ft
+- Exit Liquid/Gas Ratio | 23.33326478813659 | USG/1000 ACF | 3.1191795304589554 | m3/1000 m3
+- Exit Throat Velocity | 174.0 | ft/s | 53.03536470262141 | m/s
+- Inlet Liquid/Gas Ratio | 23.333264788136592 | USG/1000 ACF | 3.1191795304589554 | m3/1000 m3
+- Inlet Throat Velocity | 174.00000000000003 | ft/s | 53.03536470262141 | m/s
+- Liquid Injection Velocity | 0.0 | ft/s | 0.0 | m/s
+- Inlet Gas Velocity | 18.66703922162313 | ft/s | 5.689730714978567 | m/s
+- Outlet Gas Velocity | 18.66703922162313 | ft/s | 5.689730714978567 | m/s
+- Transition Duct Velocity | 4.876475925056116 | ft/s | 1.4863543448018082 | m/s
+- Throat Area | 4.797767520783024 | ft2 | 0.4457298366287279 | m2
+- Throat Length | 0.49212449999999996 | ft | 0.15 | m
+- Throat Diameter | 29.658959120012923 | in | 753.3398 | mm
+- Pressure Drop | Gauge Pressure
+- Quench Venturi | 23.25387010777914 | in H2O | 590.6500821382378 | mm H2O | -840.6500821382378 | mm H2O
+- Retention Vessel | 0.031200311005322657 | in H2O | 0.7924902896859093 | mm H2O | -841.4425724279238 | mm H2O
+- Total | 23.28507041878446 | in H2O | 591.4425724279238 | mm H2O
+- Efficiency | Design | Expected
+- Semrau | 95.42632325706568 | %
+- Yung (1 micon) | 99.77253794886481 | % | 99.78791083669799 | %
+- As and SO3 | 95.69655968793865 | % | 95.7113045516892 | %
+- Pressure Drop  (Minimum flow case)
+- Calvert (1968)
+- Throat Pressure Drop | 35.57746495715223 | in W.C. | 903.6676099116665 | mm W.C.
+- Modified Calvert (Yung et al. 1977)
+- Droplet Size | 114.42457513681694 | microns
+- Reynold's Number | 285.086949800135
+- Drag Coeff (CDo) | 0.6794269495480375
+- X | 1.1436966858965174
+- b | 0.6534543596442755
+- Throat Pressure Drop | 23.248249581342552 | in W.C. | 590.5055393661008 | mm W.C.
+- 90 bend | 0.0037470176243927684 | in W.C. | 0.09517424765957631 | mm W.C.
+- Venturi Vessel Exit Loss | 0.0018735088121963842 | in W.C. | 0.04758712382978816 | mm W.C.
+- Total loss in venturi | 23.25387010777914 | 590.6483007375901 | mm W.C.
+- Retention Entrance Loss | 0.0037470176243927684 | in W.C. | 0.09517424765957631 | mm W.C.
+- Separator Pressure Loss | 0.0 | in W.C. | 0.0 | mm W.C.
+- Retention Exit Loss | 0.02745329338092989 | in W.C. | 0.6973136518756191 | mm W.C.
+- Total | 23.28507041878446 | in W.C. | 1182.0890893747155 | mm W.C.
+- Collection Efficiency
+- Particle size | 1e-05 | 2e-06 | 1e-06 | 8e-07 | 6e-07 | 5e-07 | 4e-07 | 2e-07 | 1e-07 | 5e-08 | m
+- 10.0 | 2.0 | 1.0 | 0.7999999999999999 | 0.6 | 0.5 | 0.39999999999999997 | 0.19999999999999998 | 0.09999999999999999 | 0.049999999999999996 | microns
+- Particle density | 1700.0 | 1700.0 | 1700.0 | 1700.0 | 1700.0 | 1700.0 | 1700.0 | 1700.0 | 1700.0 | 1700.0 | kg/m3
+- Gas Flow | 85102.0 | 85102.0 | 85102.0 | 85102.0 | 85102.0 | 85102.0 | 85102.0 | 85102.0 | 85102.0 | 85102.0 | m3/h
+- Gas Density | 0.8456 | 0.8456 | 0.8456 | 0.8456 | 0.8456 | 0.8456 | 0.8456 | 0.8456 | 0.8456 | 0.8456 | kg/m3
+- Gas Viscosity | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | 1.7999999999999997e-05 | kg/m s
+- Gas Temperature | 336.15 | 336.15 | 336.15 | 336.15 | 336.15 | 336.15 | 336.15 | 336.15 | 336.15 | 336.15 | K
+- Liquid Flow | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | 265.44841640111804 | m3/h
+- Liquid Density | 982.73 | 982.73 | 982.73 | 982.73 | 982.73 | 982.73 | 982.73 | 982.73 | 982.73 | 982.73 | kg/m3
+- Throat Velocity | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | 53.03536470262141 | m/s
+- Throat length | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | 0.15 | m
+- Reynold's No. | 285.086949800135 | 285.086949800135 | 285.086949800135 | 285.086949800135 | 285.086949800135 | 285.086949800135 | 285.086949800135 | 285.086949800135 | 285.086949800135 | 285.086949800135 | Gas Reynold's number
+- dc | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | 114.42457513681694 | Droplet size - Nukiyama Tanasawa
+- CDo | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | 0.6794269495480375 | Steady state drag coefficient
+- X | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | 1.1436966858965174 | Dimensionless throat length
+- b | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | 0.6534543596442755 | Drop velocity ratio
+- B | 5.335398258290771 | 5.335398258290771 | 5.335398258290771 | 5.335398258290771 | 5.335398258290771 | 5.335398258290771 | 5.335398258290771 | 5.335398258290771 | 5.335398258290771 | 5.335398258290771
+- K2 | 495.50818903953393 | 21.280040734541387 | 5.7763586590329945 | 3.8433750623646716 | 2.3005129938945825 | 1.6758318815767554 | 1.149331176286185 | 0.3904667820646075 | 0.15389110822056523 | 0.06789827404826522 | Inertia parameter
+- C | 1.01875717 | 1.0937858624611168 | 1.187610402925539 | 1.234674947228399 | 1.3138386447653891 | 1.3781937678004326 | 1.4768794472595819 | 2.0069841562366637 | 3.1639773744776267 | 5.583912035954366 | Cunningham slip correction factor
+- ln(Co/Ci) | Term 1 | 0.03094487742798842 | 0.660770911845228 | 1.9747774553861175 | 2.6258110463305235 | 3.563506250596743 | 4.1658317063817005 | 4.857888651625917 | 6.387292293484311 | 7.082415655382026 | 7.374123198864051 | [B/(K2*(1-beta+0.7/K2))]
+- Term 2 | 404.34445065381027 | 17.364932751923376 | 4.713622540312302 | 3.1362698187908413 | 1.8772639550948809 | 1.3675118525442398 | 0.9378768976463013 | 0.31862859178676084 | 0.12557817810148425 | 0.05540633016298593 | [4*K2*(1-beta)^1.5)]
+- Term 3 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | 2.4724613436563536 | [4.2*(1-beta)^0.5]
+- Term 4 | 58.597601892371735 | 11.176271419180686 | 5.850666704718898 | 4.909079175820066 | 4.0529996878971195 | 3.6691619810549985 | 3.323582372515389 | 2.779716244151903 | 2.596206617481433 | 2.5275205147240687 | [5.02*K2^0.5*(1-beta+0.7/K2)*
+- ATAN( ((1-beta)*K2/0.7)^0.5 )]
+- Term 5 | 0.010752338184136031 | 0.24273832440657184 | 0.8238268661741188 | 1.1743248543328222 | 1.7781620240096254 | 2.245696886073376 | 2.8850420772147922 | 4.892765507436302 | 6.248335656532689 | 6.948053457866505 | [B/(K2*(1+0.7/K2))]
+- Term 6 | 1814.6597215836673 | 56.03957077376623 | 10.588503660142027 | 5.9917355633210825 | 2.8086694844592355 | 1.7176521953536188 | 0.9334819091411557 | 0.14213220199219467 | 0.024751160268722927 | 0.005025418646946278 | [4*K2+4.2-5.02*K2^0.5*(1+0.7/K2)*
+- ...(truncated)
+
+## Sheet: Var. Throat
+- Variable Throat Sizing
+- Angle | 60.0
+- Maximum area | 0.8042924366944446 | m2
+- Minimum area | 0.4457298366287279 | m2
+- h1, Desired stroke | 150.0 | mm
+- d1, Throat diameter | 1772.2434725099893 | m
+- d2, Bob diameter | 1604.1589919924477 | m
+- d3 | 1945.448553266877 | mm
+- S1 | 147.7827150550508 | mm
+- h2 | 73.89135752752539 | mm
+- d4 | 1860.1261629482697 | mm
+- Opened Area at Maximum Flow | 0.8041871901308812 | m2
+- FO | -0.00010524656356336592
+- 60.0
+
+## Sheet: Venturi  Dim
+- Venturi Dimensions
+- Item | Calculated | Rounded | Number on
+- dimensions | Spec Sheet
+- mm | in | mm | mm
+- Inlet Nozzle ID | 2262.8046048330916 | 90.55090799999999 | 2300.0 | 2300.0
+- Acid Brick Thickness | 0.0 | 0.0 | 0.0
+- Carbon Brick Thickness | 0.0 | 0.0 | 0.0
+- Lining | 0.0 | 0.0 | 0.0
+- Inlet Shell ID | 2500.0 | 98.4249 | 2500.0 | 2500.0
+- Throat diameter ID | 1772.2434725099893 | 69.6848292 | 1770.0 | 1770.0
+- Bob diameter | 1604.1589919924477 | 62.991936 | 1600.0 | 1600.0
+- Lower body diameter ID | 4525.609209666183 | 177.16482 | 4500.0 | 4500.0
+- Outlet Nozzle ID | 2262.8046048330916 | 90.55090799999999 | 2300.0 | 2300.0
+- Outlet nozzle projection | 304.80091927957255 | 11.810988 | 300.0 | 300.0
+- Inlet Wall | 766.6666666666666 | 30.3148692 | 770.0 | 770.0
+- Height of contraction | 45.0 | 364.99999999999994 | 14.5668852 | 370.0 | 370.0
+- Shell at throat | 150.0 | 5.905494 | 150.0 | 150.0
+- Height of diffuser | 2364.2493523315165 | 92.9131056 | 2360.0 | 2360.0
+- Straight to bottom of outlet | 3450.0 | 135.82636200000002 | 3450.0 | 3450.0
+- Straight below outlet | 150.0 | 5.905494 | 150.0 | 150.0
+- Total Straight | 7250.0 | 285.43221 | 7250.0 | 7250.0
+- Outlet nozzle from center | 2550.0 | 100.39339799999999 | 2550.0 | 2550.0
+- Liquid nozzle sizing
+- Nozzles | Inlet | Nozzles | Flow Rate | Calculated | Pipe size | Nozzle Size, mm
+- velocity | Number | per Nozzle | Pipe Size | Selected | Calculated | Selected
+- m/s | ft/s | # | m3/h | gpm | in | in
+- Tangentials | 6.096018385591451 | 20.0 | 8.0 | 33.18100896927995 | 146.0915918404293 | 1.7273901641044953 | 2.0 | 50.0 | 50.0
+- Separator | 1.8288055156774354 | 6.0 | 8.0 | 44.241345292373275 | 194.7887891205724 | 3.641658217561491 | 6.0 | 152.0 | 150.0
+- Drain | 3.0 | 76.0 | 80.0
+- Manway | 36.0 | 914.0 | 900.0
+
+## Sheet: Sep. Dim
+- Gas Cooling Tower | 6530-U
+- SEPARATOR SECTION OF VESSEL | Dimension on
+- Datasheet
+- Gas Velocity | 9.84249 | ft/s | 3.0 | m/s
+- Area Required for Gas | 263.8746755080234 | ft^2 | 24.514907407407406 | m2
+- Bottom Tower Diameter | 18.329639159322657 | ft | 5.6 | m | 5600.0
+- Inlet gas nozzle diameter | 90.55090799999999 | in | 2300.0 | mm | 2300.0
+- Height of separator section | 271.652724 | in | 6900.0 | mm | 6900.0
+- Height of inlet nozzle centre | 90.55090799999999 | in | 2300.0 | mm | 2300.0
+- Angle of bottom | 45.0 | deg
+- VOLUME OF ACID HOLDUP IN PUMP WELL | Dimension on
+- Datasheet
+- Cooling tower diameter | 25.262391 | ft | 7.7 | m | 7700.0
+- Packed height | 16.0104504 | ft | 4.88 | m | 4880.0
+- Type of packing | 3.5" Tri-Packs | Polypropylene
+- Holdup fraction | 0.05
+- Holdup in packing | 401.24750094691325 | ft3 | 11.362166734311671 | m^3
+- Pipe diameter | 1.9684979999999999 | ft | 600.0 | mm
+- Pipe length | 98.4249 | ft | 30.0 | m
+- Holdup in piping | 299.54689303110456 | ft3 | 8.482300164692441 | m^3
+- Total Hold up in Packing and Piping | 700.7943939780178 | ft3 | 19.84446689900411 | m^3
+- Volume to use | 1398.4481489357725 | ft3 | 39.6 | m^3 | 39.6
+- Safety | 99.55184586987981 | %
+- Height of Pump Well | 32.8083 | ft | 10.0 | m
+- Area for Pump Well | 42.624828136043995 | ft^2 | 3.96 | m^2
+- Diameter of Pump Well | 7.366927227165421 | ft | 2245.446191105733 | mm | 2250.0
+- COOLING TOWER DIMENSIONS | Dimension on
+- Datasheet
+- Space between divider and packing support | 5.0 | ft | 1524.0045963978628 | mm | 1500.0
+- Space between packing and distributor nozzle | 1.999993968 | ft | 609.6 | mm
+- Estimated height of distributor pipe +nozzle | 2.0013063 | ft | 610.0 | mm
+- Space between top of distributor and tan line | 3.00195945 | ft | 915.0 | mm
+- Space between top of packing and tan line | 2134.6 | mm | 2100.0
+- Outlet Nozzle | 74.8 | in | 1899.9257301760022 | mm | 1900.0
+- Top manway | 36.0 | in | 914.4027578387177 | mm | 900.0
+- Packing Removal Manway | 24.0 | in | 609.6018385591451 | mm | 600.0
+- Access to divider Plate | 36.0 | in | 914.4027578387177 | mm | 900.0
+- Access to Separator | 36.0 | in | 914.4027578387177 | mm | 900.0
+- Level connections | 3.0 | in | 76.20022981989314 | mm | 80.0
+- Overall height | 46.650136849999996 | ft | 15438.604596397863 | 15380.0
+
+## Sheet: Scrubber PDS
+- 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 | 11.0 | 12.0 | 13.0 | 14.0 | 15.0 | 16.0 | 17.0 | 18.0 | 19.0 | 20.0 | 21.0 | 22.0 | 23.0 | 24.0
+- Client Name | Process Data Sheet | CHEMETICS
+- Project Title
+- Scrubber Venturi | A Division of Aker Kvaerner Canada Inc.
+Vancouver, Canada
+- Location
+- Client Document # | Tag No: | 6520D | Standard-4-PDS-6520-R0
+- Rev: | Date: | Status: | Prepared By: | Checked By: | Approved By:
+- 0.0 | 38135.0 | Comments Requested | A. Stegmann | J. Thomson | C. Moser
+- Quantity | 1.0 | Operating | 1.0 | Installed Spare | 0.0
+- PROCESS DESIGN CONDITIONS
+- Case Description | Case Description
+- Design Basis | Design Basis
+- Stream (see sketch) | A | B | C
+- Phase | vapour/liquid | Vapour | Vapour | Liquid
+- Fluid Description | 0.0 | %v, SO2 | 0.0 | %v, SO2 | 0.0 | %w, H2SO4
+- Design Mass Flow Rate | kg/h | 220122.2954 | 220122.2954 | 275917.34370422683
+- Design Volumetric Flow Rate | Am3/h | 264761.0 | 264761.0 | 265.4480717542396
+- Temperature | oC | 62.52 | 62.52 | 62.52
+- Pressure | kPa(g) | -3.500000000000001 | -9.355067008186245 | 250.0
+- Density | kg/m3 | 0.8314 | 0.8314 | 1039.44
+- Viscosity | cP | 0.0174 | 0.0174 | 1.2
+- Maximum Operating Temperature: | 90.0 | oC | Maximum Operating Pressure: | 0.0 | kPa(g)
+- Minimum Operating Temperature1: | oC | Minimum Operating Pressure2: | kPa(g)
+- Equipment Data
+- Orientation: | Horizontal | X | Vertical
+- Side Wall Height / Length: | 7250.0 | m | Inside Diameter: | 4500.0 | m | Aspect Ratio:
+- Height: | m | Width: | m | Depth: | m
+- Residence Time: | min | Working Volume: | m3
+- Roof Type (Vertical): | Floating | Cone | Dished | Flat | X | Other:
+- Floor Type (Vertical): | Flat | Cone | X | Dished | Other:
+- Head Type (Horizontal): | Dished | Cone | Flat | Other:
+- Working Volume Criteria: | Centerline Pump Suction to Invert of Overflow
+- Bottom of Tank to Invert of Overflow
+- Other:
+- Ancillary Equipment: | Jacket | Coil | Baffles | Cooling | Heating
+- Tracing | Mist Separator | Agitation | Insulation
+- Other:
+- Materials of Construction
+- Shell: | FRP
+- Lining: | Nexus Veil
+- Bob: | C-276
+- Notes
+- 1.0 | Minimum ambient temperature
+- 2.0 | Maximum vaccum at ESP Vacuum Braker
+- 3.0 | Plug to be adjustable, from center of contraction to | 300.0 | mm below contraction.
+- Commentary to Standard 4-PDS-XXXX-R2 [Template - Vessel]
+- Some equipment data check boxes only apply to certain tank styles (ie Roof Type does not apply to Horizontal).  There are
+- also options for which way to specify dimensions (ie specifying the height and diameter AND the aspect ratio is not required).
+- The equipment sketch is only required when it is necessary to communicate special dimensions and features such as
+- relative positions of nozzles, baffles, etc.
+- The Vessel PDS will be used along with the ancillary equipment (such as an agitator) PDS to communicate the information
+- required for the ancillary equipment DST, so ancillary equipment requirements should be considered while creating the sketch
+- for the Vessel PDS.
+- Nozzles attached to process lines will be sized in accordance with line sizing criteria.  "Line Sizing" will be entered.  Overflow
+- nozzles are self venting.  The flow and its basis will be entered (ie 50 m3/h = max flow from feed pump).  For drain nozzles,
+- the minimum time to drain the tank contents will be entered.
+- Accessories will describe any accessories associated with the nozzle.
+- Notes will describe items such as access requirements.
+- Equipment Sketch
+- 770.0 | mm
+- 370.0 | mm
+- 150.0 | mm
+- 1600.0 | mm | 7250.0 | mm
+- 2360.0 | mm
+- 1770.0 | mm
+- 4500.0 | mm
+- 3600.0 | mm
+- 2550.0 | mm
+- Nozzle Table
+- Nozzle Description | Mark | Size (mm) | Quantity | Sizing Criteria / Accessories / Notes
+- Gas Inlet | A | 2300.0 | 1.0 | 18.28805515677435 | m/s | / | / ID
+- Gas Outlet | B | 2300.0 | 1.0 | 18.28805515677435 | m/s | / | / ID
+- Acid Tangential | C | 8.0 | To suit Acid pipe sleeve | 50.0 | mm Dia.
+- Drain | D | 75.0 | 1.0 | Standard
+- Shaft | E | 1.0 | By mechanical
+- Manway | M1 | 900.0 | 1.0 | Standard
+
+## Sheet: GCT PDS
+- 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 | 11.0 | 12.0 | 13.0 | 14.0 | 15.0 | 16.0 | 17.0 | 18.0 | 19.0 | 20.0 | 21.0 | 22.0 | 23.0 | 24.0
+- Client Name | Process Data Sheet | CHEMETICS
+- Project Title
+- Gas Cooling Tower | A Division of Aker Kvaerner Canada Inc.
+Vancouver, Canada
+- Location
+- Client Document # | Tag. No.: | 6530-U | Standard-4-PDS-6530-R0
+- Rev: | Date: | Status: | Prepared By: | Checked By: | Approved By:
+- 0.0 | 38135.0 | Comments Requested | A. Stegmann | J. Thomson | C. Moser
+- Quantity | 1.0 | Operating | 1.0 | Installed Spare | 0.0
+- PROCESS DESIGN CONDITIONS
+- Case Description: | Case Description
+- Design Basis: | Design Basis
+- Stream (see sketch) | A | B | C | D
+- Phase | vapour/liquid | Vapour | Vapour | Liquid | Liquid
+- Fluid Description | 0.0 | %v, SO2 | 12.85 | %v, SO2 | 0.1 | %w, H2SO4 | 2.4 | %w, H2SO4
+- Design Mass Flow Rate | kg/h | 220122.2954 | 407215.92202 | 1916304.0 | 367889.79160563584
+- Design Vol. Flow Rate | Am3/h | 264761.0 | 345098.239 | 1924.0 | 353.9307623389862
+- Minimum Flow Rate | kg/h
+- Temperature | oC | 62.52 | 35.3 | 32.0 | 62.52
+- Pressure | kPa(g) | -9.355067008186245 | -9.0 | 198.92000000000002 | 250.0
+- Density | kg/m3 | 0.8314 | 1.18 | 996.0 | 1039.44
+- Viscosity | cP | 0.0174 | 0.0178 | 0.68 | 1.2
+- Surface tension | mN/m
+- Composition | %w/w (or %v/v) | 29.6 | %v H2O | 6.27 | %v H2O | 0.1 | %w H2SO4 | 2.4 | %w H2SO4
+- 99.9 | %w H2O | 97.6 | %w H2O
+- Fouling Tendency: | High | X | Medium | Low
+- Foaming Tendency: | High | Medium | X | Low
+- Maximum Operating Temperature: | 87.52000000000001 | oC | Maximum Operating Pressure: | 0.0 | kPa(g)
+- Minimum Operating Temperature1: | oC | Minimum Operating Pressure2: | kPa(g)
+- Equipment Data
+- Zones | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0
+- Location
+- Column Inside Diameter | m | 7700.0
+- Packing
+- Type | 3.5" Tri-Packs
+- Size | mm | 90.0
+- Height | m | 4880.0
+- Material | Polypropylene
+- Pressure Drop Wet | kPa
+- Wetting Rate | m3/h·m
+- Flooding | %
+- Loading | %
+- Hold-Up | %
+- H.E.T.P. | m
+- Packing Support
+- Type | Gas Inj. Plate
+- Size (% min open area) | % | 100.0
+- Material | FRP
+- Equipment Data
+- Zones | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0
+- Bed Limiter
+- Type
+- Material
+- Redistributor/Distributor
+- Type
+- Material
+- Collector Plates
+- Type
+- Material
+- Pump Tank Working Volume: | 39.6 | m3 | Diameter: | 2250.0 | m | SWH: | m
+- Working Volume Criteria: | X | Centreline pump suction to invert of overflow
+- Bottom tank to invert of overflow
+- Other
+- Materials of Construction:
+- Shell: | FRP
+- Lining: | Nexus Veil
+- NOTES
+- 1.0 | Minimum ambient temperature
+- 2.0 | Maximum vaccum at blower suction
+- Commentary to Standard 4-PDS-XXX-R
+- Nozzles attached to process lines will be sized in accordance with line sizing criteria. "Line Sizing" will be entered. Overflow
+- nozzles are self venting. The flow and its basis will be entered (ie 50 m3/h = max flow from feed pump). For drain nozzles,
+- the minimum time to drain the tank contents will be entered.
+- Accessories will describe any accessories associated with the nozzle.
+- Equipment Sketch
+- 7700.0 | mm
+- 2100.0
+- 4880.0
+- 1500.0
+- 13280.0
+- 6900.0
+- ...(truncated)

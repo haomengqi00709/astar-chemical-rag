@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Search, Filter, PlayCircle, FileText, Table2, Settings, Package, Layers,
   ChevronDown, ChevronRight, Briefcase, FlaskConical, Wrench, ArrowLeft, X,
+  BookOpen, Send, Loader2, MessageSquare, Plus, Upload, Trash2, FolderOpen,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -261,6 +262,412 @@ const ProjectRefView: React.FC<{ project: any }> = ({ project }) => {
   );
 };
 
+// ─── Create Project view ─────────────────────────────────────────────────────
+
+const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: () => void }> = ({ onCreated, onCancel }) => {
+  const [name, setName] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFiles = (fl: FileList | null) => {
+    if (!fl) return;
+    const valid = Array.from(fl).filter(f => /\.(doc|docx|pdf)$/i.test(f.name));
+    setFiles(prev => [...prev, ...valid]);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    handleFiles(e.dataTransfer.files);
+  };
+
+  const removeFile = (idx: number) => setFiles(prev => prev.filter((_, i) => i !== idx));
+
+  const handleCreate = async () => {
+    if (!name.trim()) { setError('Project name is required'); return; }
+    if (files.length === 0) { setError('Upload at least one file'); return; }
+    setUploading(true); setError('');
+    try {
+      const fd = new FormData();
+      fd.append('name', name.trim());
+      files.forEach(f => fd.append('files', f));
+      const res = await fetch('/api/user-projects', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('Upload failed');
+      const proj = await res.json();
+      onCreated(proj);
+    } catch (e: any) { setError(e.message || 'Failed to create project'); }
+    finally { setUploading(false); }
+  };
+
+  const formatSize = (bytes: number) => bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(0)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+
+  return (
+    <div className="flex-1 flex flex-col overflow-hidden bg-white">
+      <header className="px-6 py-3 bg-white border-b border-outline-variant/10 flex items-center gap-3 shrink-0">
+        <button onClick={onCancel} className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" /> Back
+        </button>
+        <span className="text-slate-200">/</span>
+        <span className="text-xs font-semibold text-slate-700">New Project</span>
+      </header>
+
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="max-w-lg mx-auto space-y-6">
+          <div>
+            <h2 className="text-lg font-extrabold text-slate-900 mb-1">Create New Project</h2>
+            <p className="text-sm text-slate-500">Upload .doc, .docx or .pdf files. The system will compile them into a searchable knowledge base you can query.</p>
+          </div>
+
+          {/* Project name */}
+          <div>
+            <label className="text-xs font-bold text-slate-700 mb-1.5 block">Project Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Client XYZ Standards"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300"
+            />
+          </div>
+
+          {/* File drop zone */}
+          <div>
+            <label className="text-xs font-bold text-slate-700 mb-1.5 block">Files</label>
+            <div
+              onDragOver={e => e.preventDefault()}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-colors"
+            >
+              <Upload className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+              <p className="text-sm text-slate-500 font-medium">Drop files here or click to browse</p>
+              <p className="text-xs text-slate-400 mt-1">.doc, .docx, .pdf accepted</p>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".doc,.docx,.pdf"
+              multiple
+              onChange={e => handleFiles(e.target.files)}
+              className="hidden"
+            />
+          </div>
+
+          {/* File list */}
+          {files.length > 0 && (
+            <div className="space-y-1.5">
+              {files.map((f, i) => (
+                <div key={i} className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <FileText className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span className="text-xs text-slate-700 truncate">{f.name}</span>
+                    <span className="text-[10px] text-slate-400 font-mono shrink-0">{formatSize(f.size)}</span>
+                  </div>
+                  <button onClick={() => removeFile(i)} className="text-slate-300 hover:text-red-500 transition-colors">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
+
+          <button
+            onClick={handleCreate}
+            disabled={uploading}
+            className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors disabled:opacity-50"
+          >
+            {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+            {uploading ? 'Uploading & Starting Build…' : 'Create & Build'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── User Project view (status + chatbot) ────────────────────────────────────
+
+const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (id: string) => void; onRefresh: () => void }> = ({ project, onBack, onDelete, onRefresh }) => {
+  const [status, setStatus] = useState<any>({ status: project.status });
+  const [files, setFiles] = useState<any[]>(project.files || []);
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'error'; content: string }[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
+  const [thinkingStep, setThinkingStep] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [dirty, setDirty] = useState(false);   // files changed since last build
+  const [rebuilding, setRebuilding] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const thinkingTimer = useRef<ReturnType<typeof setInterval>>();
+  const pollRef = useRef<ReturnType<typeof setInterval>>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isReady = status.status === 'ready';
+  const isProcessing = status.status === 'processing';
+
+  useEffect(() => {
+    if (isProcessing) {
+      const poll = () => {
+        fetch(`/api/user-projects/${project.id}/status`).then(r => r.json()).then(s => {
+          setStatus(s);
+          if (s.status !== 'processing') {
+            clearInterval(pollRef.current);
+            setRebuilding(false);
+            setDirty(false);
+            onRefresh();
+          }
+        }).catch(() => {});
+      };
+      poll();
+      pollRef.current = setInterval(poll, 5000);
+      return () => clearInterval(pollRef.current);
+    }
+  }, [project.id, isProcessing]);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, chatLoading, thinkingStep]);
+
+  const THINKING = ['Reading wiki index…', 'Searching pages…', 'Analyzing content…', 'Synthesizing answer…'];
+
+  const handleChat = async () => {
+    const q = chatInput.trim();
+    if (!q || chatLoading) return;
+    setMessages(prev => [...prev, { role: 'user', content: q }]);
+    setChatInput('');
+    setChatLoading(true);
+    let idx = 0;
+    setThinkingStep(THINKING[0]);
+    thinkingTimer.current = setInterval(() => { idx = Math.min(idx + 1, THINKING.length - 1); setThinkingStep(THINKING[idx]); }, 4000);
+
+    try {
+      const res = await fetch(`/api/user-projects/${project.id}/query`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: q }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Query failed');
+      setMessages(prev => [...prev, { role: 'assistant', content: d.answer }]);
+    } catch (e: any) {
+      setMessages(prev => [...prev, { role: 'error', content: e.message || 'Query failed' }]);
+    } finally {
+      clearInterval(thinkingTimer.current);
+      setThinkingStep('');
+      setChatLoading(false);
+    }
+  };
+
+  const handleAddFiles = async (fl: FileList | null) => {
+    if (!fl || fl.length === 0) return;
+    const valid = Array.from(fl).filter(f => /\.(doc|docx|pdf)$/i.test(f.name));
+    if (valid.length === 0) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      valid.forEach(f => fd.append('files', f));
+      const res = await fetch(`/api/user-projects/${project.id}/files`, { method: 'POST', body: fd });
+      const d = await res.json();
+      setFiles(d.files || []);
+      setDirty(true);
+      onRefresh();
+    } catch {}
+    finally { setUploading(false); }
+  };
+
+  const handleRemoveFile = async (filename: string) => {
+    try {
+      const res = await fetch(`/api/user-projects/${project.id}/files/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+      const d = await res.json();
+      setFiles(d.files || []);
+      setDirty(true);
+      onRefresh();
+    } catch {}
+  };
+
+  const handleRebuild = async () => {
+    if (files.length === 0) return;
+    setRebuilding(true);
+    try {
+      await fetch(`/api/user-projects/${project.id}/rebuild`, { method: 'POST' });
+      setStatus({ status: 'processing', stage: 'starting' });
+      setMessages([]);
+    } catch { setRebuilding(false); }
+  };
+
+  const formatSize = (bytes: number) => bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(0)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+
+  // ── File management panel (shown as a collapsible section) ──
+  const FilePanel = () => (
+    <div className="border-b border-slate-100 shrink-0">
+      <div className="px-6 py-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-bold text-slate-700">Source Files</p>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 bg-slate-100 rounded text-slate-500">{files.length}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {dirty && !isProcessing && (
+              <button
+                onClick={handleRebuild}
+                disabled={rebuilding || files.length === 0}
+                className="px-3 py-1.5 bg-slate-900 text-white rounded-lg font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-800 transition-colors disabled:opacity-50"
+              >
+                {rebuilding ? <Loader2 className="w-3 h-3 animate-spin" /> : <PlayCircle className="w-3 h-3" />}
+                Rebuild
+              </button>
+            )}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading || isProcessing}
+              className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-200 transition-colors disabled:opacity-50"
+            >
+              {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+              Add Files
+            </button>
+            <input ref={fileInputRef} type="file" accept=".doc,.docx,.pdf" multiple onChange={e => handleAddFiles(e.target.files)} className="hidden" />
+          </div>
+        </div>
+        <div className="space-y-1">
+          {files.map((f: any, i: number) => (
+            <div key={i} className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2 group">
+              <div className="flex items-center gap-2 min-w-0">
+                <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span className="text-[11px] text-slate-700 truncate">{f.name}</span>
+                {f.size && <span className="text-[10px] text-slate-400 font-mono shrink-0">{formatSize(f.size)}</span>}
+              </div>
+              {!isProcessing && (
+                <button onClick={() => handleRemoveFile(f.name)} className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          ))}
+          {files.length === 0 && (
+            <p className="text-[11px] text-slate-400 italic py-2">No files. Add files and rebuild to create the knowledge base.</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex-1 flex flex-col overflow-hidden bg-white">
+      <header className="px-6 py-3 bg-white border-b border-outline-variant/10 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5" /> Back
+          </button>
+          <span className="text-slate-200">/</span>
+          <span className="text-xs font-semibold text-slate-700 truncate">{project.name}</span>
+          {isReady && !dirty && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Ready</span>}
+          {isReady && dirty && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-600">Files Changed</span>}
+          {isProcessing && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-600 flex items-center gap-1"><Loader2 className="w-2.5 h-2.5 animate-spin" /> Building</span>}
+          {status.status === 'failed' && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600">Failed</span>}
+        </div>
+        <button onClick={() => onDelete(project.id)} className="text-slate-300 hover:text-red-500 transition-colors" title="Delete project">
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </header>
+
+      {isProcessing && (
+        <div className="px-6 py-4 bg-amber-50 border-b border-amber-100 shrink-0">
+          <div className="flex items-center gap-2">
+            <Loader2 className="w-4 h-4 text-amber-600 animate-spin" />
+            <p className="text-sm font-medium text-amber-800">Building knowledge base…</p>
+          </div>
+          <p className="text-xs text-amber-600 mt-1">Your files are being processed. This may take several minutes depending on file size.</p>
+        </div>
+      )}
+
+      {status.status === 'failed' && (
+        <div className="px-6 py-4 bg-red-50 border-b border-red-100 shrink-0">
+          <p className="text-sm font-medium text-red-800">Build failed</p>
+          <p className="text-xs text-red-600 mt-1">Check files and try rebuilding, or delete and recreate the project.</p>
+        </div>
+      )}
+
+      {/* File panel — always visible */}
+      <FilePanel />
+
+      {!isReady || isProcessing ? (
+        <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
+          <div className="h-16 w-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-5">
+            {isProcessing ? <Loader2 className="w-8 h-8 text-amber-500 animate-spin" /> : <FolderOpen className="w-8 h-8 text-slate-400" />}
+          </div>
+          <h2 className="text-lg font-extrabold text-slate-900 mb-2">{isProcessing ? 'Building…' : project.name}</h2>
+          <p className="text-sm text-slate-500 max-w-md">
+            {isProcessing ? 'Processing your files into a searchable knowledge base.' : 'Add files above and click Rebuild to create the knowledge base.'}
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Chat messages */}
+          <div className="flex-1 overflow-y-auto">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center px-8">
+                <div className="h-16 w-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-5">
+                  <BookOpen className="w-8 h-8 text-slate-400" />
+                </div>
+                <h2 className="text-lg font-extrabold text-slate-900 mb-2">Ask a Question</h2>
+                <p className="text-sm text-slate-500 max-w-md">Knowledge base is ready. Ask questions about the documents in this project.</p>
+              </div>
+            ) : (
+              <div className="px-6 py-4 space-y-4">
+                {messages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                      msg.role === 'user' ? 'bg-slate-900 text-white'
+                        : msg.role === 'error' ? 'bg-red-50 border border-red-100 text-red-600'
+                        : 'bg-slate-50 border border-slate-100 text-slate-700'
+                    }`}>
+                      <div className={`text-sm leading-relaxed whitespace-pre-wrap ${msg.role === 'user' ? '' : 'font-mono text-[13px]'}`}>{msg.content}</div>
+                    </div>
+                  </div>
+                ))}
+                {chatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 max-w-[75%]">
+                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+                        <span className="font-medium">{thinkingStep || 'Agent is working…'}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Chat input */}
+          <div className="px-6 py-4 bg-white border-t border-slate-100 shrink-0">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Ask about this project's documents…"
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleChat()}
+                disabled={chatLoading}
+                className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300 transition-all disabled:opacity-50"
+              />
+              <button
+                onClick={handleChat}
+                disabled={chatLoading || !chatInput.trim()}
+                className="px-4 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+              >
+                {chatLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 // ─── Main Library component ──────────────────────────────────────────────────
 
 export const Library: React.FC = () => {
@@ -271,11 +678,32 @@ export const Library: React.FC = () => {
 
   // sidebar section open states
   const [standardOpen,      setStandardOpen]      = useState(true);
+  const [docsOpen,          setDocsOpen]          = useState(false);
   const [refProjectsOpen,   setRefProjectsOpen]   = useState(true);
+
+  // view mode: 'query' (chatbot) vs 'docs' (document grid)
+  const [activeView,        setActiveView]        = useState<'query' | 'docs'>('query');
+
+  // chatbot state
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'error'; content: string }[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
+  const [thinkingStep, setThinkingStep] = useState('');
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const thinkingTimer = useRef<ReturnType<typeof setInterval>>();
 
   // reference projects
   const [completedProjects, setCompletedProjects] = useState<any[]>([]);
   const [selectedProject,   setSelectedProject]   = useState<any | null>(null);
+
+  // user projects (custom RAG)
+  const [userProjects,        setUserProjects]        = useState<any[]>([]);
+  const [selectedUserProject, setSelectedUserProject] = useState<any | null>(null);
+  const [creatingProject,     setCreatingProject]     = useState(false);
+
+  const refreshUserProjects = useCallback(() => {
+    fetch('/api/user-projects').then(r => r.json()).then(setUserProjects).catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch('/api/library')
@@ -288,7 +716,9 @@ export const Library: React.FC = () => {
       .then(r => r.json())
       .then((ps: any[]) => setCompletedProjects(ps.filter(p => p.status === 'completed')))
       .catch(() => {});
-  }, []);
+
+    refreshUserProjects();
+  }, [refreshUserProjects]);
 
   // Standard library view
   const allDocs: Doc[] = data
@@ -308,6 +738,58 @@ export const Library: React.FC = () => {
   const discCount: Record<number, number> = {};
   data?.disciplines.forEach(d => { discCount[d.id] = d.docs.length; });
   const presentIds = new Set(data?.disciplines.map(d => d.id) ?? []);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, chatLoading, thinkingStep]);
+
+  const THINKING_STEPS = [
+    'Reading wiki index…',
+    'Searching for relevant pages…',
+    'Reading wiki pages…',
+    'Following links…',
+    'Analyzing content…',
+    'Synthesizing answer…',
+  ];
+
+  const startThinking = () => {
+    let idx = 0;
+    setThinkingStep(THINKING_STEPS[0]);
+    thinkingTimer.current = setInterval(() => {
+      idx = Math.min(idx + 1, THINKING_STEPS.length - 1);
+      setThinkingStep(THINKING_STEPS[idx]);
+    }, 4000);
+  };
+
+  const stopThinking = () => {
+    clearInterval(thinkingTimer.current);
+    setThinkingStep('');
+  };
+
+  const handleChat = async () => {
+    const q = chatInput.trim();
+    if (!q || chatLoading) return;
+    setMessages(prev => [...prev, { role: 'user', content: q }]);
+    setChatInput('');
+    setChatLoading(true);
+    startThinking();
+
+    try {
+      const res = await fetch('/api/wiki/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Query failed');
+      setMessages(prev => [...prev, { role: 'assistant', content: d.answer }]);
+    } catch (e: any) {
+      setMessages(prev => [...prev, { role: 'error', content: e.message || 'Query failed' }]);
+    } finally {
+      stopThinking();
+      setChatLoading(false);
+    }
+  };
 
   return (
     <motion.div
@@ -332,50 +814,87 @@ export const Library: React.FC = () => {
 
           {standardOpen && (
             <nav className="py-1">
+              {/* Query */}
               <button
-                onClick={() => { setSelectedDisc('all'); setSelectedProject(null); }}
-                className={`w-full flex items-center justify-between px-5 py-2.5 text-sm transition-colors ${
-                  !selectedProject && selectedDisc === 'all'
+                onClick={() => { setActiveView('query'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
+                className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
+                  !selectedProject && !selectedUserProject && !creatingProject && activeView === 'query'
                     ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
                     : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
-                <span className="text-xs">All Documents</span>
-                {data && (
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">
-                    {data.total_docs}
-                  </span>
-                )}
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span className="text-xs">Query</span>
               </button>
 
-              {ALL_DISCIPLINES.map(disc => {
-                const hasData = presentIds.has(disc.id);
-                const count   = discCount[disc.id] ?? 0;
-                const active  = !selectedProject && selectedDisc === disc.id;
-                return (
+              {/* All Documents dropdown */}
+              <button
+                onClick={() => { setDocsOpen(o => !o); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
+                className={`w-full flex items-center justify-between px-5 py-2.5 text-sm transition-colors ${
+                  !selectedProject && !selectedUserProject && !creatingProject && activeView === 'docs'
+                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <FileText className="w-3.5 h-3.5" />
+                  <span className="text-xs">All Documents</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {data && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">
+                      {data.total_docs}
+                    </span>
+                  )}
+                  {docsOpen
+                    ? <ChevronDown className="w-3 h-3 text-slate-400" />
+                    : <ChevronRight className="w-3 h-3 text-slate-400" />}
+                </div>
+              </button>
+
+              {/* Discipline list (nested under All Documents) */}
+              {docsOpen && (
+                <div className="ml-4 border-l-2 border-slate-100">
                   <button
-                    key={disc.id}
-                    onClick={() => { if (hasData) { setSelectedDisc(disc.id); setSelectedProject(null); } }}
-                    className={`w-full flex items-center justify-between px-5 py-2 text-sm transition-colors ${
-                      !hasData
-                        ? 'text-slate-300 cursor-default'
-                        : active
-                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                    onClick={() => { setSelectedDisc('all'); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
+                    className={`w-full flex items-center justify-between pl-4 pr-5 py-2 text-sm transition-colors ${
+                      activeView === 'docs' && !selectedProject && selectedDisc === 'all'
+                        ? 'text-primary-container font-bold'
                         : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                     }`}
                   >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className={`text-[10px] font-mono font-bold shrink-0 ${active ? 'text-primary-container' : hasData ? 'text-slate-400' : 'text-slate-200'}`}>
-                        {disc.id}
-                      </span>
-                      <span className="truncate text-xs">{disc.name}</span>
-                    </div>
-                    {hasData
-                      ? <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded shrink-0 ml-1 ${active ? 'bg-primary-container/10 text-primary-container' : 'bg-slate-100 text-slate-400'}`}>{count}</span>
-                      : <span className="text-[10px] text-slate-200 shrink-0 ml-1">—</span>}
+                    <span className="text-xs">All</span>
                   </button>
-                );
-              })}
+                  {ALL_DISCIPLINES.map(disc => {
+                    const hasData = presentIds.has(disc.id);
+                    const count   = discCount[disc.id] ?? 0;
+                    const active  = activeView === 'docs' && !selectedProject && selectedDisc === disc.id;
+                    return (
+                      <button
+                        key={disc.id}
+                        onClick={() => { if (hasData) { setSelectedDisc(disc.id); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); } }}
+                        className={`w-full flex items-center justify-between pl-4 pr-5 py-1.5 text-sm transition-colors ${
+                          !hasData
+                            ? 'text-slate-300 cursor-default'
+                            : active
+                            ? 'text-primary-container font-bold'
+                            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className={`text-[10px] font-mono font-bold shrink-0 ${active ? 'text-primary-container' : hasData ? 'text-slate-400' : 'text-slate-200'}`}>
+                            {disc.id}
+                          </span>
+                          <span className="truncate text-xs">{disc.name}</span>
+                        </div>
+                        {hasData
+                          ? <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded shrink-0 ml-1 ${active ? 'bg-primary-container/10 text-primary-container' : 'bg-slate-100 text-slate-400'}`}>{count}</span>
+                          : <span className="text-[10px] text-slate-200 shrink-0 ml-1">—</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </nav>
           )}
         </div>
@@ -388,8 +907,8 @@ export const Library: React.FC = () => {
           >
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Reference Projects</p>
-              {completedProjects.length > 0 && (
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{completedProjects.length} completed</p>
+              {(completedProjects.length + userProjects.length) > 0 && (
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{completedProjects.length + userProjects.length} project{(completedProjects.length + userProjects.length) !== 1 ? 's' : ''}</p>
               )}
             </div>
             {refProjectsOpen
@@ -399,17 +918,63 @@ export const Library: React.FC = () => {
 
           {refProjectsOpen && (
             <nav className="py-2 border-t border-outline-variant/10">
-              {completedProjects.length === 0 ? (
-                <p className="pl-8 pr-4 py-2 text-[11px] text-slate-300 italic">No completed projects yet.</p>
-              ) : (
-                <div className="ml-5 border-l-2 border-slate-100">
+              {/* + New Project */}
+              <button
+                onClick={() => { setCreatingProject(true); setSelectedProject(null); setSelectedUserProject(null); }}
+                className={`w-full flex items-center gap-2 px-5 py-2 text-xs transition-colors ${
+                  creatingProject
+                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>New Project</span>
+              </button>
+
+              {/* User projects */}
+              {userProjects.map(proj => {
+                const active = selectedUserProject?.id === proj.id;
+                const isReady = proj.status === 'ready';
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => { setSelectedUserProject(active ? null : proj); setSelectedProject(null); setCreatingProject(false); }}
+                    className={`w-full text-left px-5 py-2 transition-colors ${
+                      active
+                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
+                      <p className="text-[11px] truncate leading-snug font-medium">{proj.name}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5 ml-5.5">
+                      {isReady ? (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Ready</span>
+                      ) : proj.status === 'processing' ? (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-600 flex items-center gap-1">
+                          <Loader2 className="w-2.5 h-2.5 animate-spin" /> Building
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600">Failed</span>
+                      )}
+                      <span className="text-[10px] font-mono text-slate-400">{proj.files?.length ?? 0} file{(proj.files?.length ?? 0) !== 1 ? 's' : ''}</span>
+                    </div>
+                  </button>
+                );
+              })}
+
+              {/* Completed agent projects */}
+              {completedProjects.length > 0 && (
+                <div className="ml-5 border-l-2 border-slate-100 mt-1">
                   {completedProjects.map(proj => {
                     const ps     = proj.context?.project_summary;
                     const active = selectedProject?.id === proj.id;
                     return (
                       <button
                         key={proj.id}
-                        onClick={() => setSelectedProject(active ? null : proj)}
+                        onClick={() => { setSelectedProject(active ? null : proj); setSelectedUserProject(null); setCreatingProject(false); }}
                         className={`w-full text-left pl-4 pr-3 py-2 transition-colors relative ${
                           active
                             ? 'bg-primary-container/10 text-primary-container border-r-2 border-primary-container'
@@ -425,37 +990,41 @@ export const Library: React.FC = () => {
                   })}
                 </div>
               )}
+
+              {completedProjects.length === 0 && userProjects.length === 0 && (
+                <p className="pl-8 pr-4 py-2 text-[11px] text-slate-300 italic">No projects yet.</p>
+              )}
             </nav>
           )}
         </div>
 
-        {/* Bottom stats (standard mode only) */}
-        {!selectedProject && data && (
-          <div className="mt-auto px-5 py-4 border-t border-outline-variant/10 space-y-2">
-            <div>
-              <p className="text-[10px] text-slate-400">Chunks indexed</p>
-              <p className="text-base font-mono font-bold">7,843</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-slate-400">Last sync</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <p className="text-[10px] font-medium text-emerald-600">Live</p>
-              </div>
-            </div>
-            <button className="w-full mt-2 bg-primary-container text-white py-2.5 rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-black transition-colors">
-              <PlayCircle className="w-3.5 h-3.5" />
-              Re-Index
-            </button>
-          </div>
-        )}
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <main className="flex-1 flex flex-col overflow-hidden">
 
-        {selectedProject ? (
-          /* ── Reference project view ── */
+        {creatingProject ? (
+          <CreateProjectView
+            onCancel={() => setCreatingProject(false)}
+            onCreated={(proj) => {
+              setCreatingProject(false);
+              setSelectedUserProject(proj);
+              refreshUserProjects();
+            }}
+          />
+        ) : selectedUserProject ? (
+          <UserProjectView
+            project={selectedUserProject}
+            onBack={() => setSelectedUserProject(null)}
+            onDelete={async (id) => {
+              await fetch(`/api/user-projects/${id}`, { method: 'DELETE' });
+              setSelectedUserProject(null);
+              refreshUserProjects();
+            }}
+            onRefresh={refreshUserProjects}
+          />
+        ) : selectedProject ? (
+          /* ── Reference project view (unchanged) ── */
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedProject.id}
@@ -480,10 +1049,107 @@ export const Library: React.FC = () => {
               </div>
             </motion.div>
           </AnimatePresence>
+        ) : activeView === 'query' ? (
+          /* ── Chatbot query view ── */
+          <div className="flex-1 flex flex-col overflow-hidden bg-white">
+            {/* Messages area */}
+            <div className="flex-1 overflow-y-auto">
+              {messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-center px-8">
+                  <div className="h-16 w-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-5">
+                    <BookOpen className="w-8 h-8 text-slate-400" />
+                  </div>
+                  <h2 className="text-lg font-extrabold text-slate-900 mb-2">Standard Knowledge Base</h2>
+                  <p className="text-sm text-slate-500 max-w-md mb-6">
+                    Ask questions about the engineering knowledge base. The agent navigates wiki pages, follows links, and queries SQL tables to find answers with cited sources.
+                  </p>
+                  <div className="flex flex-wrap gap-2 max-w-lg justify-center">
+                    {[
+                      'What is the document numbering convention?',
+                      'What pipe specifications are used?',
+                      'What are the electrical design criteria?',
+                    ].map((q, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setChatInput(q); }}
+                        className="text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors text-left"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="px-6 py-4 space-y-4">
+                  {messages.map((msg, i) => (
+                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                        msg.role === 'user'
+                          ? 'bg-slate-900 text-white'
+                          : msg.role === 'error'
+                          ? 'bg-red-50 border border-red-100 text-red-600'
+                          : 'bg-slate-50 border border-slate-100 text-slate-700'
+                      }`}>
+                        {msg.role === 'assistant' && (
+                          <div className="flex items-center gap-1.5 mb-2">
+                            <div className="h-4 w-4 bg-emerald-100 rounded flex items-center justify-center">
+                              <BookOpen className="w-2.5 h-2.5 text-emerald-600" />
+                            </div>
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-slate-400">Wiki Agent</span>
+                          </div>
+                        )}
+                        <div className={`text-sm leading-relaxed whitespace-pre-wrap ${
+                          msg.role === 'user' ? '' : 'font-mono text-[13px]'
+                        }`}>
+                          {msg.content}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {chatLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 max-w-[75%]">
+                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+                          <span className="font-medium">{thinkingStep || 'Agent is working…'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={chatEndRef} />
+                </div>
+              )}
+            </div>
+
+            {/* Input bar (pinned to bottom) */}
+            <div className="px-6 py-4 bg-white border-t border-slate-100 shrink-0">
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    placeholder="Ask about the engineering knowledge base…"
+                    value={chatInput}
+                    onChange={e => setChatInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleChat()}
+                    disabled={chatLoading}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300 transition-all disabled:opacity-50"
+                  />
+                </div>
+                <button
+                  onClick={handleChat}
+                  disabled={chatLoading || !chatInput.trim()}
+                  className="px-4 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                >
+                  {chatLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+          </div>
         ) : (
-          /* ── Standard library view ── */
+          /* ── All Documents view ── */
           <>
-            <header className="px-6 py-4 bg-white border-b border-outline-variant/10 flex items-center gap-3 shrink-0">
+            {/* Search + filter */}
+            <header className="px-6 py-3 bg-white border-b border-outline-variant/10 flex items-center gap-3 shrink-0">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
@@ -504,6 +1170,7 @@ export const Library: React.FC = () => {
               )}
             </header>
 
+            {/* Doc type pills */}
             {!loading && data && (
               <div className="px-6 py-3 bg-white border-b border-outline-variant/10 flex items-center gap-2 overflow-x-auto shrink-0">
                 {(['PRC', 'LST', 'SPC', 'DST', 'PKG'] as const).map(type => {
@@ -525,6 +1192,7 @@ export const Library: React.FC = () => {
               </div>
             )}
 
+            {/* Document grid */}
             <div className="flex-1 overflow-y-auto p-6">
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">

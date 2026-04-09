@@ -560,11 +560,124 @@ The first line must be exactly:  # {doc['doc_id']} — {doc['title']}"""
     return resp.text.strip()
 
 
+def extract_session_content_py(full_content: str, headings: list[str]) -> str:
+    """Extract section content from a markdown document by heading names."""
+    if not headings:
+        return full_content
+    norm = [h.lstrip('#').strip().lower() for h in headings]
+    lines = full_content.split('\n')
+    result: list[str] = []
+    in_section = False
+    section_level = 0
+    for line in lines:
+        m = re.match(r'^(#{1,6})\s+(.*)', line)
+        if m:
+            lvl = len(m.group(1))
+            text = m.group(2).strip().lower()
+            is_target = any(
+                text == h or text.startswith(h[:30]) or h.startswith(text[:30])
+                for h in norm
+            )
+            if is_target:
+                in_section = True
+                section_level = lvl
+                result.append(line)
+            elif in_section and lvl <= section_level:
+                in_section = False
+            elif in_section:
+                result.append(line)
+        elif in_section:
+            result.append(line)
+    return '\n'.join(result).strip()
+
+
+def suggest_sessions_config(doc_id: str, content: str, client: genai.Client) -> list[dict]:
+    """Ask LLM to split a PM document into editable sessions for each engineering discipline."""
+
+    # Extract all headings so the LLM can reference exact text
+    heading_lines = [
+        line.lstrip('#').strip()
+        for line in content.split('\n')
+        if re.match(r'^#{1,4}\s', line)
+    ]
+    headings_str = '\n'.join(f'- {h}' for h in heading_lines) if heading_lines else '(no headings found)'
+
+    prompt = f"""You are splitting an engineering project management document into editable sections for different engineering disciplines.
+
+Document ID: {doc_id}
+
+HEADINGS IN THIS DOCUMENT:
+{headings_str}
+
+DOCUMENT CONTENT (first 4000 chars):
+{content[:4000]}
+
+TASK: Group the headings into sessions — one session per engineering discipline that has relevant content.
+
+DISCIPLINE DEFINITIONS:
+- "process": fluid properties, process design criteria, temperatures, pressures, flow rates, process conditions, design basis, utility requirements, process scope, line sizing, P&ID notes
+- "mechanical": equipment, pump specifications, motor, mechanical design, equipment list, vendor data, material selection, mechanical engineering scope, instrument list
+- "pm": project administration, document control, project overview, WBS, schedule, milestones, team structure, risk register, procurement, document register, revision history
+
+STRICT RULES:
+1. If ANY heading covers process topics → create a session with owner="process" and edit=["pm","process"]
+2. If ANY heading covers mechanical/equipment topics → create a session with owner="mechanical" and edit=["pm","mechanical"]
+3. Remaining admin/overview headings → session with owner="pm" and edit=["pm"]
+4. All sessions: view=["pm","process","mechanical"]
+5. ALWAYS create at least 2 sessions if the document has 3+ headings — engineering project documents always have SOME technical content
+6. Use the EXACT heading text from the list above (no # symbols, no changes)
+
+Return ONLY a valid JSON array, no markdown, no extra text:
+[
+  {{
+    "id": "pm_admin",
+    "title": "Project Administration",
+    "owner": "pm",
+    "headings": ["Introduction", "Project Overview", "Document Control"],
+    "permissions": {{"view": ["pm","process","mechanical"], "edit": ["pm"]}}
+  }},
+  {{
+    "id": "process_session",
+    "title": "Process Engineering",
+    "owner": "process",
+    "headings": ["Process Design Criteria", "Fluid Properties"],
+    "permissions": {{"view": ["pm","process","mechanical"], "edit": ["pm","process"]}}
+  }},
+  {{
+    "id": "mechanical_session",
+    "title": "Mechanical Engineering",
+    "owner": "mechanical",
+    "headings": ["Equipment List", "Mechanical Scope"],
+    "permissions": {{"view": ["pm","process","mechanical"], "edit": ["pm","mechanical"]}}
+  }}
+]"""
+
+    try:
+        resp = client.models.generate_content(
+            model=GENERATION_MODEL,
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0.1),
+        )
+        text = resp.text.strip()
+        if text.startswith('```'):
+            text = re.sub(r'^```[a-z]*\n?', '', text)
+            text = re.sub(r'\n?```$', '', text)
+        sessions = json.loads(text.strip())
+        # Validate — must be a list with at least one item having owner != 'pm', or at least one session
+        if not isinstance(sessions, list) or len(sessions) == 0:
+            raise ValueError('Empty sessions list')
+        return sessions
+    except Exception:
+        # Fallback: single PM-owned session covering everything
+        return [{'id': 'default', 'title': 'Full Document', 'owner': 'pm',
+                 'headings': [], 'permissions': {'view': ['pm', 'process', 'mechanical'], 'edit': ['pm']}}]
+
+
 def generate_pm_deliverables(register: list[dict], context: dict,
                               collection, client: genai.Client,
                               json_mode: bool = False) -> dict[str, str]:
     """Generate filled documents for all PM-owned deliverables.
-    Returns dict of {doc_id: markdown_content}.
+    Returns deliverables dict. Session config is generated lazily via the API.
     """
     DELIVERABLES_DIR.mkdir(exist_ok=True)
     pm_docs   = [d for d in register if d.get('assigned_to') == 'PM']

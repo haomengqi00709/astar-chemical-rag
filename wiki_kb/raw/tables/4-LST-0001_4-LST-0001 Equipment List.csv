@@ -1,0 +1,6 @@
+# doc_id=4-LST-0001 discipline=4 revision=R1
+col_0,Equipment Number,col_2,col_3,col_4,col_5,Equipment Name,Equipment Type,Qty,Capacity / Size,col_10,Motor,col_12,Materials of,col_14,Remarks,Weight,PO,Design,Supply /
+,KC,,,Owner,,,,,,,Power,Speed,Construction,,,,No.,Cat'y,Origin
+,,,,,,,,,,,kW,RPM,,,,kg,,,
+,Notes:,,,,,,,,,,,,,,,,,,
+,"1) Empty Weight denoted by (E), Operating Weight denoted by (O).",,,,,,,,,,,,,,,,,,

@@ -1,0 +1,16 @@
+# doc_id=9-LST-0001 discipline=9 revision=R0
+Document Number,col_1,col_2,Document Description,Revision
+9-GAD-0000,to,9-GAD-0049,Index,
+9-GAD-0050,to,9-GAD-0099,Electrical Site Plan,
+9-GAD-0100,to,9-GAD-0149,Grounding Layouts,
+9-GAD-0150,to,9-GAD-0199,Lighting Layouts,
+9-GAD-0200,to,9-GAD-0249,Power and Control Layouts,
+9-GAD-0250,to,9-GAD-0299,Instrument Electrical Layouts,
+9-GAD-0300,to,9-GAD-0349,Cable Tray Layouts (ISOMETRICS from PDMS),
+9-GAD-0350,to,9-GAD-0399,Lightning Protection Layouts,
+9-GAD-0400,to,9-GAD-0449,Fire Detection & Alarm Layouts,
+9-GAD-0450,to,9-GAD-0499,Plant Communications Layouts,
+9-GAD-0500,to,9-GAD-0549,Hazardous Area Classification Layouts,
+9-GAD-0550,to,9-GAD-0599,Equipment Location Layouts,
+9-GAD-0600,to,9-GAD-0649,MCC/Switchgear Layouts,
+9-GAD-0650,to,9-GAD-0699,,

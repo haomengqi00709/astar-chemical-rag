@@ -1,0 +1,19 @@
+# doc_id=9-LST-0730 discipline=9 revision=R0
+The following describes the actions required to be taken during water batching:,
+Check and set dry run protection relay (dry-kut relay) where applicable.  (Mounted in MCC located starter).,
+Run the pump or agitator loaded.  Note dry kut relay meter deflection and set “low set” to just below the observed meter deflection.,
+Simulate dry running pump or agitator.  Again note power meter deflection is now below low set point.  Motor must stop within approximately 5 seconds.  Red LED must be on and restart must be impossible.,
+Reset power motor (dry kut relay) by manually pushing the “reset” button on the device.,
+Repeat steps before one more time and observe actions.,
+Dry run protection relay accepted.,
+Check operation of DCS located selector switch (where applicable) by simulating low flow conditions in both selector switch positions.,
+"When selector switch is in “Pump 1” position (P1 is primary pump) and P 1 is running, Pump 2 must “auto start” on low from condition.",
+"When selector switch is in “Pump 2” position (P2 is primary pump) and Pump 2 is already running, then Pump 1 must “auto start” on low flow condition.",
+"During actual operation (with fluid as specified).  Have electrician take full load current data from motor nameplate .  
+
+Actual full load current:		_________ A
+Nameplate full load current:	_________ A
+
+Note:	Nameplate readings must always be equal to or larger than the measurement taken.  If this is not the case, check driven equipment, alignment and all other conditions that could result in a larger than nameplate reading.",
+Check for motor overheating.  If this condition exists it must be corrected before the hand-over of the plant.,
+System ready for commissioning,

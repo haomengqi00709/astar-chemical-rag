@@ -1,0 +1,10 @@
+# doc_id=0-PRC-2204 table=2 inline=true
+Cost:,
+The Prices within budget,Project Manager
+"The Prices within budget + greater of 10% or $1,000",Director of Projects
+"The Prices greater than budget + greater of 10% or $1,000",President
+Risk:,
+All evaluations satisfactory,Project Manager
+All evaluation qualifications addressed by alternate bid or Subcontract-Specific Conditions,Director of Projects
+Any evaluation qualifications not addressed by alternate bid or Subcontract-Specific Conditions,President
+Any evaluation unsatisfactory,President

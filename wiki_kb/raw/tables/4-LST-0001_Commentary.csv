@@ -1,0 +1,17 @@
+# doc_id=4-LST-0001 discipline=4 revision=R1
+col_0,Commentary to 4-LST-0001: Equipment List
+1),This document is designed to be printed on 11x17 paper at 100%.  The font size is consistent with other KC documentation.
+2),Cut and paste information from the proposal equipment list.  4-LST-0001 includes the following columns additional to the proposal equipment list:
+,Owner Tag Number
+,Motor Power
+,Motor Speed
+,Weight
+,PO Number
+,Design Category
+,Origin
+3),Additional columns can be added if required.  Any new columns will require a reduction in some of the existing columns to maintain the spacing of the document.  Projects are discouraged from adding columns to include other information that is available elsewhere.
+4),Tag No. and Equipment Name will match the PID EXACTLY.  Note that the tags and names will also match the technology master equipment list.
+5),"When entering Equipment Type, use a generic term for the equipment (end suction centrifugal, atmospheric, vertical turbine, etc), any other required information will be entered in the Remarks column."
+6),"When entering Size/ Capacity information, state the parameter (diameter, area, flow, head, etc.) in the first column, and the value with units in the second.  List only basic information, detailed information is located on data sheets."
+7),"When entering Materials of Construction, state the relevant part (shell, impeller, gasket, wetted parts, etc) in the first column, and the specific material (316 st. st., gr.2 Ti, CPVC, etc.) in the second colum.  List only basic information, detailed information is located on data sheets."
+8),The attached list shows examples of typical data.  Note that area headers are formatted differently than the equipment lines.  Also note that area headers have white text on white background in the equipment number colum indicating the area number - this allows the table to be sorted back to numerical order (by equipment number).

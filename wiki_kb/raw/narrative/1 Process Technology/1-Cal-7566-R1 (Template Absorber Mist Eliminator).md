@@ -1,0 +1,302 @@
+---
+doc_id: 1-Cal-7566-R1 (Template Absorber Mist Eliminator)
+doc_type: CAL
+discipline: 1
+discipline_name: Process Technology
+source_folder: Unknown
+revision: R1
+is_template: True
+track: A
+---
+
+# 1-Cal-7566-R1 (Template Absorber Mist Eliminator) — Unknown
+
+
+## Sheet: Dialog1
+
+## Sheet: Dialog2
+
+## Sheet: Signature Sheet
+- Client Name | Calculation | CHEMETICS
+- Project Title | Absorber Mist Eliminator
+- A Division of Aker Kvaerner Canada Inc.
+Vancouver, Canada
+- Location
+- Tag. No.: | 7566-K
+- Client Document # | Standard-1-CAL-7566-R1
+- Rev: | Date: | Status: | Prepared By: | Checked By: | Approved By:
+- 1.0 | 1655.0 | Standard | J. Thomson | A.Bacon/ T. Ueki | C. Moser
+- 0.0 | 1610.0 | Comments Requested | J. Spath | J. Thomson | C. Moser
+- |
+- Note: User is to consult with Technology Manager prior to modifying parameters  not hilited in Blue
+
+## Sheet: Aspen
+- Aspen Stream Table | Gas to Twr | Gas Exit Twr | Acid to Twr | Acid Exit Twr
+- Paste Here | 765.0 | 717.0 | 718.0 | S35
+- 7567-U | 7567-U | B33 | B4
+- B12 | B13 | 7567-U | 7567-U
+- LIQUID | VAPOR | VAPOR | LIQUID
+- Temperature C | 72.6 | 180.0 | 72.6 | 106.0 | Temperature C | 180.0 | 72.6 | 72.6 | 106.0
+- Pressure    BARG | 3.2932 | 0.171 | 0.1226 | 0.1226 | Pressure    BARG | 0.171 | 0.1226 | 3.2932 | 0.1226
+- Mole Flow   KMOL/HR | Mole Flow   KMOL/HR
+- SO2 | 0.0 | 4.05 | 4.05 | 0.0 | SO2 | 4.05 | 4.05 | 0.0 | 0.0
+- SO3 | 0.0 | 87.95 | 0.0 | 0.0 | SO3 | 87.95 | 0.0 | 0.0 | 0.0
+- O2 | 0.0 | 57.65 | 57.65 | 0.0 | O2 | 57.65 | 57.65 | 0.0 | 0.0
+- N2 | 0.0 | 741.62 | 741.6 | 0.01 | N2 | 741.62 | 741.6 | 0.0 | 0.01
+- CO2 | 238.31 | 0.01 | 0.01 | 150.36 | CO2 | 0.01 | 0.01 | 238.31 | 150.36
+- H2O | 0.0 | 63.99 | 63.96 | 0.02 | H2O | 63.99 | 63.96 | 0.0 | 0.02
+- H2SO4 | 2187.23 | 0.0 | 0.0 | 2275.18 | H2SO4 | 0.0 | 0.0 | 2187.23 | 2275.18
+- SULPHUR | 0.0 | 0.0 | 0.0 | 0.0 | SULPHUR | 0.0 | 0.0 | 0.0 | 0.0
+- Mole Flow   KMOL/HR | 2425.5 | 955.3 | 867.3 | 2425.6 | Mole Flow   KMOL/HR | 955.3 | 867.3 | 2425.5 | 2425.6
+- Mass Flow   KG/HR | 218801.8 | 32737.4 | 25694.4 | 225844.1 | Mass Flow   KG/HR | 32737.4 | 25694.4 | 218801.8 | 225844.1
+- Volume Flow M3/HR | 122.5 | 30390.1 | 21949.1 | 129.5 | Volume Flow M3/HR | 30390.1 | 21949.1 | 122.5 | 129.5
+- Enthalpy    KW | -510201.3 | -15657.9 | -6988.6 | -518870.6 | Enthalpy    KW | -15657.9 | -6988.6 | -510201.3 | -518870.6
+- *** VAPOR PHASE *** | *** VAPOR PHASE ***
+- Density     KG/M3 | 1.08 | 1.17 | Density     KG/M3 | 1.08 | 1.17
+- Viscosity   CP | 0.0238 | 0.0198 | Viscosity   CP | 0.0238 | 0.0198
+- Heat Cap    KJ/KG-K | 0.974 | 1.013 | Heat Cap    KJ/KG-K | 0.974 | 1.013
+- mole frac | mole frac
+- SO2 | 0.0042 | 0.0047 | SO2 | 0.0042 | 0.0047
+- SO3 | 0.0921 | 0.0 | SO3 | 0.0921 | 0.0
+- *** LIQUID PHASE *** | *** LIQUID PHASE ***
+- Density     KG/M3 | 1785.9 | 1743.8 | Density     KG/M3 | 1785.9 | 1743.8
+- Viscosity   CP | 6.88 | 3.72 | Viscosity   CP | 6.88 | 3.72
+- Heat Cap    KJ/KG-K | 1.508 | 1.57 | Heat Cap    KJ/KG-K | 1.508 | 1.57
+- wt frac | wt frac
+- H2SO4 | 0.9804 | 0.988 | H2SO4 | 0.9804 | 0.988
+- SO2 | 0.0 | 0.0 | SO2 | 0.0 | 0.0
+- SO3 | 0.0 | 0.0 | SO3 | 0.0 | 0.0
+- Specify Stream ID | Acid to Twr | Gas to Twr | Gas Exit Twr | Acid Exit Twr
+- Gas to Twr
+- Gas Exit Twr
+- Acid to Twr
+- Acid Exit Twr
+
+## Sheet: Data Input
+- Absorber Mist Eliminator
+- Chemetics
+- Client Name: | Client Name | Project No: | Standard
+- Project Title: | Project Title | Client Document # : | Client Document #
+- Location: | Location | Date: | 1655.0
+- Tag Number: | 7566-K | Revision: | 1.0
+- Service: | Absorber Mist Eliminator | By: | JT
+- Case Description: | Case Description
+- Design Basis: | Design Basis
+- Quantity | 7.0 | Operating | 7.0 | Installed Spare | 0.0
+- Component | SO2 | SO3 | O2 | N2 | CO2 | H2O
+- Vapour Vol.% | 0.4669826005742156 | 0.0 | 6.647295536568773 | 85.50970286070081 | 0.0011530434582079398 | 7.374865958697982
+- Gas Flow | 21949.1 | Am3/h | 12918.635633756801 | ACFM
+- 21398.719999999998 | Nm3/h
+- 25694.4 | kg/h
+- Temperature | 72.6 | deg C
+- Pressure (g) | 12.26 | kPa
+- Denisty | 1.17 | kg/m3
+- MW | 29.626759832578088 | kg/kmol
+- Viscosity | 0.0198 | cP
+- Inlet Mist Load | 700.0 | mg/m3
+- Outlet Mist Load | 45.0 | mg/m3
+- Minimum Particle Size | 1.0 | micron
+- Acid Strength | 98.04 | % H2SO4
+- Acid Density | 1785.9 | kg/m3
+- Acid Viscosity | 6.88 | cP
+- Candle Dimensions
+- Filter Type | 2.0 | 1.0 | Type HT | Hanging
+- 2.0 | Type F | Standing
+- Fibre Type | 1.0 | 1.0 | TGW15 | Highest efficiency type of glass wool
+- 2.0 | B12 | High efficiency lower pressure drop type of glass wool
+- 3.0 | P.P.12(poly) | High efficiency, corrosive use type of polypropylene wool
+- Filter Size | 1.0 | 1.0 | 24" OD x 20" ID
+- 2.0 | 20" OD x 16" ID
+- 3.0 | 18" OD x 14" ID
+- 4.0 | 16" OD x 12" ID
+- Recommended Values
+- Candle Height | 4.572013789193588 | m | 15.0 | ft | 15.0
+- Design Gas Velocity | 0.1524 | m/s | 29.999909520000003 | ft/min | 30.0
+- Candle Pitch | 0.7620022981989314 | m | 30.0 | in
+- Candle O.D. | 0.6096018385591451 | m | 24.0 | in
+- Candle I.D. | 0.5080015321326209 | m | 20.0 | in
+- Thickness | 0.05080015321326209 | m | 2.0 | in
+- Calculated Inside Area | 7.296631712220084 | m2 | 78.53981633974483 | ft2
+- Effective Inside Area | 6.566968540998076 | m2 | 70.68583470577035 | ft2
+- Outside Area | 8.7559580546641 | m2 | 94.24777960769379 | ft2
+- Spacing Between Elements | 0.15240045963978627 | m | 6.0 | in
+- Preliminary Calculations
+- Area Required | 40.006379410906966 | m2 | 430.6224865493128 | ft2
+- No. of Elements Required | 6.092061985853008 | #
+- Pressure Drop
+- No. of Elements | 7.0 | Type F | TGW15 | 24OD x 20ID
+- Effective Inside Area | 45.96877978698653 | m2 | 494.80084294039244 | ft2
+- Gas Velocity | 0.13263289237771408 | m/s | 26.10875833797454 | ft/min
+- Base Pressure Drop | 166.76477400774309 | mm WC | 6.565522482093885 | in WC
+- Mist Load Correction Factor | 1.02
+- Corrected Pressure Drop | 170.10006948789797 | mm WC | 6.696832931735763 | in WC
+- Min. Housing Diameter Rec.(Note 2) | 2.301581209999974 | m | 7.551096681204214 | ft
+- Selected Housing Diameter | 2.5 | m | 8.202075 | ft
+- Max. Number of Elements (Note 2)
+- Maximum Inlet Mist Load | (Note 1)
+- Housing Area | 4.908738521234053 | m2 | 52.83690298797481 | ft2
+- Candle Cross-Sectional Area | 2.0430568794216235 | m2 | 21.991148575128552 | ft2
+- Free Area | 2.865681641812429 | m2 | 30.845754412846258 | ft2
+- Vertical Superficial Velocity | 2.1275818406562883 | m/s | 6.98023433028037 | ft/s
+- Maximum Inlet Mist Load | 18391.38101050195 | mg/m3 | 520.7906267887852 | mg/ACF
+- Inlet Mist Loading | 700.0 | mg/m3 | 19.821971963061404 | mg/ACF
+- Notes:
+- 1. Based on Begg, Cousland chart of outlet velocity/mist load re-entrainment effect
+- 2. Based on triangular pitch (1.25 x OD) and layout of candle elements. The recommended value is +/- 5% accurate for Candles of 24 and 16 inches OD
+
+## Sheet: Data Sheet
+- Client Name | Process Data Sheet | CHEMETICS
+- Project Title | Absorber Mist Eliminator
+- A Division of Aker Kvaerner Canada Inc.
+Vancouver, Canada
+- Location
+- Tag No.: | 7566-K
+- Client Document # | Standard-4-PDS-7566-R1
+- Rev: | Date: | Status: | Prepared By: | Checked By: | Approved By:
+- 1.0 | 1655.0 | Standard | J. Spath | J. Thomson | C. Moser
+- Number of Units: | 7.0 | Unit Operating: | 7.0 | Installed Spare: | 0.0
+- PROCESS DESIGN CONDITIONS
+- Cell Description: | Case Description
+- Design Basis: | Design Basis
+- Inlet Gas Data
+- Description | Process Gas
+- Composition | Vol% | 0.4669826005742156 | SO2 | 0.0 | SO3
+- 6.647295536568773 | O2 | 85.50970286070081 | N2
+- 0.0011530434582079398 | CO2 | 7.374865958697982 | H2O
+- Flow Rate | Am3/h | 21949.1
+- Nm3/h | 25694.4
+- Total Flowrate | kg/h | 25694.4
+- Temperature | oC | 72.6
+- Pressure | kPa(g) | 12.26
+- Density | kg/m3 | 1.17
+- Molecular Weight | kg/kmol | 29.626759832578088
+- Viscosity | cP | 0.0198
+- Entrained Material Data
+- Description | Acid Mist
+- Composition | % w/w | 98.04 | H2SO4
+- Inlet Load | mg/Nm3 | 700.0
+- Density | kg/m3 | 1785.9
+- Viscosity | cP | 6.88
+- Size Distribution | % above | microns
+- % between | microns
+- % between | microns
+- % below | microns
+- Particle Type: | Solid | x | Liquid | Solid + Liquid
+- Performance Requirements
+- Required Collection Efficiency | % above | microns
+- % between | microns
+- % between | microns
+- % below | microns
+- Overall Collection Efficiency | % | VTA
+- Outlet Load | mg/Nm3 | 45.0 | Maximum
+- Maximum Allowable Pressure Drop | kPa
+- Clean Pressure Drop | kPa | VTA
+- Dirty Pressure Drop | kPa
+- Turndown | % | 40% to 110% of design flow
+- Equipment Data
+- Type: | Cyclone | Interception Candle
+- Chevron | Single Mesh Pad | Dual Mesh Pad
+- Impaction Candle | Brownian Diffusion Candle | Other
+- Orientation: | Vertical | Horizontal
+- Candle Standing | Candle Hanging
+- Materials of Construction
+- Cage / Housing: | 316 L ss
+- Element: | Glass fibre
+- Gasket: | Gore-Tex Sealant
+- Bolting: | 316 L ss
+- NOTES
+- 1.0 | Vendor to provide curves for predicted collection efficiency versus particle size.
+- 2.0 | Vendor to guarantee outlet particle load and clean pressure drop.
+
+## Sheet: Commentary
+- Changes to Rev 1
+- 1- Nm3/h on the data sheet fixed to take from correct cell
+- 2- Formating changed so that notes are visible on Minimum Housing Diameter and Max. Number of Elements
+- 3- Particule Type  changed to Particle Type
+- 4- Defaults on Data Sheet Hilited in blue
+- 5- Redundant reference to temperature deleted from data sheet(line 29)
+- 6- Sort macro debugged.
+
+## Sheet: Dimensions
+- Mist Eliminator | 23
+- CANDLES | 23
+- 23 | 23 | Project No. | 23
+- 23 | 23 | Date | 23
+- 23 | 23 | Revision | 23
+- 23 | 23 | By | 23
+- Filter Size
+- Candles Dimensions | Maximum Heights
+- OD | ID | Type HT | Type F
+- (in) | (in) | (ft) | (ft)
+- 24" OD x 20" ID | 1.0 | 24.0 | 20.0 | 12.0 | 15.0
+- 20" OD x 16" ID | 2.0 | 20.0 | 16.0 | 11.0 | 15.0
+- 18" OD x 14" ID | 3.0 | 18.0 | 14.0 | 10.0 | 12.0
+- 16" OD x 12" ID | 4.0 | 16.0 | 12.0 | 8.0 | 10.0
+- Bed Velocity and Pressure Drop
+- Fibre Type | Optimum bed | Mist Size | Pressure | Correction | Gas Velocity
+- Velocities | Velocity | Drop | Factors, F1
+- (ft/min) | (ft/min) | (mmWC) | (ft/min) | (ft/s)
+- TGW15 | 1.0 | 30.0 | 26.5494378 | 166.76427104518467 | 1.02 | 26.10875833797454 | 0.43514597229957563
+- B12 | 2.0 | 90.0 | 79.6483134 | 52.52056832833182 | 1.0 | 26.10875833797454 | 0.43514597229957563
+- P.P.12(poly) | 3.0 | 30.0 | 26.5494378 | 147.95033945611928 | 1.02 | 26.10875833797454 | 0.43514597229957563
+- Mist Load Correction Factor
+- Mist Load | Correction Factor | Correction Factor
+- (mg/m3) | TGW 15 | B12 | TGW 15 | B12
+- PP12 (poly) | PP12 (poly)
+- 700.0 | 1.02 | 1.0 | 1.02 | 1.0
+- 1400.0 | 1.09 | 1.02 | 0.0 | 0.0
+- 2100.0 | 1.13 | 1.06 | 0.0 | 0.0
+- 2800.0 | 1.16 | 1.09 | 0.0 | 0.0
+- 3600.0 | 1.19 | 1.11 | 0.0 | 0.0
+- 10000.0 | 1.3 | 1.25 | 0.0 | 0.0
+- 20000.0 | 1.41 | 1.32 | 0.0 | 0.0
+- 50000.0 | 1.53 | 1.45 | 0.0 | 0.0
+- 80000.0 | 1.63 | 1.5 | 0.0 | 0.0
+- 107000.0 | 1.67 | 1.56 | 0.0 | 0.0
+- 1.02 | 1.0
+- Mist Size Correction Factor
+- Mist Size | Velocity | Optimum | Ratio
+- microns | ft/min | ft/min
+- 1.0 | 26.5494378 | 30.0 | 0.88498126
+- Intermediate Absorption Tower
+- Particle | Cum | % diff | Collection | Penetration
+- Diameter, mm | % (less) | Efficiency | g/100 g
+- 3.0 | 75.0 | 100.0
+- 2.5 | 70.0 | 5.0 | 100.0 | 0.0
+- 2.0 | 64.0 | 6.0 | 100.0 | 0.0
+- 1.5 | 43.0 | 21.0 | 100.0 | 0.0
+- 1.0 | 15.0 | 28.0 | 98.0 | 0.5600000000000005
+- 0.5 | 2.5 | 12.5 | 54.0 | 5.75
+- 0.2 | 0.2 | 2.3 | 10.0 | 2.07
+- 0.0 | 0.0 | 0.2 | 2.0 | 0.196
+- Total | 8.576
+- Overall Eff % | 91.424
+- Final Absorption Tower
+- Particle | Cum | % diff | Collection | Penetration
+- Diameter | % (less) | Efficiency | g/100 g
+- 3.0 | 60.0 | 100.0
+- 2.5 | 43.0 | 17.0 | 100.0 | 0.0
+- 2.0 | 18.0 | 25.0 | 100.0 | 0.0
+- 1.5 | 6.0 | 12.0 | 100.0 | 0.0
+- 1.0 | 2.5 | 3.5 | 100.0 | 0.0
+- 0.5 | 0.9 | 1.6 | 90.69 | 0.14896000000000012
+- 0.2 | 0.5 | 0.4 | 92.46 | 0.03016000000000001
+- 0.0 | 0.0 | 0.5 | 0.5
+- Total | 0.6791200000000002
+- Overall Eff % | 99.32088
+- # Candles | Housing Diameter, mm | Calculated Housing Diameter, mm | Error, % | Calculated Housing Diameter, mm | Error, %
+- 24" OD | 16" OD | 24" OD | 16" OD | 24" OD | 16" OD | 24" OD | 16" OD | 24" OD | 16" OD
+- 1.0 | 750.0 | 550.0 | 893.059901763899 | 658.9651173198414 | -19.074653568519867 | -19.811839512698437 | 755.9666900000004 | 560.7198467780338 | -0.7955586666667234 | -1.9490630505515996
+- 2.0 | 1480.0 | 1085.0 | 1255.0079409294337 | 926.0369359305699 | 15.202166153416638 | 14.650973646952078 | 1453.45886 | 1078.0676451198863 | 1.793320270270273 | 0.6389267170611737
+- 3.0 | 1595.0 | 1155.0 | 1531.3835394731336 | 1129.9671295928074 | 3.988492823001027 | 2.167348087202823 | 1630.7636099999975 | 1209.5791172100337 | -2.242232601880719 | -4.725464693509411
+- 4.0 | 1785.0 | 1295.0 | 1763.6498164177303 | 1301.3502295774067 | 1.1960887160935387 | -0.49036521833256436 | 1783.3251799999991 | 1322.7379392668854 | 0.09382745098044054 | -2.141925812114703
+- 5.0 | 2000.0 | 1450.0 | 1967.8063013124852 | 1451.9918626353483 | 1.6096849343757411 | -0.13736983692057225 | 1986.5292500000025 | 1473.4596000256083 | 0.6735374999998726 | -1.6179034500419534
+- 6.0 | 2220.0 | 1605.0 | 2152.037616795277 | 1587.9312438362322 | 3.06136861282537 | 1.0634739042846 | 2172.7517399999733 | 1611.5855881685616 | 2.1283000000012016 | -0.410317019848073
+- 7.0 | 2220.0 | 1605.0 | 2321.1963075298913 | 1712.7489366532989 | -4.558392231076186 | -6.713329386498372 | 2301.581209999974 | 1707.1417041118389 | -3.6748292792781037 | -6.363969103541361
+- 8.0 | 2445.0 | 1770.0 | 2478.439038916956 | 1828.774160416579 | -1.3676498534542403 | -3.3205740348349706 | 2423.214859999952 | 1797.3604961475573 | 0.891007770963115 | -1.5457907427998498
+- 9.0 | 2675.0 | 1935.0 | 2625.955482199282 | 1937.622615220278 | 1.8334399177838518 | -0.13553567029860575 | 2635.0281299999506 | 1954.4678209424549 | 1.494275514020539 | -1.0060889375945667
+- 10.0 | 2905.0 | 2100.0 | 2765.3380579291156 | 2040.4693057801612 | 4.807640002440082 | 2.8347949628494655 | 2931.3179000000046 | 2174.233528392249 | -0.9059518072290724 | -3.534929923440424
+- 11.0 | 2960.0 | 2140.0 | 2897.7876711839426 | 2138.200347970105 | 2.1017678654073437 | 0.08409588924741997 | 2946.219289999887 | 2185.2862708318844 | 0.465564527030837 | -2.116180879994598
+- 12.0 | 3075.0 | 2225.0 | 3024.2364402684284 | 2231.5035270627172 | 1.6508474709454182 | -0.2922933511333591
+- 13.0 | 3135.0 | 2270.0 | 3145.425006559971 | 2320.9253426054356 | -0.3325360944169322 | -2.243407163235049 | A1 | 7.2927519431491 | B4 | 562.89329
+- ...(truncated)

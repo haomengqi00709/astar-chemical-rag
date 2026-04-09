@@ -1,0 +1,71 @@
+# doc_id=0-LST-5001 discipline=0 revision=R1
+col_0,Project Title,col_2,col_3,col_4,col_5,col_6,col_7,Procurement Plan,col_9,col_10,col_11,col_12,col_13,col_14,col_15,col_16,Standard-0-LST-5001-R1
+,Location,,,,,,,,,,,,,,,,Client Document Number
+,No.,Name (PO or Subcontract),AKC Equip.No.,Equip. No.,Equipment Name,"Status
+(2)",Bidders/Vendor,"Factory 
+Location","Delivery
+(wks ARO)",Req. on Site Date,Priority(3),Terms (4),Inspect. Level (5),"Est. Value
+CAD(6)","Bud.
+Cur.(7)",Received on Site,Comments/Risks/Guarantees
+,0000,Miscellaneous,,,,,,,,,,,,,,,
+,0001,,,,,,,,,,,,,,,,
+,0200,Engineering,,,,,,,,,,,,,,,
+,0201,,,,,,,,,,,,,,,,
+,,Subcontracts,,,,,,,,,,,,,,,
+,2201.0,,,,,,,,,,,,,,,,
+,2202.0,,,,,,,,,,,,,,,,
+,2202.0,,,,,,,,,,,,,,,,
+,2205.0,,,,,,,,,,,,,,,,
+,0500,Procurement,,,,,,,,,,,,,,,
+,0501,,,,,,,,,,,,,,,,
+,0600,Construction,,,,,,,,,,,,,,,
+,0601,,,,,,,,,,,,,,,,
+,,Subcontracts,,,,,,,,,,,,,,,
+,6100.0,,,,,,,,,,,,,,,,
+,6200.0,,,,,,,,,,,,,,,,
+,0700,Quality Assurance,,,,,,,,,,,,,,,
+,0701,Inspection Services - East Coast,,,,,MNA Inspection,USA,,,,S,,22250.0,USD,,
+,0702,Inspection Services - Gulf Coast,,,,,CK Inspection,USA,,,,S,,22000.0,USD,,
+,0701,,,,,,,,,,,,,,,,
+,0702,,,,,,,,,,,,,,,,
+,1000.0,Process,,,,,,,,,,,,,,,
+,1001.0,,,,,,,,,,,,,,,,
+,2000.0,Civil,,,,,,,,,,,,,,,
+,2001.0,,,,,,,,,,,,,,,,
+,3000.0,Structural,,,,,,,,,,,,,,,
+,3001.0,,,,,,,,,,,,,,,,
+,3002.0,,,,,,,,,,,,,,,,
+,4000.0,Equipment,,,,,,,,,,,,,,,
+,4001.0,,,,,,,,,,,,,,,,
+,4002.0,,,,,,,,,,,,,,,,
+,4043.0,Caustic Static Mixer,,,,,Hayward Gordon,,,,,,,,,,
+,,Unallocated Budget,,,,,,,,,,,,105158.0,,,
+,5000.0,Piping,,,,,,,,,,,,,,,
+,5001.0,,,,,,,,,,,,,,,,
+,5002.0,,,,,,,,,,,,,,,,
+,5003.0,,,,,,,,,,,,,,,,
+,6000.0,Insulation,,,,,,,,,,,,,,,
+,6001.0,Piping Insulation,,,,,Construction Subcontractor,USA,-,,,-,0.0,,,n/a,Contractor Supply
+,6002.0,Equipment Insulation,,,,,Construction Subcontractor,USA,-,,,-,0.0,,,n/a,Contractor Supply
+,6001.0,,,,,,,,,,,,,,,,
+,7000.0,Coatings,,,,,,,,,,,,,,,
+,7001.0,Paint,,,,,Construction Subcontractor,USA,-,,,-,,,,n/a,Contractor Supply
+,7001.0,,,,,,,,,,,,,,,,
+,8000.0,Instrumentation,,,,,,,,,,,,,,,
+,8001.0,,,,,,,,,,,,,,,,
+,8002.0,,,,,,,,,,,,,,,,
+,8003.0,Available,,,,,,,,38933.0,,,,,,,
+,8059.0,Chlorine Monitor,,,,,,,,38912.0,,,0.0,23,,,Deleted
+,8060.0,Level Switches,,,Qty 1,,Sensxeall - PPG Rep,USA,6.0,38884.0,,S,0.0,23,,,Deleted
+,8061.0,Pressure Switches,,,Qty 1,,"B.G. Controls
+Kraft Industrial",USA,6.0,38884.0,,S,0.0,23,,,Deleted
+,8062.0,Temperature Switches,,,,,Drexel Western,USA,6.0,38884.0,,S,0.0,0.0,,,Deleted
+,8063.0,Flow Switches,,,Qty 1,,,USA,6.0,38891.0,,S,0.0,23,,,Deleted
+,8090.0,Tri loop Converters,,,Qty 6,,Norpac,,,,,,,,,,Deleted
+,,Unallocated Budget,,,,,,,,,,,,23,,,
+,9000.0,Electrical,,,,,,,,,,,,,,,
+,9001.0,,,,,,,,,,,,,,,,
+,9002.0,,,,,,,,,,,,,,,,
+,9002.0,,,,,,,,,,,,,,,,
+,9022.0,Relay Panels,,,,,,,,,,,,,,,Contractor Supply
+,,Unallocated Budget,,,,,,,,,,,,23,,,

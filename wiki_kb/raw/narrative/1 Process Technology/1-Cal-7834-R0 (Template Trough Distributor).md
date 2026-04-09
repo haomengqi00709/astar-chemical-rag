@@ -1,0 +1,402 @@
+---
+doc_id: 1-Cal-7834-R0 (Template Trough Distributor)
+doc_type: CAL
+discipline: 1
+discipline_name: Process Technology
+source_folder: Unknown
+revision: R0
+is_template: True
+track: A
+---
+
+# 1-Cal-7834-R0 (Template Trough Distributor) — Unknown
+
+
+## Sheet: Signature Sheet
+- | | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 | 11.0 | 12.0 | 13.0 | 14.0 | 15.0 | 16.0 | 17.0 | 18.0 | 19.0 | 20.0 | 21.0 | 22.0 | 23.0 | 24.0
+- Client Name | Calculation | CHEMETICS
+- Project Title | Trough Distributor
+- A Division of Aker Kvaerner Canada Inc.
+Vancouver, Canada
+- Location
+- Tag. No.: | 7834B
+- Client Document# | Standard-1-CAL-7834-R0
+- Rev: | Date: | Status: | Prepared By: | Checked By: | Approved By:
+- 0 | 38180.0 | Comments Requested | J. Spath | A.Bacon/T. Ueki | C. Moser
+- |
+- Note: User is to consult with Technology Manager prior to modifying parameters  not hilited in Blue
+
+## Sheet: Aspen
+- Aspen Stream Table | Gas to Twr | Gas Exit Twr | Acid to Twr | Acid Exit Twr
+- Paste Here | 517A | 560 | 518A | 561
+- 7567-U | 7567-U | 7568-K | XC7567-U
+- XA7567-U | B29 | 7567-U | 7567-U
+- VAPOR | LIQUID | VAPOR | LIQUID
+- Temperature C | 210.0 | 75.3 | 75.3 | 108.5 | Temperature C | 210.0 | 75.3 | 75.3 | 108.5
+- Pressure    barg | 0.1766 | 3.2422 | 0.1570 | 0.1570 | Pressure    BARG | 0.1766 | 3.2422 | 0.157 | 0.157
+- Mole Flow   kmol/hr | Mole Flow   KMOL/HR
+- SO2 | 65.34 | 0.00 | 65.33 | 0.01 | SO2 | 65.34 | 0.0 | 65.33 | 0.01
+- SO3 | 1528.38 | 0.00 | 0.00 | 0.00 | SO3 | 1528.38 | 0.0 | 0.0 | 0.0
+- O2 | 829.59 | 0.00 | 829.59 | 0.00 | O2 | 829.59 | 0.0 | 829.59 | 0.0
+- N2 | 8901.56 | 0.00 | 8901.56 | 0.00 | N2 | 8901.56 | 0.0 | 8901.56 | 0.0
+- CO2 | 143.75 | 0.00 | 143.75 | 0.00 | H2O | 143.75 | 0.0 | 143.75 | 0.0
+- H2O | 0.09 | 3832.75 | 0.12 | 2304.34 | CO2 | 0.09 | 3832.75 | 0.12 | 2304.34
+- H2SO4 | 0.00 | 36696.58 | 0.04 | 38224.92 | H2SO4 | 0.0 | 36696.58 | 0.04 | 38224.92
+- SULPHUR | 0.00 | 0.00 | 0.00 | 0.00 | SULPHUR | 0.0 | 0.0 | 0.0 | 0.0
+- Mole Flow   kmol/hr | 11468.7 | 40529.3 | 9940.4 | 40529.3 | Mole Flow   KMOL/HR | 11468.7 | 40529.3 | 9940.4 | 40529.3
+- Mass Flow   kg/hr | 408792.3 | 3667991.7 | 286426.9 | 3790347.3 | Mass Flow   KG/HR | 408792.3 | 3667991.7 | 286426.9 | 3790347.3
+- Volume Flow m3/hr | 387986.3 | 2057.7 | 246621.3 | 2177.6 | Volume Flow M3/HR | 387986.3 | 2057.7 | 246621.3 | 2177.6
+- Enthalpy    kW | -169449.5 | -8541137.1 | -17041.0 | -8693545.5 | Enthalpy    KW | -169449.5 | -8541137.1 | -17041.0 | -8693545.5
+- *** VAPOR PHASE *** | *** VAPOR PHASE ***
+- Density     kg/m3 | 1.05 | 1.16 | Density     KG/M3 | 1.05 | 1.16
+- Viscosity   cP | 0.0250 | 0.0201 | Viscosity   CP | 0.025 | 0.0201
+- Heat Cap    kJ/kg-K | 0.962 | 1.022 | Heat Cap    KJ/KG-K | 0.962 | 1.022
+- mole frac | mole frac
+- SO2 | 0.0057 | 0.0066 | SO2 | 0.0057 | 0.0066
+- SO3 | 0.1333 | 0.0000 | SO3 | 0.1333 | 0.0
+- *** LIQUID PHASE *** | *** LIQUID PHASE ***
+- Density     kg/m3 | 1782.6 | 1740.6 | Density     KG/M3 | 1782.6 | 1740.6
+- Viscosity   cP | 6.50 | 3.57 | Viscosity   CP | 6.5 | 3.57
+- Heat Cap    kJ/kg-K | 1.513 | 1.574 | Heat Cap    KJ/KG-K | 1.513 | 1.574
+- wt frac | wt frac
+- H2SO4 | 0.9812 | 0.9890 | H2SO4 | 0.9812 | 0.989
+- SO2 | 0.0000 | 0.0000 | SO2 | 0.0 | 0.0
+- SO3 | 0.0000 | 0.0000 | SO3 | 0.0 | 0.0
+- Specify Stream ID | Gas to Twr | Gas Exit Twr | Acid to Twr | Acid Exit Twr
+- Gas to Twr
+- Gas Exit Twr
+- Acid to Twr
+- Acid Exit Twr
+
+## Sheet: Data Input
+- Dry Distributor | Version | 3.0
+- Last update | June, 2004
+- Client | Client Name | Project No. | Standard
+- Project Title | Project Title | Client Document #: | Client Document#
+- Location | Location | Date | 38180.0
+- Tag No | 7834B | Revision | 0
+- Service | Trough Distributor | By | J.Spath
+- Description | Case Description
+- Design Basis | Design Basis
+
+## Sheet: Tower Summary
+- KVAERNER CHEMETICS | TROUGH DISTRIBUTOR | Version 2.0
+- Tower Summary Information
+- Main Trough Summary Information
+- Hole Summary Information
+- Downcomer Summary Information
+- Holdup Information
+- CLIENT: | Client Name | LOCATION: | Location
+- PROJECT NO.: | Standard | DATE: | 38180.0
+- ITEM: | Trough Distributor
+- Item | (units) | Design | Maximum
+- Case | Flow
+- Equipment No. | 7834B | 7834-B (alt) | N/A | N/A
+- 1. Acid Conditions
+- Flow | usgpm | 4700.0 | 4700.0 | 3000.0 | 3000.0
+- ft³/min | 628.2204640950903 | 628.2204640950903 | 400.99178559261077 | 400.99178559261077
+- m³/h | 1067.49441647424 | 1067.49441647424 | 681.3794147707915 | 681.3794147707915
+- lb/h | 4185005.1103456104 | 4185005.1103456104 | 2525873.490555324 | 2525873.490555324
+- % H2SO4 | wt% | 98.5 | 98.5 | 98.5 | 98.5
+- Density | kg/m³ | 1782.0 | 1782.0 | 1685.0 | 1685.0
+- Temperature | °F | 176.0 | 176.0 | 167.0 | 167.0
+- °C | 80.0 | 80.0 | 75.0 | 75.0
+- Viscosity | cP | 5.6 | 5.6 | 2.0 | 2.0
+- 2. Tower Dimensions
+- Diameter (ID Brick) | ft | 20.5 | 20.5 | 18.0 | 18.0
+- inches | 246.0 | 246.0 | 216.0 | 216.0
+- mm | 6248.4 | 6248.4 | 5486.4 | 5486.4
+- Tower Area (ID Brick) | ft² | 330.0635781677776 | 330.0635781677776 | 254.46900494077323 | 254.46900494077323
+- Corbel (ID) | ft | 20.5 | 20.5 | 18.0 | 18.0
+- inches | 246.0 | 246.0 | 216.0 | 216.0
+- mm | 6248.4 | 6248.4 | 5486.4 | 5486.4
+- Tower Area (ID Corbel) | ft² | 330.0635781677776 | 330.0635781677776 | 254.46900494077323 | 254.46900494077323
+- 3. Tower Loading | gpm/ft² | 14.23968080964965 | 14.23968080964965 | 11.7892550438441 | 11.7892550438441
+- lb/hft² | 12679.390842143426 | 12679.390842143426 | 9926.055596213819 | 9926.055596213819
+
+## Sheet: Main Trough Summary
+- KVAERNER CHEMETICS | TROUGH DISTRIBUTOR | Version 2.0
+- Tower Summary Information
+- Main Trough Summary Information
+- Hole Summary Information
+- Downcomer Summary Information
+- Holdup Information
+- CLIENT: | Client Name | LOCATION: | Location
+- PROJECT NO.: | Standard | DATE: | 38192.0
+- ITEM: | Trough Distributor
+- Item | (units) | Design | Maximum | 0.0 | 0.0
+- Equipment No. | 7834B | 7834-B (alt) | N/A | N/A
+- 4. Trough Quantity (Maximum = 4)
+- max span/trough | ft | 8.0 | 6.0 | 8.0 | 8.0
+- calculated troughs | # | 2.5625 | 3.4166666666666665 | 2.25 | 2.25
+- Selected troughs | # | 3.0 | 4.0 | 3.0 | 3.0
+- Total Span | ft | 6.833333333333333 | 5.125 | 6.0 | 6.0
+- Calc. Arm Span/side | ft | 3.4166666666666665 | 2.5625 | 3.0 | 3.0
+- Design Arm Span/side (A1) | ft | 3.42 | 2.56 | 3.0 | 3.0
+- Design Arm Span/side (A2) | ft | 3.42 | 2.56 | 3.0 | 3.0
+- Design Arm Span/side (A3) | ft | N/A | 2.56 | N/A | N/A
+- (Please see below diagrams for description of A1, A2, and A3)
+- Inner Troughs
+- Quantity | # | 1.0 | 2.0 | 1.0 | 1.0
+- Centreline length | ft | 20.5 | 19.850329972068476 | 18.0 | 18.0
+- m | 67.24 | 65.1090823083846 | 59.04 | 59.04
+- Coverage | ft² | 137.44414721985774 | 100.50399335384756 | 105.96526757699917 | 105.96526757699917
+- Flow/trough | gpm | 1957.1607855652696 | 1431.1447854539392 | 1249.251565254427 | 1249.251565254427
+- Outer Troughs
+- Quantity | # | 2.0 | 2.0 | 2.0 | 2.0
+- Centreline length | ft | 15.267861670843105 | 13.576464930164995 | 13.416407864998739 | 13.416407864998739
+- m | 50.078586280365386 | 44.53080497094118 | 44.00581779719586 | 44.00581779719586
+- Coverage | ft² | 96.30971547395994 | 64.52779573004125 | 74.25186868188703 | 74.25186868188703
+- Flow/trough | gpm | 1371.4196072173652 | 918.855214546061 | 875.3742173727865 | 875.3742173727865
+- 5. Entry Pipes/trough
+- Header Pipe design Inlet Velocity | ft/sec | 6.5 | 6.5 | 6.5 | 6.5
+- m/s | 1.981707317073171 | 1.981707317073171 | 1.981707317073171 | 1.981707317073171
+- Calculated Diameter | ft | 1.4321179740275172 | 1.4321179740275172 | 1.1441698351278993 | 1.1441698351278993
+- in | 17.185415688330206 | 17.185415688330206 | 13.730038021534792 | 13.730038021534792
+- mm | 436.5095584835872 | 436.5095584835872 | 348.7429657469837 | 348.7429657469837
+- Selected Diameter (nominal) | in | 18.0 | 18.0 | 14.0 | 14.0
+- mm | 457.2 | 457.2 | 355.59999999999997 | 355.59999999999997
+- Header Pipe Calc. Inlet Velocity | ft/sec | 5.925001019983299 | 5.925001019983299 | 6.251737941189498 | 6.251737941189498
+- Design span/ downpipe (Xo) | ft | 3.0 | 3.0 | 3.0 | 3.0
+- Inner Troughs
+- Calculated downpipes | # | 6.833333333333333 | 6.616776657356159 | 6.0 | 6.0
+- Selected downpipes | even # | 8.0 | 8.0 | 8.0 | 8.0
+- Flow/downpipe | gpm | 244.6450981956587 | 178.8930981817424 | 156.15644565680338 | 156.15644565680338
+- Trough entry points/downpipe | # | 2.0 | 2.0 | 2.0 | 2.0
+- Flow/entry point | gpm | 122.32254909782935 | 89.4465490908712 | 78.07822282840169 | 78.07822282840169
+- Design entry point velocity (V1) | ft/sec | 2.0 | 2.0 | 2.0 | 2.0
+- Entry Pipe Diameter | inches | 6.0 | 4.0 | 4.0 | 4.0
+- mm | 152.39999999999998 | 101.6 | 101.6 | 101.6
+- Calculated V1 | ft/sec | 1.3880169037200258 | 2.2836752244353766 | 1.9934285319383351 | 1.9934285319383351
+- Outer Troughs
+- Calculated downpipes | # | 5.0892872236143685 | 4.525488310054999 | 4.47213595499958 | 4.47213595499958
+- Selected downpipes | even # | 6.0 | 6.0 | 6.0 | 6.0
+- Flow/downpipe | gpm | 228.56993453622752 | 153.14253575767682 | 145.8957028954644 | 145.8957028954644
+- Trough entry points/downpipe | # | 2.0 | 2.0 | 2.0 | 2.0
+- Flow/entry point | gpm | 114.28496726811376 | 76.57126787883841 | 72.9478514477322 | 72.9478514477322
+- Design entry point velocity (V1) | ft/sec | 2.0 | 2.0 | 2.0 | 2.0
+- Entry Pipe Diameter | inches | 6.0 | 4.0 | 4.0 | 4.0
+- mm | 152.39999999999998 | 101.6 | 101.6 | 101.6
+- Calculated V1 | ft/sec | 1.2968129554131955 | 1.9549542060125609 | 1.8624441380934198 | 1.8624441380934198
+- 6. Trough Dimensions
+- Total Height above hole (H3) | inches | 15.0 | 15.0 | 15.0 | 15.0
+- mm | 381.0 | 381.0 | 381.0 | 381.0
+- Calc. Oper. Height above hole (H2) | inches | 6.934522512856197 | 5.959631100835219 | 4.88958677478044 | 4.88958677478044
+- mm | 176.1368718265474 | 151.37462996121457 | 124.19550407942317 | 124.19550407942317
+- Inlet depth (H1) | inches | 8.0 | 6.0 | 6.0 | 6.0
+- mm | 203.2 | 152.39999999999998 | 152.39999999999998 | 152.39999999999998
+- Inlet Width (L1) | inches | 10.5 | 8.0 | 8.0 | 8.0
+- mm | 266.7 | 203.2 | 203.2 | 203.2
+- Overhang (L2) | inches | 7.0 | 7.0 | 7.0 | 7.0
+- mm | 177.79999999999998 | 177.79999999999998 | 177.79999999999998 | 177.79999999999998
+- Space betw. ledge & hole (L3) | inches | 1.5 | 1.5 | 1.5 | 1.5
+- mm | 38.099999999999994 | 38.099999999999994 | 38.099999999999994 | 38.099999999999994
+- Active Area (A2) | ft² | 1.7631652886456726 | 1.2438325292942696 | 1.0803535350359006 | 1.0803535350359006
+- Design trough velocity (V2) | ft/sec | 0.2 | 0.2 | 0.2 | 0.2
+- Calc. velocity Inner Trough (V2) | ft/sec | 0.15457228173197635 | 0.16022113417162503 | 0.16102086102937008 | 0.16102086102937008
+- Calc. velocity Outer Trough (V2) | ft/sec | 0.14441563136628627 | 0.13715828625253138 | 0.1504404867945285 | 0.1504404867945285
+
+## Sheet: Hole Summary
+- KVAERNER CHEMETICS | TROUGH DISTRIBUTOR | Version 2.0
+- Tower Summary Information
+- Main Trough Summary Information
+- Hole Summary Information
+- Downcomer Summary Information
+- Holdup Information
+- CLIENT: | Client Name | LOCATION: | Location
+- PROJECT NO.: | Standard | DATE: | 38192.0
+- ITEM: | Trough Distributor
+- Item | (units) | Design | Maximum | 0.0 | 0.0
+- Equipment No. | 7834B | 7834-B (alt) | N/A | N/A
+- 7. Hole Geometry
+- Holes/side | # | 3.0 | 3.0 | 3.0 | 3.0
+- Downcomer Spacing (Y1) | ft | 0.57 | 0.4266666666666667 | 0.5 | 0.5
+- mm | 173.736 | 130.048 | 152.39999999999998 | 152.39999999999998
+- Perfect Trough Hole Spacing (X1) | ft | 0.3293946546523673 | 0.2465644198567428 | 0.28894267951962044 | 0.28894267951962044
+- inches | 3.9527358558284074 | 2.9587730382809134 | 3.4673121542354455 | 3.4673121542354455
+- Selected Hole Spacing (X1) | inches | 3.25 | 4.0 | 3.5 | 3.5
+- mm | 82.55 | 101.6 | 88.89999999999999 | 88.89999999999999
+- 8. Point Density
+- (Click the buttons to run program)
+- Holes/inner trough | # | 438.0 | 346.0 | 354.0 | 354.0
+- Holes/outer trough | # | 302.0 | 216.0 | 245.0 | 245.0
+- Total number holes | # | 1042.0 | 1124.0 | 844.0 | 844.0
+- holes /ft² | #/ft² | 3.1569675326925393 | 3.4054045170311076 | 3.3167104190014736 | 3.3167104190014736
+- holes/m² | #/m² | 0.293398469581091 | 0.3164874086460137 | 0.30824446273247896 | 0.30824446273247896
+- 9. Hole Size
+- Hole Type | Square Edge | Square Edge | Square Edge | Square Edge
+- Volume acid / hole | gpm | 4.5105566218809985 | 4.181494661921708 | 3.5545023696682465 | 3.5545023696682465
+- Orifice k-value (default = 1.9) | 2.45 | 2.45 | 1.9 | 1.9
+- Select. hole dia. (increments 1/16") | inches | 0.6875 | 0.6875 | 0.625 | 0.625
+- mm | 17.4625 | 17.4625 | 15.875 | 15.875
+- Calc. height of acid above hole | inches | 6.934522512856197 | 5.959631100835219 | 4.88958677478044 | 4.88958677478044
+- (Target  = 6") | mm | 176.1368718265474 | 151.37462996121457 | 124.19550407942317 | 124.19550407942317
+
+## Sheet: Downcomer Summary
+- KVAERNER CHEMETICS | TROUGH DISTRIBUTOR | Version 2.0
+- Tower Summary Information
+- Main Trough Summary Information
+- Hole Summary Information
+- Downcomer Summary Information
+- Holdup Information
+- CLIENT: | Client Name | LOCATION: | Location
+- PROJECT NO.: | Standard | DATE: | 38192.0
+- ITEM: | Trough Distributor
+- Item | (units) | Design | Maximum | 0.0 | 0.0
+- Equipment No. | 7834B | 7834-B (alt) | N/A | N/A
+- 10. Downcomer Dimensions
+- Minimum Inside Diameter | inches | 0.9375 | 0.9375 | 0.875 | 0.875
+- mm | 23.8125 | 23.8125 | 22.224999999999998 | 22.224999999999998
+- No of main types | 6.0 | 6.0 | 6.0 | 6.0
+- Vertical Distance from trough (H4) | inches | 10.0 | 10.0 | 10.0 | 10.0
+- mm | 254.0 | 254.0 | 254.0 | 254.0
+- Vertical Distance from trough (H5) | inches | 24.0 | 24.0 | 24.0 | 24.0
+- mm | 609.5999999999999 | 609.5999999999999 | 609.5999999999999 | 609.5999999999999
+- Longest Downcomer Length (L4) | ft | 2.38875 | 1.6016666666666666 | 2.0625 | 2.0625
+- inches | 28.665 | 19.22 | 24.75 | 24.75
+- mm | 728.0909999999999 | 488.18799999999993 | 628.65 | 628.65
+- Spacing between downcomers (Y1) | inches | 6.84 | 5.12 | 6.0 | 6.0
+- mm | 173.736 | 130.048 | 152.39999999999998 | 152.39999999999998
+- (Downcomer dimensions
+- to be confirmed on detailed layout.)
+
+## Sheet: Holdup
+- KVAERNER CHEMETICS | TROUGH DISTRIBUTOR | Version 2.0
+- Tower Summary Information
+- Main Trough Summary Information
+- Hole Summary Information
+- Downcomer Summary Information
+- Holdup Information
+- CLIENT: | Client Name | LOCATION: | Location
+- PROJECT NO.: | Standard | DATE: | 38192.0
+- ITEM: | Trough Distributor
+- Item | (units) | Design | Maximum | 0.0 | 0.0
+- Equipment No. | 7834B | 7834-B (alt) | N/A | N/A
+- 11. Trough Holdup (estimate)
+- Cross-Sectional Area (Trough)
+- Active | ft² | 1.7631652886456726 | 1.2438325292942696 | 1.0803535350359006 | 1.0803535350359006
+- Flooded | ft² | 3.1354166666666665 | 2.625 | 2.625 | 2.625
+- Total Length Trough | ft | 51.03572334168621 | 66.85358980446694 | 44.83281572999748 | 44.83281572999748
+- Maximum Holdup in Trough | ft³ | 160.01825756091196 | 175.4906732367257 | 117.68614129124337 | 117.68614129124337
+- m³ | 4.531811315800395 | 4.969999242048306 | 3.3329408465376202 | 3.3329408465376202
+- 12. Feed System Holdup (estimate)
+- Header Pipe
+- Design Inlet Velocity | ft/sec | 6.5 | 6.5 | 6.5 | 6.5
+- Diameter | ft | 1.5 | 1.5 | 1.1666666666666667 | 1.1666666666666667
+- inches | 18.0 | 18.0 | 14.0 | 14.0
+- Velocity | ft/sec | 5.925001019983299 | 5.925001019983299 | 6.251737941189498 | 6.251737941189498
+- Length | ft | 20.5 | 20.5 | 18.0 | 18.0
+- Holdup Volume | ft³ | 36.226490286707296 | 36.226490286707296 | 19.242255003237485 | 19.242255003237485
+- m³ | 1.0259555447948823 | 1.0259555447948823 | 0.5449519966932168 | 0.5449519966932168
+- Inner Trough Branchpipe
+- Design Inlet Velocity | ft/sec | 5.0 | 5.0 | 5.0 | 5.0
+- diameter | inches | 10.0 | 10.0 | 8.0 | 8.0
+- ft | 0.8333333333333334 | 0.8333333333333334 | 0.6666666666666666 | 0.6666666666666666
+- Flow/side | ft³/sec | 2.1802918538926424 | 1.5943060685047112 | 1.3916756514208355 | 1.3916756514208355
+- Velocity | ft/sec | 3.997488682713674 | 2.9231042872772814 | 3.9868570638766703 | 3.9868570638766703
+- Length (span per side) | ft | 10.25 | 9.925164986034238 | 9.0 | 9.0
+- Holdup Volume | ft³ | 11.181015520588675 | 21.653350976244308 | 6.283185307179586 | 6.283185307179586
+- m³ | 0.31665294592434645 | 0.6132356549488617 | 0.17794350912431567 | 0.17794350912431567
+- Outer Trough Branchpipe
+- Design Inlet Velocity | ft/sec | 5.0 | 5.0 | 5.0 | 5.0
+- diameter | inches | 8.0 | 8.0 | 8.0 | 8.0
+- ft | 0.6666666666666666 | 0.6666666666666666 | 0.6666666666666666 | 0.6666666666666666
+- Flow/side | ft³/sec | 1.527771770177311 | 1.0236116286189214 | 0.9751734703259435 | 0.9751734703259435
+- Velocity | ft/sec | 4.376743724519534 | 2.9324313090188414 | 2.7936662071401295 | 2.7936662071401295
+- Length (span per side) | ft | 7.633930835421553 | 6.788232465082498 | 6.708203932499369 | 6.708203932499369
+- Holdup Volume | ft³ | 10.658978235810196 | 9.478160552516847 | 9.366419641387635 | 9.366419641387635
+- m³ | 0.3018685425038288 | 0.26842709013075183 | 0.2652625217045493 | 0.2652625217045493
+- Total Feed System Holdup (estimate) | ft³ | 58.066484043106165 | 67.35800181546844 | 34.891859951804705 | 34.891859951804705
+- m³ | 1.6444770332230574 | 1.9076182898744958 | 0.9881580275220818 | 0.9881580275220818
+- 13. Total Holdup (prelim estimate) | ft³ | 218.08474160401815 | 242.84867505219415 | 152.57800124304808 | 152.57800124304808
+- m³ | 6.17558876377692 | 6.876838507452969 | 4.320609425243475 | 4.320609425243475
+
+## Sheet: Data Sheet
+- 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 | 11.0 | 12.0 | 13.0 | 14.0 | 15.0 | 16.0 | 17.0 | 18.0 | 19.0 | 20.0 | 21.0 | 22.0 | 23.0 | 24.0
+- Client Name | Process Data Sheet | CHEMETICS
+- Project Title | Trough Distributor
+- A Division of Aker Kvaerner Canada Inc.
+Vancouver, Canada
+- Location
+- Client Document# | Tag. No.: | 7834B | Standard-4-PDS-7834-R0
+- Rev: | Date: | Status: | Prepared By: | Checked By: | Approved By:
+- 0 | 38180.0 | Comments Requested | J.Spath | A.Bacon/T.Ueki | C.Moser
+- Quantity | Operating | Installed Spare
+- PROCESS DESIGN CONDITIONS
+- Case Description | Case Description
+- Design Basis | Design Basis
+- Process Data
+- Fluid Composition | %H2SO4 | 98.5
+- Flow | M³/HR | 1067.49441647424
+- Temperature | DEG C | 80.0
+- Density | KG/M³ | 1782.0
+- Viscosity | cP | 5.6
+- Pressure | mm H2O | N/A
+- Tower Dimensions
+- Diameter (ID Brick) | mm | 6248.4
+- Corbel (ID) | mm | 6248.4 | 0.0
+- 0.0
+- Trough Quantities (Maximum=4)
+- Selected Troughs | # | 3.0
+- Inner Troughs | Outer Troughs
+- Quantity | # | 1.0 | 2.0
+- Centerline length | m | 67.24 | 50.078586280365386 | 0.0
+- 0.0
+- Entry Pipes/Trough
+- Header pipe design inlet velocity | m/s | 1.981707317073171
+- Calculated diameter | mm | 436.5095584835872 | 0.0
+- Selected diameter (nominal) | mm | 457.2 | 0.0
+- Inner Troughs | Outer Troughs | 0.0
+- Selected downpipes | even# | 8.0 | 6.0 | 0.0
+- Entry pipe diameter | mm | 152.39999999999998 | 152.39999999999998 | 0.0
+- 0.0
+- Trough Dimensions
+- H3-Total height above hole | mm | 381.0 | 0.0
+- H2-Calc. Op. height above hole | mm | 176.1368718265474
+- H1-Inlet depth | mm | 203.2 | 0.0
+- L1-Inlet width | mm | 266.7
+- L2-Overhang | mm | 177.79999999999998 | 0.0
+- L3-Space between ledge & hole | mm | 38.099999999999994 | 0.0
+- 0.0
+- Hole Geometry
+- Holes/Side | # | 3.0
+- Downcomer spacing (Y1) | mm | 173.736 | 0.0
+- Selected hole spacing (X1) | mm | 82.55 | 0.0
+- 0.0
+- Point Density
+- Holes/Inner trough | # | 438.0
+- Holes/Outer trough | # | 302.0 | 0.0
+- Total number holes | # | 1042.0 | 0.0
+- Holes/m² | #/m² | 0.293398469581091 | 0.0
+- 0.0
+- Hole Size
+- Selected hole diameter
+- (increments of 1/16") | mm | 17.4625 | 0.0
+- Calculated height of acid above | 0.0
+- hole (Target = 6") | mm | 176.1368718265474 | 0.0
+- 0.0
+- Downcomer Dimensions
+- Minimum inside diameter | mm | 23.8125
+- H4-Vertical distance from trough | mm | 254.0 | 0.0
+- H5-Vertical distance from trough | mm | 609.5999999999999 | 0.0
+- L4-Longest downcomer length | mm | 728.0909999999999 | 0.0
+- Y1-Spacing btwn downcomers | mm | 173.736 | 0.0
+- 0.0
+- (Downcomer dimensions
+- to be confirmed on detailed layout.)
+- Trough Holdup (estimate)
+- Maximum holdup in trough | m³ | 4.531811315800395
+- 0.0
+- Feed System Holdup (estimate)
+- Header Pipe
+- Holdup volume | m³ | 1.0259555447948823 | 0.0
+- Inner Trough Branchpipe | 0.0
+- Holdup volume | m³ | 0.31665294592434645 | 0.0
+- Outer Trough Branchpipe | 0.0
+- Holdup volume | m³ | 0.3018685425038288 | 0.0
+- ...(truncated)
+
+## Sheet: Commentary
+- Commentary
+- The design case is transferred to the Data Sheet
+- Maximum flow case to be evaluated to determine that trough won't overflow

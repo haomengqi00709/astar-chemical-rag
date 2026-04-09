@@ -1,0 +1,173 @@
+# doc_id=5-LST-0003-2 discipline=5 revision=R0
+col_0,Client Name,col_2,col_3,col_4,"Piping Service List
+(Acid Plant)",col_6,col_7,col_8,col_9,col_10,col_11,col_12,col_13,col_14,"Aker Kvaerner Chemetics
+A Division of Aker Kvaerner Canada Inc.",col_16,col_17,col_18,col_19,col_20,col_21
+,Project Title,,,,,,,,,,,,,,,,,,,,
+,Location,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,Standard-5-LST-0003-2-R0,,,,,,
+,Service Code,Fluid,Fluid Composition,Material Description / Application,ASME B31.3 Fluid Class,Pressure Test Method,Flange Guard,"Corr. Allow.
+(mm)","Service Pres.
+(kPag)","Service Temp.
+(oC)","Pipe Spec Service Limit
+(kPag @ oC)",Pipe Spec,Gasket Spec,Valve Application,Valve Code,"Valve Size
+(Min)","Valve Size
+(Max)",Notes,,sort,type
+,AA,Atmospheric Air,,Carbon Steel Duct,N/A,Service,No,1.5,-7 to 7 †,343 *,81 @ 450 *,CD6 *,W,On-Off / Isolation (ball),V1214,15,150,"V1214 < 260ºC only.
+* Typical temperature at turndown may be higher (450oC) for cooler recycle.  For service temperatures below 300oC use pipe spec CD7.
+† Vacuum requires custom design",,1.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1213,15,150,V1213 > 260ºC,,2.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Damper,V2411,400,1800,,,3.0,Sulphur Burning + Metallurgical
+,,,,Carbon Steel Duct,N/A,Service,No,1.5,-7 to 7 †,300,81 @ 300,CD7,W,On-Off / Isolation (ball),V1214,15,150,V1214 < 260ºC only.                          † Vacuum requires custom design,,1.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1213,15,150,V1213 > 260ºC,,2.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Damper,V2411,400,1800,,,3.0,Sulphur Burning + Metallurgical
+,CG,Calciner Off Gas,,Carbon Steel Duct,N/A,Service,No,1.5,-7 to 7 †,340,81 @ 450,CD6,R,,,,,† Vacuum requires custom design.,,,
+,,,,Carbon Steel Duct,N/A,Service,No,1.5,-7 to 7 †,300,81 @ 300,CD7,R,,,,,† Vacuum requires custom design.,,,
+,CHP,"Steam Condensate, High Pressure",,*,,,,,,,,,,,,,,* Use materials from the applicable high pressure steam service (JHP or JSH),,,
+,CO,Lime,CaO (solid),Carbon Steel,D,Service,No,1.5,100,80,1034 @ 204,CS9 *,B,On-Off / Isolation (ball),V1112,15,50,* Use flanged tee's at changes in direction to reduce pipe erosion.,,25.0,Metallurgical
+,CYS,Milk of Lime,"CaO / Ca(OH)2
+Slurry",Carbon Steel,N,Hydro,No,1.5,400,90,1034 @ 204,CS7*,B,On-Off / Isolation (ball),V1216,25,150,* Use 6D bends,,26.0,Metallurgical
+,,,,,,,,,,,,,,Control (pinch),V9251,25,100,,,27.0,Metallurgical
+,EN,Neutralized Effluent,Treated Effluent from ETP,316L Stainless Steel,D,Service,No,3.2,500,70,1034 @ 204,S65**,C*,On-Off / Isolation (ball),V1216,25,100,"* U gasket may be considered.
+** S65 pipe spec is for pigged or high-pressure effluent discharge lines.  CP3 is suitable for low-pressure effluent discharge.",,28.0,Metallurgical
+,ET,Thickened Effluent,,CPVC,N,Hydro,No,0,400,80,"1034 @ 38
+234 @ 98
+**",CP3**,C*,On-Off / Isolation (ball),V1259,40,200,"* U gasket may be considered.
+** Use 6D bends.  Service Limits vary with temp.",,29.0,Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1353,25,100,,,30.0,Metallurgical
+,,,,,,,,,,,,,,Control / On-Off (b'fly),V2866,80,300,,,31.0,Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (pinch),V9253,25,200,,,32.0,Metallurgical
+,,,,304L Stainless Steel,N,Hydro,No,0,1030,80,1034 @ 204,S43**,C*,On-Off / Isolation (pinch),V9253,25,200,"* U gasket may be considered.
+** Use 6D bends.",,33.0,Metallurgical
+,EV,Effluent Vent,,CPVC,D,Service,No,0,-7 to 7,50,"1034 @ 38
+234 @ 98
+**",CP3,C*,On-Off / Isolation (ball),V1259,25,200,"* U gasket may be considered.
+** Service Limits vary with temp.",,34.0,Metallurgical
+,,,,,,,,,,,,,,Control / On-Off (b'fly),V2866,80,300,,,35.0,Metallurgical
+,FL,Flocculent,,PVC,D,Service,No,0,250,amb,"1034 @ 32 
+345 @ 60
+**",PV6,C*,On-Off / Isolation (ball),V1259,25,200,"* U gasket may be considered.
+** Service Limits vary with temp.",,36.0,Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,80,100,,,37.0,Metallurgical
+,,,,,,,,,,,,,,Check (ball),V4252,15,80,,,38.0,Metallurgical
+,,,,,,,,,,,,,,Check (ball),V4352,15,80,,,39.0,Metallurgical
+,FSL,Ferric Sulphate,,PVC,N,Hydro,No,0,400,amb,"1034 @ 32 
+345 @ 60
+**",PV6,C*,On-Off / Isolation (ball),V1259,25,200,"* U gasket may be considered.
+** Service Limits vary with temp.",,40.0,Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,80,100,,,41.0,Metallurgical
+,JHP,"Steam - 
+High Pressure Saturated",,Carbon Steel,B31.1,Hydro,No,1.5,7200.0,315,7550 @ 315,CS15,Y2†,Check (swing),V4412,80,400,† Avoid bolted connections,,46.0,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,,47.0,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7412,80,600,,,48.0,Sulphur Burning
+,JSH,"Steam - 
+High Pressure Superheated",,Carbon Steel,B31.1,Hydro,No,0.75,7200.0,356,9194 @ 400,CS16,Y2†,Check (swing),V4412,80,400,† Avoid bolted connections,,42.0,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,,42.5,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7412,80,600,,,42.7,Sulphur Burning
+,,,,Cr-Mo Steel,B31.1,Hydro,No,1.5,6500.0,500,7330 @ 500,CS17,Y2†,Check (swing),V4481,80,400,† Avoid bolted connections,,43.0,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7381,15,50,,,43.5,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7481,80,600,,,44.0,Sulphur Burning
+,,,,304H Stainless Steel,B31.1,Hydro,No,1.5,6500.0,650,7200 @ 650,S50,Y2†,,,,,,,45.0,Sulphur Burning
+,SAD,"Sulphuric Acid, Drain",>94% H2SO4,316L Stainless Steel,N,Hydro,Yes,3.2,150,55 **,1034 @ 204,S65,A*,On-Off / Isolation (ball),V1281,15,50,"* U gasket may be considered.
+** Short term temperature excursion during draining may reach maximum 120oC.",,75.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15,100,,,76.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7281,50,100,,,77.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,50,600,,,78.0,Sulphur Burning + Metallurgical
+,SAS,"Sulphuric Acid,
+Strong",>98%  H2SO4,316 Stainless Steel,N,Pneumatic / Service †,Yes,3.2,1034,55,1034 @ 204,S65,A*,On-Off / Isolation (ball),V1281,15,50,† Hydrotest not typically used as must be followed by drying.  Safety issues associated with pneumatic must be addressed.  May service test if allowed by contract/agreed with Owner (does not meet ASME for Normal fluid service).,,79.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,* U gasket may be considered.,,80.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,,81.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15,300,,,82.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,15,600,,,83.0,Sulphur Burning + Metallurgical
+,,,>98.5%  H2SO4 **,SARAMET® 23,N,Pneumatic / Service †,Yes,0,1034,≤ 120 **,1034 @ 149,S23 **,A*,On-Off / Isolation (ball),V1281,15,50,† Hydrotest not typically used as must be followed by drying.  Safety issues associated with pneumatic must be addressed.  May service test if allowed by contract/agreed with Owner (does not meet ASME for Normal fluid service).,,84.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,"* U gasket may be considered.
+** For other conditions consult Materials Engineer.",,85.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,100,750,,,86.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,,87.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15,300,,,88.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,15,600,,,89.0,Sulphur Burning + Metallurgical
+,,,,Ductile Iron,N,Pneumatic / Service †,Yes,0,690,≤ 120 **,1034 @ 121,DI1,K,Check (ball - vertical),V4262,80,100,† Hydrotest not typically used as must be followed by drying.  Safety issues associated with pneumatic must be addressed.  May service test if allowed by contract/agreed with Owner (does not meet ASME for Normal fluid service).,,98.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (lift - Horizontal),V4266,80,100,** For other conditions consult Materials Engineer.,,99.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,150,600,,,100.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,150,600,,,101.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,15,600,,,102.0,Sulphur Burning + Metallurgical
+,,,>96%  H2SO4 **,SARAMET® 23,N,Pneumatic / Service †,Yes,0,1034,≤ 70 **,1034 @ 149,S23 **,A*,On-Off / Isolation (ball),V1281,15,50,† Hydrotest not typically used as must be followed by drying.  Safety issues associated with pneumatic must be addressed.  May service test if allowed by contract/agreed with Owner (does not meet ASME for Normal fluid service).,,84.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,"* U gasket may be considered.
+** For other conditions consult Materials Engineer.",,85.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,100,750,,,86.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,,87.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15,300,,,88.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,15,600,,,89.0,Sulphur Burning + Metallurgical
+,,,>93%  H2SO4 **,SARAMET® 23,N,Pneumatic / Service †,Yes,0,1034,≤ 50 **,1034 @ 149,S23 **,A*,On-Off / Isolation (ball),V1281,15,50,† Hydrotest not typically used as must be followed by drying.  Safety issues associated with pneumatic must be addressed.  May service test if allowed by contract/agreed with Owner (does not meet ASME for Normal fluid service).,,84.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,"* U gasket may be considered.
+** For other conditions consult Materials Engineer.",,85.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,100,750,,,86.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,,87.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15,300,,,88.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,15,600,,,89.0,Sulphur Burning + Metallurgical
+,,,,Ductile Iron,N,Pneumatic / Service †,Yes,0,690,≤ 80 **,1034 @ 121,DI1,K,Check (ball - vertical),V4262,80,100,† Hydrotest not typically used as must be followed by drying.  Safety issues associated with pneumatic must be addressed.  May service test if allowed by contract/agreed with Owner (does not meet ASME for Normal fluid service).,,98.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (lift - Horizontal),V4266,80,100,** For other conditions consult Materials Engineer.,,99.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,150,600,,,100.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,150,600,,,101.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,80,100,,,102.0,Sulphur Burning + Metallurgical
+,,,>94%  H2SO4 **,SARAMET® 35,N,Pneumatic / Service †,Yes,0,690,≤ 120 **,690 @ 149,S35,A*,On-Off / Isolation (ball),V1281,15,50,† Hydrotest not typically used as must be followed by drying.  Safety issues associated with pneumatic must be addressed.  May service test if allowed by contract/agreed with Owner (does not meet ASME for Normal fluid service).,,90.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,"* U gasket may be considered.
+** For other conditions consult Materials Engineer.",,91.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2782,100,750,,,92.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,,93.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15,300,,,94.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7282,15,600,,,95.0,Sulphur Burning + Metallurgical
+,,,,"Alloy 20
+(lines ≤ DN50 only)",N,Hydro or  Pneumatic†,Yes,1.5,1034,120,1034 @ 204,S20,A*,On-Off / Isolation (ball),V1281,15,50,* U gasket may be considered,,96.0,Sulphur Burning + Metallurgical
+,,,,"PTFE-Lined Steel
+(lines ≤ DN50 only)",N,Hydro or  Pneumatic†,Yes,0,1034,150,"1724 @ 38
+1275 @ 232
+**",TC3,X*,On-Off / Isolation (ball),V1281,15,50,"* U gasket may be considered.
+** Service Limits vary with temp.",,97.0,Sulphur Burning + Metallurgical
+,SAV,"Sulphuric Acid, Vent",,316L Stainless Steel,N/A,N/A,No,3.2,10,150,1034 @ 204,S65,A*,Control / On-Off (b'fly),V2866,80,600,* U gasket may be considered,,104.0,Sulphur Burning + Metallurgical
+,SAW,"Sulphuric Acid, Weak",<65%  H2SO4,FRP,N,Hydro,Yes,3.8,650,82,**,FR22,C*,On-Off / Isolation (ball),V1266,15,150,"* U gasket may be considered
+** 1034 / FV @ 90 (DN ≤ 200) 
+690 / -17 @ 90 (250≤DN≤600)
+345 / -17 @ 90 (750≤DN≤1050)",,98.0,Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1267,15,150,,,99.0,Metallurgical
+,,,,,,,,,,,,,,Control / On-Off (b'fly),V2866,100,500,,,100.0,Metallurgical
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,200,,,101.0,Metallurgical
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,200,,,102.0,Metallurgical
+,,,,,,,,,,,,,,Check (wafer swing),V4763,80,300,,,103.0,Metallurgical
+,SCE,Sodium Carbonate,Na2CO3 Solution,PVC,D,Service,No,0,1034,amb,"1034 @ 32 
+345 @ 60
+**",PV6,C*,On-Off / Isolation (ball),V1259,25,200,"* U gasket may be considered.
+** Service Limits vary with temp.",,105.0,Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,15,100,,,106.0,Metallurgical
+,,,,,,,,,,,,,,Control / On-Off (b'fly),V2866,80,300,,,107.0,Metallurgical
+,,,,,,,,,,,,,,Throttling (pinch),V9252,25,100,,,108.0,Metallurgical
+,SDD,"SO2 Gas, Dry",,Carbon Steel Duct,N/A,Service,No,1.5,-30 to 81 †,450,81 @ 450  †,CD6,R,On-Off / Isolation (ball),V1214,15,250,"V1214 < 260ºC only.
+† Vacuum requires custom design",,109.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1213,15,250,,,110.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,PP Isolation (ball),V1533,15,,,,111.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Damper,V2411,400,,,,112.0,Sulphur Burning + Metallurgical
+,,,,304H Stainless Steel Duct,N/A,Service,No,0,81,650,81 @ 650,SD4,R,On-Off / Isolation (ball),V1235,15,300,,,113.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Damper,V2431,400,,,,114.0,Sulphur Burning + Metallurgical
+,,,,"316L Stainless Steel Duct
+(exit Dry Tower - mist carryover)",N/A,Service,No,0,81,300,81 @ 300,SD3,R,,,,,,,115.0,Sulphur Burning + Metallurgical
+,SDW,"SO2 Gas, Wet",,FRP Duct,N/A,Service,No,2.8,-17 to 17,82,"17 @ 85
+-17 @ 85",FD23,C,On-Off / Isolation (ball),V1266,15,150,,,116.0,Metallurgical
+,,,,,,,,,,,,,,Control / On-Off (b'fly),V2866,100,350,,,117.0,Metallurgical
+,,,,,,,,,,,,,,Damper,V2251,400,,,,118.0,Metallurgical
+,SIL,Sodium Silicate,,Carbon Steel,D,Service,No,1.5,1034,90,1034 @ 204,CS7,B,On-Off / Isolation (ball),V1112,15,50,,,119.0,Metallurgical
+,SL,Molten Sulphur,Unfiltered,"Carbon Steel 
+(Steam Jacketed)",N,Hydro,No,1.5,1378,150,1378 @ 204,CS20,Y1,On-Off  / Isolation (plug),V5216,15,200,,,120.0,Sulphur Burning
+,SLF,Molten Sulphur,Filtered,"Carbon Steel 
+(Steam Jacketed)",N,Hydro,No,1.5,1378,150,1378 @ 204,CS20,Y1,On-Off / Isolation (plug),V5266,15,200,,,121.0,Sulphur Burning
+,STG,SO3 Gas,,Carbon Steel Duct,N/A,Service,No,1.5,81,450,81 @ 450,CD6,R,On-Off / Isolation (ball),V1214,15,250,V1214 < 260ºC only,,122.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1213,15,250,,,123.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,PP Isolation (ball),V1533,15,,,,124.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Damper,V2411,400,,,,125.0,Sulphur Burning + Metallurgical
+,,,,304H Stainless Steel Duct,N/A,Service,No,0,81,650,81 @ 650,SD4,R,On-Off / Isolation (ball),V1235,15,250,,,126.0,Sulphur Burning + Metallurgical
+,,,,,,,,,,,,,,Damper,V2431,400,,,,127.0,Sulphur Burning + Metallurgical
+,WBF,Boiler Feedwater,Demineralised Water,Carbon Steel,B31.1,Hydro,No,0.75,"7550
+11100","315
+150","9194 @ 400
+12070 @ 150",CS16,Y2†,Check (swing),V4412,80,400,† Avoid bolted connections,,129.0,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,,,130.0,Sulphur Burning
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7412,80,600,,,131.0,Sulphur Burning
+,,,,,,,,,,,,,,Throttling (globe),V8412,80.0,200.0,,,132.0,Sulphur Burning

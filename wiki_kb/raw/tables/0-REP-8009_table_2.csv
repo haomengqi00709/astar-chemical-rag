@@ -1,0 +1,7 @@
+# doc_id=0-REP-8009 table=2 inline=true
+FACILITY  or SITE,FACILITY  or SITE,,,,,,,DATE:,,,,TIME:,TIME:,TIME:,
+AREA INSPECTED,AREA INSPECTED,,,,,,,,,,,,,,
+INSPECTION TEAM,INSPECTION TEAM,,,,,,,,,INSPECTION TYPE,INSPECTION TYPE,INSPECTION TYPE,,,
+Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings,Hazard Ratings
+EXTREME – Correct immediately,EXTREME – Correct immediately,EXTREME – Correct immediately,EXTREME – Correct immediately,HIGH – Correct within 8 hours,HIGH – Correct within 8 hours,MEDIUM – Correct within one week,MEDIUM – Correct within one week,MEDIUM – Correct within one week,MEDIUM – Correct within one week,LOW – Correct within 2 weeks,LOW – Correct within 2 weeks,LOW – Correct within 2 weeks,LOW – Correct within 2 weeks,LOW – Correct within 2 weeks,LOW – Correct within 2 weeks
+Item No.,Location,Location,Observed Hazard,Observed Hazard,Hazard Rating,Hazard Rating,Recommended Action,Recommended Action,Recommended Action,Recommended Action,Responsibility,Responsibility,Responsibility,Correction Deadline,Correction Deadline

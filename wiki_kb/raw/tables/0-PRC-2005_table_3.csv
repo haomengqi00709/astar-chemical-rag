@@ -1,0 +1,24 @@
+# doc_id=0-PRC-2005 table=3 inline=true
+PROCUREMENT,PROJECT MANAGER,PROJECT ENGINEER,PROCUREMENT,DISCIPLINE LEAD ENGINEER
+GENERAL,"Deliver the project to the Owner in accordance with the contracted requirements for scope, schedule, and quality.",,"Procure all required goods to meet the project requirements for scope, schedule and quality.","Initiate and assist in procurement of assigned goods to meet the project requirements for scope, schedule and quality."
+PLANNING,Approve procurement plan.,,"Prepare procurement plan, listing each Purchase Order, items included, proposed bidders list, lead-time.",Assist in preparing procurement plan.
+PLANNING,Approve shipping plan.,,Prepare shipping plan based on probable sources of goods. Establish allowable shipping envelopes and shipping duration.,
+PLANNING,,Establish circulation lists for review of Vendor proposals and Vendor documentation.,,Advise project engineer what Vendor documentation requires review and approval by the discipline.
+COMMERCIAL,Approve Special Terms and Conditions.,,Establish an in-depth understanding of the commercial requirements of the Contract. Prepare Special Terms and Conditions to be used for procurement.,
+QUALITY,,,Draft modifications to standard Quality Plan to meet Contract requirements.,
+QUALITY,,,Review and approve Vendor Quality Plan to match Contract requirements.,
+QUALITY,,,Carry out Vendor quality surveillance as set out in the Quality Plan.,Participate in stage or final surveillance as set out in the Quality Plan.
+PROCUREMENT,Approve draft Request For Quotation.,Check draft Request For Quotation.,Prepare draft Request For Quotation; issue to Vendors following approval.,Direct the preparation and Approve Requisition for RFQ for assigned goods in accordance with procurement plan.
+PROCUREMENT,Review evaluations and select Vendor. If Vendor is not technically qualified or if over project budget obtain senior level approval.,Co-ordinate bid evaluations and prepare Summary Record. Recommend final selection.,"Evaluate proposals commercially, w.r.t. Vendor performance, and financially and rate Vendors with any qualifications.",Evaluate proposals technically and rate Vendors with any qualifications.
+PROCUREMENT,Propose any additional commercial terms specific to the selected Vendor.,,Request revised proposal from the selected Vendor.,Revise technical documentation as required for the selected Vendor.
+PROCUREMENT,Participate in negotiation with Vendor at own discretion.,Participate in negotiation with Vendor as required.,"Negotiate price, technical offer and commercial terms with Vendor.",Participate in negotiation with Vendor as required.
+PROCUREMENT,Approve draft Purchase Order.,Check draft Purchase Order.,Prepare draft Purchase Order; issue to Vendor following approval.,Prepare Requisition for Purchase.
+EXPEDITING,Participate in expediting delivery of goods at own discretion.,,Responsible for expediting delivery of the goods by Vendor.,
+EXPEDITING,,,Arrange shipment of goods to contractual delivery point.,
+EXPEDITING,,"Responsible for expediting internal review, approval and return of Vendor documentation.
+Participate in expediting delivery of Vendor documentation at own discretion.",Responsible for expediting of Vendor documentation.,"Participate in expediting delivery ofVendor documentation.
+Provide prompt review and approval of Vendor documentation."
+COST,,,"Pursue back-charges for non-conformance of equipment and materials.
+Pursue payment of penalties for late delivery of Vendor documentation and late shipment of goods.",Provide notice to Project Manager of revisions to technical documentation together with an estimate of the resulting increase in cost.
+COMMUNICATION,,,Send and receive all communications with Vendors and archive upon project completion.,Prepare draft responses and notices to Vendor within discipline responsibility.
+RECORDS,,,Maintain Vendor communication files and archive upon project completion.,

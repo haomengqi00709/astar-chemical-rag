@@ -15,11 +15,23 @@ __pycache__/
 chroma_db/
 
 # Node
+node_modules/
+/package.json
+/package-lock.json
 frontend/AK_chemetics_Company_rag/node_modules/
 frontend/AK_chemetics_Company_rag/dist/
 
 # Parsed data caches
 llm_review_queue.json
+parsed_chunks_doc.json
+parsed_chunks_pdf.json
+
+# User-uploaded project data (runtime, not source)
+user_projects/
+
+# Wiki KB generated artifacts (rebuilt by pipeline)
+wiki_kb/db/
+wiki_kb/_tmp/
 
 # Temp/OS files
 .DS_Store

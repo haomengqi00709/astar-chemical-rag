@@ -1,0 +1,168 @@
+# doc_id=4-LST-0101 discipline=4 revision=R0
+Equipment,Equipment_1,Comments
+Number,Name,
+Area 90,Steam Systems,
+9005F,Boiler,was 8340M
+9006F,Burner,
+9007C,Boiler Air Supply Fan,was  8393C
+9008X,Boiler Motorized Damper,was  8398X
+9009T,Steam Drum,
+9020T,Boiler Feed Water Tank,was 8341T
+9021P,Deaerator Feed Pump,was 8347P
+9022H,BFW Preheater,
+9025T,Deaerator,was 8346M
+9030P,Boiler Water Feed Pump,was 8343P
+9031H,Boiler Feed Sample Cooler,
+9032H,Saturated Steam Sample Cooler,
+9033H,Superheated Steam Sample Cooler,
+9034H,Steam Export Desuperheater,was 8350H
+9035H,Steam Import Desuperheater,
+9036V,Steam Export Relief Valve Silencer,
+9039P,Blowdown Drum Pump,
+9040T,Continuous Blowdown Drum,was 8353T
+9041K,Mist Eliminator,was 8342K
+9042H,Blowdown Sample Cooler,
+9043H,Blowdown Heat Exchanger,was 8354H
+9045T,Intermittent Blowdown Drum,
+9046K,Mist Eliminator,
+9047H,Blowdown Cooler,
+9050X,Blower Turbine,
+9051H,Condenser,
+9052T,Condensate Tank,was 8370T
+9053P,Condensate Pump,was 8371P
+9054V,Ejector,
+9055H,Condensate Cooler,was 8373H
+9070T,Chemical Dosing Tank,was 8345T
+9071P,Chemical Dosing Pump,was 8344P
+9080X,Turbine,
+9081T,Turbine Lube Oil Reservoir,
+9082H,Turbine Lube Oil Heater,
+9083P,Turbine Lube Oil Pump,
+9084P,Turbine Lube Oil Auxilliary Pump,
+9085H,Turbine Lube Oil Cooler,
+9086K,Turbine Lube Oil Filter,
+9087C,Turbine Lube Oil Reservoir Fan,
+9088X,Turning Gear,
+9089P,Hydraulic Power Pump,
+9090H,Turbine Condenser,
+9091T,Turbine Condensate Tank,
+9092P,Turbine Condensate Pump,
+9093V,Ejector,
+9094H,Inter/ After Condenser,
+9095V,Hogging Ejector,
+9096E,Generator,
+9097H,Generator Cooler,
+Area 91,Water  Circulating Systems,
+9101T,Process Well Water Storage Tank,was 8348T
+9102P,Process Well Water Pump,was 8349P
+9105T,Seal Water Tank,was 8394T
+9106P,Seal Water Pump,was 8395P
+9107K,Seal Water Strainer,was 8329K
+9110T,Fire Water Tank,was 8333T
+9111P,Fire Water Pump,was 8334P
+9120P,Potable Water Booster Pump,was 9150P
+9125P,Process Water Booster Pump,was 9155P
+9130K,Sea Water Screen,was 9170K
+9131P,Sea Water Pump,was 9171P
+9132K,Sea Water Filter,was 9172K
+9133X,Sea Water Chlorinator,was 9173X
+9134P,Sea Water Booster Pump,was 9174P
+9140P,Heat Recovery Water  Pump,was 9160P
+9141T,Heat Recovery Water  Head Tank,was 9161T
+9142H,Trim Cooler+B101,was 9162H
+9165H,Water Chiller,was 8335H
+9166P,Chilled Water Circulation Pump,was 8336P
+9167T,Chilled Water Tank,was 8337T
+9168P,Chilled Water Supply Pump,was 8338P
+9169T,Chilled Water Expansion Pot,was 8339T
+9180H,Cooling Tower,was 8365H
+9181C,Cooling Tower Fan,was 8364C
+9182P,Cooling Tower Pump,was 8366P
+9183T,Cooling Tower Basin,was 8368T
+9184K,Cooling Tower Trash Screen,
+9185P,Cooling Water Booster Pump,was 8367P
+9187P,Cooling Tower Filter Pump,was 8369P
+9188K,Cooling Tower Filter,was 8363K
+9190P,Cooling Tower H2SO4 Pump,was 9121P
+9191T,Cooling Tower H2SO4 Pump Tank,was 9122T
+9192P,Antifouling Treatment Pump,"was 8379P,9123P"
+9193T,Antifouling Treatment Pump Tank,"was 8378T, 9124T"
+9194P,Biocide Treatment Pump,was 9127P
+9195T,Biocide Treatment Pump Tank,was 9128T
+9198T,Water Tempering Tank,was 8355T
+9199S,Safety Shower,
+Area 92,Utilities,
+9201C,Air Compressor,was 8301C
+9202C,Vent Air Compressor,was 8302C
+9203H,Air Compressor Aftercooler,was 8303H
+9204K,Air Moisture Separator,was 8304K
+9205K,Air Prefilter,was 8305K
+9206X,Air Dryer System,was 8306K
+9207K,Air Afterfilter,was 8307K
+9208T,Air Receiver,was 8308T
+9209K,Oil/Water Separator,was 8309K
+9211C,Instrument Air Compressor,was 8311C
+9213H,Instrument Air Aftercooler,was 8313H
+9214K,Instrument Air Moisture Separator,was 8314K
+9215K,Instrument Air Prefilter,was 8315K
+9216X,Instrument Air Dryer System,was 8316K
+9217K,Instrument Air Afterfilter,was 8317K
+9218T,Instrument Air Receiver,was 8318T
+9220T,Instrument Air Desiccant Vessel,was 8320K
+9222K,Air Purification System,was 8322K
+9221C,Padding Air Compressor,was 8381C
+9223H,Padding Air Compressor Aftercooler,was 8383H
+9224K,Padding Air Moisture Separator,was 8384K
+9225K,Padding Air Prefilter,was 8385K
+9226K,Padding Air Dryer System,was 8386K
+9227K,Padding Air Afterfilter,was 8387K
+9228T,Padding Air Receiver,was 8388T
+9230C,Mask Air Compressor,
+9231T,Mask Air Receiver,
+9245T,Nitrogen Storage Tank,was 8390T
+9146H,Nitrogen Vaporizer,was 8391H
+9251T,Fuel Oil Storage Tank,was 8351T
+9252P,Fuel Oil Pump,was 8352P
+9253K,Fuel Oil Strainer,
+9255P,Calciner Oil Pump,
+9256K,Fuel Oil Strainer,
+9280T,Sewage Tank,
+9281P,Sewage Chopper Pump,
+9282X,Sewage Lift Station,
+9285H,Air Conditioner,was 8397H
+9286H,Space Heater,was 8392H
+9287C,Air Ventilator,
+9290M,Maintanence Crane,
+9299X,Weigh Scale,was 8399X
+Area 93,Water Treatment,
+9301T,Na2CO3 Mix Tank,was 9101T
+9302A,Na2CO3 Mix Tank Agitator,was 9102A
+9303M,Na2CO3 Hoist,was 9103M
+9304M,Na2CO3 Chute,was 9104M
+9305T,Na2CO3 Storage Tank,was 9105T
+9306P,Na2CO3 Supply Pump,was 9106P
+9310K,Water Reactor/Clarifier,was 9110K
+9311A,Clarifier Agitator,was 9111A
+9312P,Sludge Pump,was 9112P
+9313T,Sludge Sump,was 9113T
+9315T,Clearwell,was 9115T
+9316P,Clearwell Pump,was 9116P
+9320P,Water Treatment H2SO4 Pump,was 9120P
+9330R,Water Softener,was 8330R
+9331R,Soft Water Storage Tank,was 8331T
+9332P,Soft Water Pump,was 8332P
+9340R,Water Purifying Unit,was 8324R
+9345R,Water Demineralizer,was 8325R
+9346T,Demineralized Water Tank,was 8326T
+9347P,Demineralized Water Pump,was 8327P
+9348T,Demineralized Water Head Tank,was 8328T
+9350K,Water Demineralizer Prefilter,was 8374K
+9351K,Water Demineralizer Multi Media Filter,was 8375K
+9352K,Water Demineralizer Afterfilter,was 8376K
+9353K,Activated Carbon Filter,was 8377K
+9360T,W.D. Acid Measuring Tank (Water Demineralizer),was 8356T
+9361P,W.D. Acid Metering Pump (Water Demineralizer),was 8357P
+9362T,W.D. Caustic Measuring Tank (Water Demineralizer),was 8358T
+9364P,W.D. Caustic Metering Pump (Water Demineralizer),was 8359P
+9365R,W.D. Activated Carbon Tower (Water Demineralizer),was 8360R
+Area 99,Electrical Equipment,See 9-PRC-0001

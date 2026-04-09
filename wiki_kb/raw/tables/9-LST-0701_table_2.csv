@@ -1,0 +1,8 @@
+# doc_id=9-LST-0701 discipline=9 revision=R0
+Items to be checked:,
+All grounding must be checked against the appropriate grounding drawings and standards as follows:,
+Check sizes of grounding conductors used.  Grounding loop: #4/0 stranded bare copper conductor.  Individual ground connections to equipment: #2/0 stranded bare copper conductors (or as specified on drawings).  DCS ground: #2/0 insulated (green) stranded copper conductor.  Magmeter ground: #2 insulated (green) stranded copper conductor.,
+Check accessible ground rods (at test wells) for proper material.  Must be ¾” diameter copper or copper clad steel rod.,
+"Check individual ground connections to all pieces of equipment (i.e. building steel, columns, motor base plates, transformers, tanks, etc) including proper PVC protection sleeves and proper support where required.",
+"Check ground bars for proper size, material and support.",
+"Check insulated ground bars for proper size, material and support.",

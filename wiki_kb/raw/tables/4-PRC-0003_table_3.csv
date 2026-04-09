@@ -1,0 +1,29 @@
+# doc_id=4-PRC-0003 table=3 inline=true
+0001,"Flat Bottom Vessel on Concrete and Grout
+Most commonly used for FRP Tanks
+Can be used for metal tanks in special cases
+Includes pressurized vessels e.g. Chlorate Reactor"
+0002,"Polyethylene Tank on Concrete and Sand
+For large polyethylene tanks such as the ones made by “Snyder”"
+0003,"Flat Bottom Tank on Steel
+Generally for smaller tanks on skids - steel plate supports bottom
+Can include pressurized tank e.g. Catholyte Tank"
+0004,"Flat Bottom Tank on Concrete no Grout
+Used for most metal tanks"
+0005,"Cl02 Absorber
+Reserved"
+0006,Skirt Supported Vessel on Concrete Ring Wall
+0007,"Skirt Supported Vessel on Concrete Pad
+Used for smaller diameter vessels"
+0008,Skirt Supported Vessel on Steel
+7540,Converter
+0020,Diaphragm Pump on Concrete and Grout
+0021,Centrifugal Pump on Concrete and Grout
+0022,Centrifugal Pump on Steel
+0030,Plate & Frame Exchanger on Concrete and Grout
+0031,Plate & Frame Exchanger on Steel
+0032,"Horizontal Vessel on Concrete and Grout
+Consider thermal expansion when calculating distance between anchor bolts."
+0033,Horizontal Vessel on Steel
+0034,Vertical Vessel Through Steel
+0050,Skid on Concrete and Grout

@@ -1,0 +1,5 @@
+# doc_id=8-LST-0115 discipline=8 revision=R1
+col_0,Instrument No.,col_2,P&ID,Fluid,"Composition
+(%w/w)","Density at N.O.C.
+(kg/m3)",Temperature (°C),col_8,col_9,Pressure (Vap. Space) (kPa(g)),Recommended Type,Material of Construction,col_13,col_14,col_15,col_16,Operating Case Reference,Comments
+,Aker Kvaerner Chemetics,Owner,,,,,Min.,Norm.,Max.,,,Wetted parts,Non-Wetted Parts,Gasket/Seal,Calibration Range (mm WC),Area Classification,,

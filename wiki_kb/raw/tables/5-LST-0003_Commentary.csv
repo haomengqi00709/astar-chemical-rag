@@ -1,0 +1,11 @@
+# doc_id=5-LST-0003 discipline=5 revision=R0
+col_0,Client Name,col_2,col_3,col_4,col_5,col_6,col_7,col_8,col_9,col_10,col_11,col_12,col_13,"Aker Kvaerner
+Chemetics
+A Division of Aker Kvaerner Canada Inc."
+,Project Title,,,,Piping Service List,,,,,,,,,
+,Location,,,,,,,,,,,,,
+,,,,,,,,,,,,,,Standard-5-LST-0003-R0
+,Commentary,,,,,,,,,,,,,
+,1.0,,"This standard is intended to be used as a starting point for piping material and valve selections on strong acid technology projects, to be modified as reuqired for project-specific conditions and contract requirements.",,,,,,,,,,,
+,2.0,,"Standard material and valve selections are  based on materials used in similar service at Codelco El Teniente, Thai Copper and Southern Peru.",,,,,,,,,,,
+,3.0,,"Pressures and temperatures in this list do not necessarily reflect typical service conditions, but are intended as boundaries on the standard material selections.  If actual project service conditions are outside these boundaries, then the selections require specific review by mechanical/materials engineer.",,,,,,,,,,,

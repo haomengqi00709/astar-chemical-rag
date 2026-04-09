@@ -1,0 +1,77 @@
+# doc_id=9-PRC-0003 table=2 inline=true
+TABLE # 1,TABLE # 1,TABLE # 1
+Document Description,Primary Usage,"Typical 
+Document No."
+Electrical Design Criteria,Design,9-PRC-0002
+Process Data Sheets – T/R & CPU,Design,4-PDS-9942
+Equipment Data Sheets,Design,9-DST-9942
+Specifications,Design,9-SPC-9942
+Lists,Design,9-LST-0200
+Detail Drawings,Design,9-DTL- 0100
+General Arrangement Drawings,Design,9-GAD-0100
+Schematic Drawings,Design,9-SCM-0100
+Calculations,Design,9-CAL-0100
+"Requisition for Quotation (REQ) (T/R, CPU )",Procurement,9-REQ-900X
+"Vendor Document Requirements (T/R, CPU )",Procurement,9-VDR-900X
+"Quality Documentation Sheets (T/R, CPU )",Procurement,9-QDS-9942
+"Request for Quotation (RFQ) (T/R, CPU )",Procurement,9-REQ-900X
+"Bid Evaluation (T/R, CPU )",,
+Preliminary Cost Tabulation,Procurement,0-TAB-5XXX-1
+Final Cost Tabulation,Procurement,0-TAB-5XXX-1
+Commercial Bid Tabulation,Procurement,0-TAB-5XXX-3
+Financial Evaluation,Procurement,-----------------
+Technical Bid Tabulation,Procurement,0-TAB-5XXX-2
+Order Risk Assessment,Procurement,0-TAB-5XXX
+Final Review and Vendor Selection,Procurement,-----------------
+"Requisition for Purchase Order (REQ) (T/R, CPU)",Procurement,9-REQ-900X
+"Purchase Order (T/R, CPU)",Procurement,9-POR-900X
+"Vendor Document Review (T/R, CPU)",Procurement,9-VDR-9001
+Requisition for Quotation (REQ) exclude T/R & CPU,Procurement,9-REQ-900X
+Vendor Document Requirements (VDR) ex. T/R & CPU,Procurement,9-VDR-900X
+Quality Documentation Sheets (QDS) ex. T/R & CPU,Procurement,9-QDS-900X
+Request for Quotation (RFQ) ex. T/R & CPU,Procurement,9-REQ-900X
+Bid Evaluation exclude T/R & CPU,,
+Preliminary Cost Tabulation,Procurement,0-TAB-5XXX-1
+Order value < CAD 10 K,,
+Order value < CAD 200 K,,
+Order value > CAD 200 K,,
+Final Cost Tabulation,Procurement,0-TAB-5XXX-1
+Commercial Bid Tabulation,Procurement,0-TAB-5XXX-3
+Financial Evaluation,Procurement,
+Technical Bid Tabulation,Procurement,0-TAB-5XXX-2
+Order risk assessment,Procurement,0-TAB-5XXX
+Risk assessment – value < CAD 10 K,,
+Risk assessment – value < CAD 200 K,,
+Risk assessment – value > CAD 200 K,,
+Final Review and Vendor Selection,Procurement,------------------
+Requisition for Purchase Order (RFQ) exclude T/R & CPU,Procurement,9-REQ-900X
+Purchase Order exclude T/R & CPU,Procurement,9-POR-900X
+Vendor Document Review exclude T/R & CPU,Design,9-VEN-99XX
+Vendor Document Review - Mechanical,Design,4-VEN-1068
+Vendor Document Review - Structur,Design,3-VEN-6328
+Electrical Equipment Manual,Construction,9-MAN-0100
+Shop Inspection & Witness Testing,,
+Shop inspection prior to purchase award,Procurement,0-REP-5XXX
+Shop inspection during manufacturing after PO,Design,-----------------
+Witness testing of electrical equipment,Procurement,X-REL-XXXX
+Construction,,
+Construction subcontract supply & erection scope,Construction,0-LST-6X90-1
+Electrical Installation Specification,Construction,9-SPC-0020
+Below Grade Grounding specification,Construction,9-SPC-0022
+Instrument Installation Specification – field instrument,Construction,8-SPC-0002
+Construction Support,,
+Field Instrument,,-----------------
+Electrical Equipment,,-----------------
+DCS,,-----------------
+Mechanical Check-out and Commissioning,,
+Electrical Field Check Lists,Construction,9-LST-07XX
+Field Instrument Testing,Construction,----------------
+Field Instrument Check-out List,Construction,8-LST-0101
+Field Instrument,,-----------------
+Electrical Equipment,,-----------------
+DCS,,----------------
+As-built Documentation,,
+Single Line Diagram,Construction,9-SCM-0101
+Schematics,Construction,9-SCM-0400
+Wiring Diagrams,Construction,9-SCM-0200
+Block Diagrams,Construction,9-SCM-0300

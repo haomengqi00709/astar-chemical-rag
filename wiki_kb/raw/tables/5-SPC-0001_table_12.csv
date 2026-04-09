@@ -1,0 +1,10 @@
+# doc_id=5-SPC-0001 table=12 inline=true
+"Pipe Size
+(DN)","Spacing
+(m)","Thickness
+(mm)",,"Width
+(mm)"
+400,3.3,3.175,x,32
+450,2.8,3.175,x,32
+500,3.0,3.175,x,40
+600,2.2,3.175,x,40

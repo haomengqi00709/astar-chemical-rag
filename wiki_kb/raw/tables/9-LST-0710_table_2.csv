@@ -1,0 +1,17 @@
+# doc_id=9-LST-0710 discipline=9 revision=R0
+Items to be checked,
+Motor mounted on base plate,
+Motor aligned with driven equipment,
+Motor fan covers attached and secured,
+Motor shaft turns freely (when turned by hand),
+Motor base plate grounded,
+Motor power cable connected (both ends),
+Motor and power cable megger tested (500/1000 V) *,
+Local control station installed,
+Equipment tag mounted,
+Local control station cable connected (both ends),
+Local control station cable megger tested (500 V) *,
+"Motor rotation check performed and correct
+(Note:  Motor must be de-coupled for this test)",
+No load test performed:  _____ A,
+Motor accepted:,

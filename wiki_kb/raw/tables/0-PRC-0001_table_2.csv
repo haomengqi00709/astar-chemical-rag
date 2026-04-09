@@ -1,0 +1,22 @@
+# doc_id=0-PRC-0001 table=2 inline=true
+Folder / Sub-Folder,Checker,Approver
+0 Administration,,
+0 Documentation,Design Office Manager,President
+1 Proposals,BD Managers,President
+2 Project Administration,Manager of Project Controls,Director of Commercial and Project Services
+3 Planning,Manager of Project Controls,Director of Commercial and Project Services
+4 Cost Control,Manager of Project Controls,Director of Commercial and Project Services
+5 Procurement,Procurement Manager,Director of Commercial and Project Services
+6 Construction,Manager of Construction Services,Director of Commercial and Project Services
+7 Quality Assurance,Quality Assurance Manager,Director of Commercial and Project Services
+8 HSE,Manager of HSE,President
+9 Corporate,General Counsel,President
+1 Process Technology,Chief Process Engineer,Applicable Business Director
+2 Civil & Site Preparation,Chief Civil/Structural Engineer,Applicable Business Director
+3 Structural & Buildings,Chief Civil/Structural Engineer,Applicable Business Director
+4 Equipment & PDS,Chief Mechanical Engineer,Applicable Business Director
+5 Piping & Layout,Chief Mechanical Engineer,Applicable Business Director
+6 Insulation,Chief Mechanical Engineer,Applicable Business Director
+7 Coatings,Senior Materials Engineer,Applicable Business Director
+8 Instrumentation & Control,Chief Electrical/ Instrumentation Engineer,Applicable Business Director
+9 Electrical,Chief Electrical/ Instrumentation Engineer,Applicable Business Director

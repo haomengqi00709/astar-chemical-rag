@@ -373,6 +373,98 @@ const PipelineStep: React.FC<{
   </div>
 );
 
+// ─── Team Sections Panel ────────────────────────────────────────────────────
+
+const TEAM_ROLES: { key: 'process' | 'mechanical'; label: string; Icon: React.FC<any> }[] = [
+  { key: 'process',    label: 'Process Engineer',    Icon: FlaskConical },
+  { key: 'mechanical', label: 'Mechanical Engineer', Icon: Wrench },
+];
+
+const TeamSectionsPanel: React.FC<{
+  sessions:    any[];
+  parentDocId: string;
+  userRole:    Role;
+  hasContent:  boolean;
+  isRunning:   boolean;
+  onRun:       (role: string) => void;
+  onOpen:      (parentDocId: string, session: any) => void;
+  onRelease:   (sessionId: string, released: boolean) => void;
+}> = ({ sessions, parentDocId, userRole, hasContent, isRunning, onRun, onOpen, onRelease }) => {
+
+  // Engineer view — only show their own released section
+  if (userRole !== 'pm') {
+    const mine = sessions.find(s => s.owner === userRole && s.released);
+    if (!mine || !hasContent) return null;
+    return (
+      <div className="border-t border-slate-100 pt-2 mt-1">
+        <button
+          onClick={() => onOpen(parentDocId, mine)}
+          className="flex items-center gap-1.5 text-[10px] font-semibold px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+        >
+          <FileText className="w-3 h-3" /> Open / Edit My Section
+        </button>
+      </div>
+    );
+  }
+
+  // PM view — two rows, one per engineer role
+  return (
+    <div className="border-t border-slate-100 pt-3 mt-1">
+      <p className="text-[9px] font-mono text-slate-400 uppercase tracking-widest mb-2">Team Sections</p>
+      <div className="space-y-1.5">
+        {TEAM_ROLES.map(({ key, label, Icon }) => {
+          const session    = sessions.find((s: any) => s.owner === key);
+          const isReleased = session?.released ?? false;
+          const ready      = !!session && hasContent;
+
+          return (
+            <div key={key} className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2">
+              <Icon className={`w-3.5 h-3.5 shrink-0 ${key === 'process' ? 'text-emerald-600' : 'text-orange-500'}`} />
+              <span className="text-xs font-medium text-slate-700 flex-1">{label}</span>
+
+              {/* Run → View/Edit */}
+              {ready ? (
+                <button
+                  onClick={() => onOpen(parentDocId, session)}
+                  className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors shrink-0"
+                >
+                  View / Edit
+                </button>
+              ) : (
+                <button
+                  onClick={() => onRun(key)}
+                  disabled={isRunning}
+                  className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-blue-50 text-slate-600 hover:text-blue-700 disabled:opacity-50 transition-colors shrink-0"
+                >
+                  {isRunning
+                    ? <><Loader2 className="w-3 h-3 animate-spin" /> Running…</>
+                    : 'Run ▷'}
+                </button>
+              )}
+
+              {/* Send */}
+              <button
+                onClick={() => session && onRelease(session.id, !isReleased)}
+                disabled={!ready}
+                className={`text-[10px] font-bold px-2.5 py-1 rounded-lg transition-colors shrink-0 ${
+                  isReleased
+                    ? 'bg-emerald-100 text-emerald-700 hover:bg-red-50 hover:text-red-600'
+                    : ready
+                    ? 'bg-slate-200 text-slate-600 hover:bg-blue-100 hover:text-blue-700'
+                    : 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                }`}
+              >
+                {isReleased ? '✓ Sent' : 'Send →'}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+
 // ─── Project Card ──────────────────────────────────────────────────────────
 
 const ProjectCard: React.FC<{
@@ -463,7 +555,7 @@ const ProjectDetailView: React.FC<{
   onBack: () => void;
   processOutput: any;
   mechanicalOutput: any;
-  onRunAgent: () => void;
+  onRunAgent: (agentType?: 'process' | 'mechanical') => void;
   agentRunning: boolean;
   agentError: string;
   docStatusMap: Record<string, any>;
@@ -471,7 +563,11 @@ const ProjectDetailView: React.FC<{
   processSteps: Record<string, any>;
   onDocStatusChange: (docId: string, status: string) => void;
   onDocComment: (docId: string, text: string) => void;
-  onViewDocument: (docId: string) => void;
+  sessionsConfig: Record<string, any[]>;
+  onViewDocument: (docId: string, session?: any) => void;
+  onReleaseSession: (docId: string, sessionId: string, released: boolean) => void;
+  onSuggestSessions: (docId: string, role?: string) => void;
+  suggestingSession: string | null;
   onRunStep: (step: number) => void;
   stepRunning: number | null;
   stepError: string;
@@ -480,12 +576,17 @@ const ProjectDetailView: React.FC<{
   onMarkComplete: () => void;
   onDelete: () => void;
   isCompleted: boolean;
-}> = ({ project, status, userRole, onBack, processOutput, mechanicalOutput, onRunAgent, agentRunning, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onViewDocument, onRunStep, stepRunning, stepError, stepProgress, onPublish, onMarkComplete, onDelete, isCompleted }) => {
+}> = ({ project, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, agentRunning, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, onPublish, onMarkComplete, onDelete, isCompleted }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const ps   = project.project_summary;
-  const docs = [...(project.document_register ?? [])].sort(
+  const ps      = project.project_summary;
+  const allDocs = [...(project.document_register ?? [])].sort(
     (a, b) => new Date(a.planned_date).getTime() - new Date(b.planned_date).getTime()
   );
+
+  // For non-PM roles: replace PM docs with their session slice cards
+  const roleDocOwnerStr: Record<Role, string> = { pm: 'PM', process: 'Process Engineer', mechanical: 'Mechanical Engineer' };
+  // Sessions are now nested sub-items inside PM doc rows — not top-level cards
+  const docs = allDocs;
   const flags = project.risk_flags_fired ?? [];
   const pipe  = pipelineStatuses(status);
 
@@ -500,21 +601,16 @@ const ProjectDetailView: React.FC<{
     .some(([k, v]: [string, any]) => k !== '__project' && v.status === 'approved');
   const isUnlocked = isPublished || pmDocsApproved;
 
-  // Process: show via ProcessStepsPanel (not pipeline button). Mechanical: pipeline button only.
   const canRun =
     isUnlocked &&
-    userRole === 'mechanical' &&
+    (userRole === 'mechanical' || userRole === 'pm') &&
     !status.mechanical.mechanical_output &&
     status.process.process_output;
 
-  const canShowProcessPanel = isUnlocked && userRole === 'process' && status.pm.project_context;
-  const canShowPumpPanel    = isUnlocked && userRole === 'mechanical' && status.process.process_output;
+  const canShowProcessPanel = isUnlocked && (userRole === 'process' || userRole === 'pm') && status.pm.project_context;
+  const canShowPumpPanel    = isUnlocked && (userRole === 'mechanical' || userRole === 'pm') && status.process.process_output;
 
-  const roleDocOwner: Record<Role, string> = {
-    pm: 'PM',
-    process: 'Process Engineer',
-    mechanical: 'Mechanical Engineer',
-  };
+  const roleDocOwner = roleDocOwnerStr;
 
   return (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="p-8 max-w-7xl mx-auto space-y-6">
@@ -658,12 +754,25 @@ const ProjectDetailView: React.FC<{
                 onStatusChange={(s) => onDocStatusChange(doc.doc_id, s)}
                 onAddComment={(t) => onDocComment(doc.doc_id, t)}
                 extraContent={
-                  canShowProcessPanel && doc.assigned_to === 'Process Engineer' && doc.doc_id.includes('CAL')
+                  doc.assigned_to === 'PM'
+                    ? (
+                      <TeamSectionsPanel
+                        sessions={sessionsConfig[doc.doc_id] ?? []}
+                        parentDocId={doc.doc_id}
+                        userRole={userRole}
+                        hasContent={!!deliverables[doc.doc_id]}
+                        isRunning={suggestingSession === doc.doc_id}
+                        onRun={(role) => onSuggestSessions(doc.doc_id, role)}
+                        onOpen={(parentDocId, session) => onViewDocument(parentDocId, session)}
+                        onRelease={(sessionId, released) => onReleaseSession(doc.doc_id, sessionId, released)}
+                      />
+                    )
+                  : canShowProcessPanel && doc.assigned_to === 'Process Engineer' && doc.doc_id.includes('CAL')
                     ? (
                       <ProcessStepsPanel
                         processSteps={processSteps}
                         onRunStep={onRunStep}
-                        onRunAll={onRunAgent}
+                        onRunAll={() => onRunAgent('process')}
                         stepRunning={stepRunning}
                         allRunning={agentRunning}
                         stepProgress={stepProgress}
@@ -674,7 +783,7 @@ const ProjectDetailView: React.FC<{
                     ? (
                       <PumpCalcPanel
                         mechanicalOutput={mechanicalOutput}
-                        onRun={onRunAgent}
+                        onRun={() => onRunAgent('mechanical')}
                         running={agentRunning}
                         error={agentError}
                       />
@@ -1162,15 +1271,42 @@ const CalcSheetView: React.FC<{ data: any }> = ({ data }) => (
 
 // ─── Deliverable Document Modal ────────────────────────────────────────────
 
+// ── Session helpers ────────────────────────────────────────────────────────
+
+function extractSessionContent(fullContent: string, headings: string[]): string {
+  if (!headings || headings.length === 0) return fullContent;
+  const normHeadings = headings.map(h => h.replace(/^#+\s*/, '').trim().toLowerCase());
+  const lines = fullContent.split('\n');
+  const result: string[] = [];
+  let inSection = false;
+  let sectionLevel = 0;
+  for (const line of lines) {
+    const m = line.match(/^(#{1,6})\s+(.*)/);
+    if (m) {
+      const lvl = m[1].length;
+      const lineText = m[2].trim().toLowerCase();
+      const isTarget = normHeadings.some(h => lineText === h || lineText.startsWith(h.substring(0, 30)) || h.startsWith(lineText.substring(0, 30)));
+      if (isTarget) { inSection = true; sectionLevel = lvl; result.push(line); }
+      else if (inSection && lvl <= sectionLevel) { inSection = false; }
+      else if (inSection) { result.push(line); }
+    } else if (inSection) { result.push(line); }
+  }
+  return result.join('\n').trim();
+}
+
 const DeliverableModal: React.FC<{
   doc: any;
   initialContent: string;
+  masterContent?: string;  // full master document (for merge-to-master)
   projectId: string;
   projectContext: any;
   onClose: () => void;
   onSave: (content: string) => void;
+  onMergeToMaster?: (sessionContent: string) => void;  // PM merges session back into master
   readOnly?: boolean;
-}> = ({ doc, initialContent, projectId, onClose, onSave, readOnly = false }) => {
+  session?: any;  // session object (for session mode)
+  userRole?: Role;
+}> = ({ doc, initialContent, masterContent, projectId, onClose, onSave, onMergeToMaster, readOnly = false, session, userRole }) => {
   const calcSheet   = tryParseCalcSheet(initialContent);
   const isCalcSheet = !!calcSheet;
   const notesKey    = calcSheet?._subtype === 'pump_calc' ? 'calculation_notes' : 'calc_summary';
@@ -1181,6 +1317,11 @@ const DeliverableModal: React.FC<{
   const [chatLoading, setChatLoading] = useState(false);
   const [saveState,   setSaveState]   = useState<'idle' | 'saving' | 'saved'>('idle');
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // In session mode, display session content; in master mode, display full doc
+  const isSessionMode = !!session;
+  const effectiveReadOnly = readOnly;
+  const canMerge = isSessionMode && userRole === 'pm' && session?.owner !== 'pm' && !!onMergeToMaster;
 
   // Word preview — available for PM, Process Engineer, and Mechanical Engineer text docs (not calc sheets)
   const isTextDoc = !isCalcSheet && (doc.assigned_to === 'PM' || doc.assigned_to === 'Process Engineer' || doc.assigned_to === 'Mechanical Engineer');
@@ -1218,25 +1359,34 @@ const DeliverableModal: React.FC<{
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
   const handleSave = async () => {
-    const saveContent = (isCalcSheet && !readOnly)
+    const saveContent = (isCalcSheet && !effectiveReadOnly)
       ? JSON.stringify({ ...calcSheet, [notesKey]: calcNotes }, null, 2)
       : content;
     setSaveState('saving');
     onSave(saveContent);
     try {
-      await fetch(`/api/projects/${projectId}/deliverable`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ docId: doc.doc_id, content: saveContent }),
-      });
-      // Regenerate .docx from updated markdown for PM documents
-      if (isPmDoc) {
-        await fetch(`/api/projects/${projectId}/export-docx`, {
-          method: 'POST',
+      if (isSessionMode && session) {
+        // Save to session content (not master) — engineer or PM editing a session slice
+        await fetch(`/api/projects/${projectId}/session-content`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ docId: doc.doc_id, sessionId: session.id, content: saveContent }),
+        });
+      } else {
+        // Save to master deliverable
+        await fetch(`/api/projects/${projectId}/deliverable`, {
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ docId: doc.doc_id, content: saveContent }),
         });
-        setWordHtml('');  // clear cache so next Word Preview loads fresh file
+        if (isPmDoc) {
+          await fetch(`/api/projects/${projectId}/export-docx`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ docId: doc.doc_id, content: saveContent }),
+          });
+          setWordHtml('');
+        }
       }
     } catch (e) { console.error(e); }
     setSaveState('saved');
@@ -1279,14 +1429,14 @@ const DeliverableModal: React.FC<{
           <div>
             <h2 className="font-bold text-slate-900 text-lg">{doc.doc_id} — {doc.title}</h2>
             <p className="text-xs text-slate-400 font-mono mt-0.5">
-              {isCalcSheet && !readOnly ? 'Structured calc sheet · Edit notes below · Chat with AI'
+              {isCalcSheet && !effectiveReadOnly ? 'Structured calc sheet · Edit notes below · Chat with AI'
                 : isCalcSheet ? 'Structured calculation sheet · Read only'
-                : readOnly ? 'Read only — PM deliverable'
+                : effectiveReadOnly ? 'Read only'
                 : 'Edit directly · or chat with AI for revisions'}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {readOnly
+            {effectiveReadOnly
               ? <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-700">{isCalcSheet ? 'Calc Sheet' : 'Read Only'}</span>
               : (
                 <button
@@ -1309,11 +1459,36 @@ const DeliverableModal: React.FC<{
           </div>
         </div>
 
+        {/* Session banner */}
+        {isSessionMode && (
+          <div className={`px-6 py-2 border-b shrink-0 flex items-center justify-between gap-4 ${canMerge ? 'bg-amber-50 border-amber-100' : 'bg-blue-50 border-blue-100'}`}>
+            <div className="flex items-center gap-2">
+              <span className={`text-[10px] font-mono uppercase tracking-wider ${canMerge ? 'text-amber-500' : 'text-blue-500'}`}>
+                {canMerge ? 'PM Review — Engineer Section' : 'Your Section'}
+              </span>
+              <span className={`text-xs font-semibold ${canMerge ? 'text-amber-700' : 'text-blue-700'}`}>{session.title}</span>
+              {session.lastEditedAt && (
+                <span className="text-[9px] text-slate-400 font-mono">
+                  · last edited {new Date(session.lastEditedAt).toLocaleString()}
+                </span>
+              )}
+            </div>
+            {canMerge && (
+              <button
+                onClick={() => onMergeToMaster?.(content)}
+                className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white transition-colors shrink-0"
+              >
+                Merge to Master →
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Body */}
         <div className="flex flex-1 overflow-hidden">
 
           {/* Left — Calc sheet, document viewer, or markdown editor */}
-          <div className={`flex-1 flex flex-col overflow-hidden ${readOnly ? '' : 'border-r border-slate-100'}`}>
+          <div className={`flex-1 flex flex-col overflow-hidden ${effectiveReadOnly ? '' : 'border-r border-slate-100'}`}>
             {isCalcSheet ? (
               <>
                 <CalcSheetView data={calcSheet} />
@@ -1321,10 +1496,10 @@ const DeliverableModal: React.FC<{
                   <p className="text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-2">Calculation Notes</p>
                   <textarea
                     value={calcNotes}
-                    onChange={e => !readOnly && setCalcNotes(e.target.value)}
-                    readOnly={readOnly}
+                    onChange={e => !effectiveReadOnly && setCalcNotes(e.target.value)}
+                    readOnly={effectiveReadOnly}
                     rows={3}
-                    className={`w-full text-xs font-mono text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-3 resize-none outline-none focus:ring-1 focus:ring-blue-400 ${readOnly ? 'cursor-default' : ''}`}
+                    className={`w-full text-xs font-mono text-slate-700 bg-slate-50 border border-slate-200 rounded-xl p-3 resize-none outline-none focus:ring-1 focus:ring-blue-400 ${effectiveReadOnly ? 'cursor-default' : ''}`}
                     placeholder="Add notes, assumptions, or commentary…"
                     spellCheck={false}
                   />
@@ -1334,26 +1509,28 @@ const DeliverableModal: React.FC<{
               <>
                 <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 shrink-0 flex items-center justify-between">
                   <p className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-                    {viewMode === 'word' ? 'Word Preview' : (readOnly ? 'Document Viewer' : 'Markdown Editor')}
+                    {viewMode === 'word' ? 'Word Preview' : (effectiveReadOnly ? 'Document Viewer' : 'Markdown Editor')}
                   </p>
-                  {isPmDoc && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => setViewMode('markdown')}
-                        className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-colors ${viewMode === 'markdown' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-200'}`}
-                      >
-                        Markdown
-                      </button>
-                      <button
-                        onClick={loadWordPreview}
-                        disabled={wordLoading}
-                        className={`flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-colors ${viewMode === 'word' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-200'}`}
-                      >
-                        {wordLoading && <Loader2 className="w-3 h-3 animate-spin" />}
-                        Word Preview
-                      </button>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-1">
+                    {isPmDoc && (
+                      <>
+                        <button
+                          onClick={() => setViewMode('markdown')}
+                          className={`text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-colors ${viewMode === 'markdown' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-200'}`}
+                        >
+                          Markdown
+                        </button>
+                        <button
+                          onClick={loadWordPreview}
+                          disabled={wordLoading}
+                          className={`flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-lg transition-colors ${viewMode === 'word' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-200'}`}
+                        >
+                          {wordLoading && <Loader2 className="w-3 h-3 animate-spin" />}
+                          Word Preview
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
                 {viewMode === 'word' ? (
                   <div className="flex-1 overflow-y-auto p-6 bg-white">
@@ -1379,9 +1556,11 @@ const DeliverableModal: React.FC<{
                 ) : (
                   <textarea
                     value={content}
-                    onChange={e => !readOnly && setContent(e.target.value)}
-                    readOnly={readOnly}
-                    className={`flex-1 p-5 font-mono text-xs text-slate-700 resize-none outline-none leading-relaxed ${readOnly ? 'bg-slate-50 cursor-default select-text' : ''}`}
+                    onChange={e => {
+                      if (!effectiveReadOnly) setContent(e.target.value);
+                    }}
+                    readOnly={effectiveReadOnly}
+                    className={`flex-1 p-5 font-mono text-xs text-slate-700 resize-none outline-none leading-relaxed ${effectiveReadOnly ? 'bg-slate-50 cursor-default select-text' : ''}`}
                     spellCheck={false}
                   />
                 )}
@@ -1389,8 +1568,8 @@ const DeliverableModal: React.FC<{
             )}
           </div>
 
-          {/* Right — AI Chat (hidden in readOnly mode) */}
-          {!readOnly && <div className="w-96 flex flex-col overflow-hidden">
+          {/* Right — AI Chat (hidden in effectiveReadOnly mode) */}
+          {!effectiveReadOnly && <div className="w-96 flex flex-col overflow-hidden">
             <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 shrink-0 flex items-center gap-2">
               <p className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">AI Assistant</p>
               <span className="text-[9px] font-mono text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded-full">Document loaded as context</span>
@@ -1862,6 +2041,7 @@ const ProjectListView: React.FC<{
   onSelectProject: (id: string) => void;
   onNewProject: () => void;
 }> = ({ user, projects, onSelectProject, onNewProject }) => {
+  const viewAs = user.role;
   const active    = projects.filter(p => p.status !== 'completed');
   const completed = projects.filter(p => p.status === 'completed');
 
@@ -1872,7 +2052,7 @@ const ProjectListView: React.FC<{
           key={proj.id}
           project={proj.context}
           status={projectAgentStatus(proj)}
-          userRole={user.role}
+          userRole={viewAs}
           docStatusMap={proj.docStatus ?? {}}
           onClick={() => onSelectProject(proj.id)}
         />
@@ -1885,15 +2065,15 @@ const ProjectListView: React.FC<{
       <header className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900">
-            {user.role === 'pm' ? 'My Projects' : 'Assigned Projects'}
+            {viewAs === 'pm' ? 'My Projects' : 'Assigned Projects'}
           </h1>
           <p className="text-slate-500 mt-1">
-            {user.role === 'pm' ? 'Projects you manage and oversee' :
-             user.role === 'process' ? 'Projects requiring process engineering' :
+            {viewAs === 'pm' ? 'Projects you manage and oversee' :
+             viewAs === 'process' ? 'Projects requiring process engineering' :
              'Projects requiring mechanical engineering'}
           </p>
         </div>
-        {user.role === 'pm' && (
+        {user.role === 'pm' && viewAs === 'pm' && (
           <button onClick={onNewProject}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl transition-colors shadow-lg">
             <FileText className="w-4 h-4" /> New Project
@@ -1910,7 +2090,7 @@ const ProjectListView: React.FC<{
           <div className="flex flex-col items-center justify-center py-16 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
             <Briefcase className="w-8 h-8 text-slate-300 mb-3" />
             <p className="text-sm font-bold text-slate-500">No active projects</p>
-            {user.role === 'pm' && (
+            {user.role === 'pm' && viewAs === 'pm' && (
               <button onClick={onNewProject}
                 className="mt-4 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
                 <FileText className="w-4 h-4" /> Start New Project
@@ -1936,6 +2116,7 @@ const ProjectListView: React.FC<{
 // ─── Main Dashboard ────────────────────────────────────────────────────────
 
 export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
+  const viewAs = user.role;
   const [projects,       setProjects]       = useState<any[]>([]);
   const [selectedId,     setSelectedId]     = useState<string | null>(null);
   const [showDetail,     setShowDetail]     = useState(false);
@@ -1946,7 +2127,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const [stepRunning,    setStepRunning]    = useState<number | null>(null);
   const [stepError,      setStepError]      = useState('');
   const [stepProgress,   setStepProgress]   = useState<Record<number, 'running' | 'done'>>({});
-  const [docModal,       setDocModal]       = useState<{ docId: string; doc: any; readOnly?: boolean } | null>(null);
+  const [docModal,       setDocModal]       = useState<{ docId: string; doc: any; readOnly?: boolean; session?: any } | null>(null);
 
   // Derived from selected project
   const selectedProject   = projects.find(p => p.id === selectedId) ?? null;
@@ -1954,8 +2135,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const processOutput      = selectedProject?.processOutput ?? null;
   const mechanicalOutput   = selectedProject?.mechanicalOutput ?? null;
   const docStatusMap       = selectedProject?.docStatus ?? {};
-  const deliverables       = (selectedProject?.context?.deliverables ?? {}) as Record<string, string>;
+  // deliverables values may be `true` (placeholder from list endpoint) or a string (full content from detail endpoint)
+  const deliverables = Object.fromEntries(
+    Object.entries(selectedProject?.context?.deliverables ?? {}).filter(([, v]) => typeof v === 'string')
+  ) as Record<string, string>;
   const processSteps       = (selectedProject?.processSteps ?? {}) as Record<string, any>;
+  const sessionsConfig     = (selectedProject?.sessionsConfig ?? {}) as Record<string, any[]>;
   const status: AgentStatus = selectedProject
     ? projectAgentStatus(selectedProject)
     : { pm: { project_context: false, handoff_brief: false }, process: { process_output: false, calc_summary: false }, mechanical: { mechanical_output: false, pump_datasheet: false } };
@@ -1968,7 +2153,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     finally { setLoaded(true); }
   };
 
+  // When a project is selected, fetch its full data (including deliverable content)
+  const fetchProjectDetail = async (id: string) => {
+    try {
+      const full = await fetch(`/api/projects/${id}`).then(r => r.json());
+      setProjects(prev => prev.map(p => p.id === id ? full : p));
+    } catch (e) { console.error('fetchProjectDetail failed', e); }
+  };
+
   useEffect(() => { fetchAll(); }, []);
+
+  // Load full detail whenever a project is selected
+  useEffect(() => {
+    if (selectedId) fetchProjectDetail(selectedId);
+  }, [selectedId]);
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -1998,13 +2196,75 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     await fetch(`/api/projects/${idToDelete}`, { method: 'DELETE' }).catch(console.error);
   };
 
-  const handleViewDocument = (docId: string) => {
+  const handleReleaseSession = async (docId: string, sessionId: string, released: boolean) => {
+    if (!selectedId) return;
+    const current: any[] = sessionsConfig[docId] ?? [];
+    const updated = current.map(s => s.id === sessionId ? { ...s, released } : s);
+    updateProject(selectedId, p => ({
+      ...p,
+      sessionsConfig: { ...(p.sessionsConfig ?? {}), [docId]: updated },
+    }));
+    await fetch(`/api/projects/${selectedId}/sessions-config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ docId, sessions: updated }),
+    }).catch(console.error);
+  };
+
+  const [suggestingSession, setSuggestingSession] = useState<string | null>(null);
+
+  const handleSuggestSessions = async (docId: string, role?: string) => {
+    if (!selectedId) return;
+    setSuggestingSession(docId);
+    try {
+      const res = await fetch(`/api/projects/${selectedId}/suggest-sessions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ docId, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      updateProject(selectedId, p => ({
+        ...p,
+        sessionsConfig: { ...(p.sessionsConfig ?? {}), [docId]: data.sessions },
+      }));
+    } catch (e: any) { setAgentError(`Session generation failed: ${e.message}`); }
+    finally { setSuggestingSession(null); }
+  };
+
+  const handleViewDocument = (docId: string, session?: any) => {
     if (!selectedProject) return;
     const doc = (selectedProject.context?.document_register ?? []).find((d: any) => d.doc_id === docId);
     if (!doc) return;
     const ownerRole: Record<string, Role> = { 'PM': 'pm', 'Process Engineer': 'process', 'Mechanical Engineer': 'mechanical' };
-    const readOnly = ownerRole[doc.assigned_to] !== user.role;
-    setDocModal({ docId, doc, readOnly });
+    if (session) {
+      // Session mode: readOnly if user can't edit this session
+      const canEdit = session.permissions?.edit?.includes(user.role) ?? false;
+      setDocModal({ docId, doc, readOnly: !canEdit, session });
+    } else {
+      const readOnly = ownerRole[doc.assigned_to] !== user.role;
+      setDocModal({ docId, doc, readOnly });
+    }
+  };
+
+  const handleMergeToMaster = async (docId: string, session: any, sessionContent: string) => {
+    if (!selectedId) return;
+    const masterContent = deliverables[docId] ?? '';
+    // Replace the corresponding section in master with the engineer's edited content
+    const oldSlice = extractSessionContent(masterContent, session.headings ?? []);
+    const newMaster = oldSlice ? masterContent.replace(oldSlice, sessionContent) : masterContent + '\n\n' + sessionContent;
+    // Update local state
+    updateProject(selectedId, p => ({
+      ...p,
+      context: { ...p.context, deliverables: { ...(p.context?.deliverables ?? {}), [docId]: newMaster } },
+    }));
+    // Persist to server
+    await fetch(`/api/projects/${selectedId}/deliverable`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ docId, content: newMaster }),
+    }).catch(console.error);
+    setDocModal(null);
   };
 
   const runStep = async (stepNum: number) => {
@@ -2070,11 +2330,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     } catch (e) { console.error('comment failed', e); }
   };
 
-  const runAgent = async () => {
+  const runAgent = async (agentType?: 'process' | 'mechanical') => {
     if (!selectedId) return;
     setAgentRunning(true); setAgentError(''); setStepProgress({});
 
-    if (user.role === 'process') {
+    const target = agentType ?? (user.role === 'process' ? 'process' : 'mechanical');
+
+    if (target === 'process') {
       try {
         const result = await streamPmAgent('/api/agents/process', { projectId: selectedId }, (step) => {
           setStepProgress(prev => ({ ...prev, [step.step]: step.status as 'running' | 'done' }));
@@ -2144,12 +2406,43 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       {docModal && selectedId && (
         <DeliverableModal
           doc={docModal.doc}
-          initialContent={deliverables[docModal.docId] ?? ''}
+          initialContent={
+            docModal.session
+              ? (docModal.session.content || extractSessionContent(deliverables[docModal.docId] ?? '', docModal.session.headings ?? []))
+              : (deliverables[docModal.docId] ?? '')
+          }
+          masterContent={deliverables[docModal.docId] ?? ''}
           projectId={selectedId}
           projectContext={projectContext}
           readOnly={docModal.readOnly}
+          session={docModal.session}
+          userRole={user.role}
           onClose={() => setDocModal(null)}
-          onSave={(content) => { handleDeliverableSave(docModal.docId, content); }}
+          onSave={(content) => {
+            if (!docModal.session) {
+              handleDeliverableSave(docModal.docId, content);
+            } else {
+              // Update session.content in local state
+              if (selectedId) {
+                updateProject(selectedId, p => ({
+                  ...p,
+                  sessionsConfig: {
+                    ...(p.sessionsConfig ?? {}),
+                    [docModal.docId]: (p.sessionsConfig?.[docModal.docId] ?? []).map((s: any) =>
+                      s.id === docModal.session.id
+                        ? { ...s, content, lastEditedAt: new Date().toISOString() }
+                        : s
+                    ),
+                  },
+                }));
+              }
+            }
+          }}
+          onMergeToMaster={
+            docModal.session && user.role === 'pm' && docModal.session.owner !== 'pm'
+              ? (sessionContent) => handleMergeToMaster(docModal.docId, docModal.session, sessionContent)
+              : undefined
+          }
         />
       )}
 
@@ -2183,7 +2476,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             key="detail"
             project={projectContext}
             status={status}
-            userRole={user.role}
+            userRole={viewAs}
+            sessionsConfig={sessionsConfig}
             onBack={() => { setShowDetail(false); setAgentError(''); setStepError(''); setStepProgress({}); }}
             processOutput={processOutput}
             mechanicalOutput={mechanicalOutput}
@@ -2196,6 +2490,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             onDocStatusChange={handleDocStatusChange}
             onDocComment={handleDocComment}
             onViewDocument={handleViewDocument}
+            onReleaseSession={handleReleaseSession}
+            onSuggestSessions={handleSuggestSessions}
+            suggestingSession={suggestingSession}
             onRunStep={runStep}
             stepRunning={stepRunning}
             stepError={stepError}

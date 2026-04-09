@@ -1,0 +1,153 @@
+# doc_id=0-LST-5001 discipline=0 revision=R1
+col_0,Example Plant,col_2,col_3,col_4,col_5,col_6,Procurement Plan,col_8,col_9,col_10,col_11,col_12,col_13,col_14,col_15,Standard-0-LST-5001-R1
+,Example Location,,,,,,,,,,,,,,,
+,No.,Name (PO or Subcontract),AKC Equip.No.,Equip. No.,Equipment Name,Bidders/Vendor,"Factory 
+Location","Delivery
+(wks ARO)",Req. on Site Date,Priority(2),Terms (3),Inspect. Level (4),"Est. Value
+CAD(5)","Bud.
+Cur.(6)",Received on Site,Comments/Risks/Gaurantees
+,0000,Miscellaneous,,,,,,,,,,,,,,
+,0001,Safety Supplies,,,,Guillevin,Vancouver,-,-,-,S,-,-,-,-,Home Office Stock
+,0200,Engineering,,,,,,,,,,,,,,
+,0201,Magnetic Field Investigation,,,,Universal Dynamics Ltd,Vancouver,,,,A,-,,,n/a,
+,0202,Bus Bar Investigation,,,,Universal Dynamics Ltd,Vancouver,,,,A,-,,,n/a,
+,,Subcontracts,,,,,,,,,,,,,,
+,2201.0,Field Instrument Design Subcontract,,,,Norpac,Vancouver,,,,E,-,,,n/a,In place of ENG hours
+,2202.0,HVAC Design Subcontract,,,,,Louisiana,,,,E,-,20000.0,USD,n/a,HVAC design by PPG
+,2203.0,Pressure Control Engineering Subcontract,,,,Eric Erhard,"Ontario, Canada",,,,E,-,,,n/a,Not currently in AKC Estimate
+,2204.0,Structural Certification Subcontract,,,,Lockwood Greene,Tennessee,,,,E,-,43750.0,USD,n/a,
+,2205.0,Laser Scanning Subcontract,,,,Quantapoint,,,,,,,,,,Not required
+,0500,Procurement,,,,,,,,,,,,,,
+,0501,,,,,,,,,,,,,,,
+,0600,Construction,,,,,,,,,,,,,,
+,0601,Site Trailers,,,,,,,,,OS,,,,,
+,,Subcontracts,,,,,,,,,,,,,,
+,6100.0,Civil Contract,-,,-,R&R Construction,,,,1,OC,-,23,USD,Yes,
+,6200.0,Mechanical Contract,-,,-,R&R Construction,,,,1,OC,-,23,USD,,
+,6300A,Instrumentation Contract,-,,-,Vector Electric,,,,1,OC,-,23,USD,,
+,6300B,Electrical  Contract,-,,-,Vector Electric,,,,1,OC,-,23,USD,,
+,0700,Quality Assurance,,,,,,,,,,,,,,
+,0701,Inspection Services - East Coast,,,,MNA Inspection,USA,,,,S,,22250.0,USD,,
+,0702,Inspection Services - Gulf Coast,,,,CK Inspection,USA,,,,S,,22000.0,USD,,
+,0703,Inspection Services - FRP,,,,Composite Quality Associates,USA,,,,A,-,45000.0,USD,n/a,
+,0704,Inspection Services - Europe,,,,Ing Paul Czermak,Germany,,,,A,-,41256.0,EUR,n/a,
+,1000.0,Process,,,,,,,,,,,,,,
+,1001.0,,,,,,,,,,,,,,,
+,2000.0,Civil,,,,,,,,,,,,,,
+,2001.0,,,,,,,,,,,,,,,
+,3000.0,Structural,,,,,,,,,,,,,,
+,3001.0,Structural Steel,,,,"Industrial Metals
+United Steel Fabricators
+Nebert Steel
+Southland Steel Fabricators, Inc.
+Schuff Steel Gulf Coast","Beaumont TX
+Houston TX
+Gonzales LA",,"Cellroom
+25-Aug-06
+Other Areas
+22-Sep-06",2,OL,1.0,23,USD,Partial,
+,3002.0,Misc Support Steel,,,,as 3001,USA,,38982.0,,L,1.0,23,USD,,"Not required, added to 3001"
+,3003.0,Prefabricated Steel Building,X2212,Z159,"Cell Room Crane (63,105)","Superior Building Systems
+United Steel Structures
+Casco Inc
+Charles Miller Construction
+Alfred Miller Contracting",Houston,,38926.0,1,OL,0.0,23,USD,4-Sep-06,Includes Crane
+,3004.0,Instrumentation Huts,,,,Warminster,USA,12.0,38933.0,3,OS,0.0,23,USD,,
+,,Unallocated Budget,,,,,,,,,,,23,,,
+,4000.0,Equipment,,,,,,,,,,,,,,
+,4001.0,Electrolyzers,"R2001-1
+to 24",R101-112 A&B,Electrolyzer,CEC,Japan,65.0,"Cell Frames
+13-Oct-06
+Membranes
+12-Jan-07
+1st Cell Line
+12-Jan-07
+2nd Cell Line
+09-Feb-07
+3rd Cell Line
+09-Mar-07",1,OL,Proprietary,23,JPY,,"Process Guarantees
+LD on Delivery"
+,4002.0,HCL Synthesis Unit,"K7014A
+R7001A
+V7002A
+C7003A
+T7020
+P7021A,B","F152
+R113
+C152
+L152
+T370
+P370A,B","Hydrogen Flame Arrestor No. 1
+Hydrochloric Acid Synthesis Unit No.1
+Tails Tower No. 1
+Tails Tower Vent Fan No. 1
+HCl Transfer Tank
+HCl Transfer Pump #1 & 2","Carbone Lorraine
+SGL Carbon Group (Sigri)","USA
+Germany","26
+30",38884.0,2,OL,2.0,23,USD,,"Process Guarantees
+LD on Delivery"
+,4043.0,Caustic Static Mixer,,,,Hayward Gordon,,,,,,,,,,
+,,Unallocated Budget,,,,,,,,,,,105158.0,,,
+,5000.0,Piping,,,,,,,,,,,,,,
+,5001.0,PP/FRP Prespooled,,,,"CPF Dualam
+Fabco
+Enduro Vesca
+AC Plastique","USA
+Canada",,39017.0,3,S,2.0,23,CAD,,LD on Delivery
+,5002.0,CPVC/FRP Prespooled,,,,"CPF Dualam
+Fabco
+Enduro Vesca
+AC Plastique","USA
+Canada",,39017.0,3,OS,2.0,23,CAD,,LD on Delivery
+,5003.0,PVC/FRP Prespooled,,,,"CPF Dualam
+Fabco
+Enduro Vesca","USA
+Canada",,39024.0,X,S,2.0,23,CAD,,
+,5004.0,FRP Prespooled,,,"PL-181, PL-184, PL-243, PL-417","Resin Systems
+Epsco
+Fabco
+Enduro Vesca","USA
+Canada",,39024.0,3,OS,2.0,23,CAD,,
+,5077.0,Plastic Valves,,,,"Epsco
+ISCOLA
+Harrington Industrial Specialties
+Ryan Herco
+CG Industrial Specialties",USA,,,3,OS,0.0,,USD,,
+,6000.0,Insulation,,,,,,,,,,,,,,
+,6001.0,Piping Insulation,,,,Construction Subcontractor,USA,-,,,-,0.0,,,n/a,Contractor Supply
+,6002.0,Equipment Insulation,,,,Construction Subcontractor,USA,-,,,-,0.0,,,n/a,Contractor Supply
+,7000.0,Coatings,,,,,,,,,,,,,,
+,7001.0,Paint,,,,Construction Subcontractor,USA,-,,,-,,,,n/a,Contractor Supply
+,8000.0,Instrumentation,,,,,,,,,,,,,,
+,8001.0,Control Valves,,,Qty 64,"Norpac Controls
+Masoneilan
+Samson
+Metso",USA,12.0,38933.0,3,OS,0.0,567468.0,,,"R1 only for 9 May (20 valves on hold) pending sizing
+Change advice #4 is issued dated Aug 10"
+,8002.0,On/Off Valves,,,Qty 10,"Carter Chambers
+Norpac Controls
+Masoneilan
+Samson",USA,12.0,38961.0,3,OS,0.0,51108.0,,,PPG PO Rev 2 issued dated June 15
+,8003.0,Available,,,,,,,38933.0,,,,,,,
+,8059.0,Chlorine Monitor,,,,,,,38912.0,,,0.0,23,,,Deleted
+,8060.0,Level Switches,,,Qty 1,Sensxeall - PPG Rep,USA,6.0,38884.0,,S,0.0,23,,,Deleted
+,8061.0,Pressure Switches,,,Qty 1,"B.G. Controls
+Kraft Industrial",USA,6.0,38884.0,,S,0.0,23,,,Deleted
+,8062.0,Temperature Switches,,,,Drexel Western,USA,6.0,38884.0,,S,0.0,0.0,,,Deleted
+,8063.0,Flow Switches,,,Qty 1,,USA,6.0,38891.0,,S,0.0,23,,,Deleted
+,8090.0,Tri loop Converters,,,Qty 6,Norpac,,,,,,,,,,Deleted
+,,Unallocated Budget,,,,,,,,,,,23,,,
+,9000.0,Electrical,,,,,,,,,,,,,,
+,9001.0,LV Distribution Transformers,9910E,,,Virginia Transformer,USA,20.0,38863.0,2,OL,1.0,23,USD,38911.0,
+,9002.0,"LV Power Distribution Center
+LV MCC Starter Buckets","9921E
+9923E",,,"Consolidated Electrical Distribution (CED)
+Wholesale Electric
+Reynolds Company
+Graybar Electric",USA,12.0,38947.0,X,L,0.0,23,USD,,Not Required
+,9003.0,480V Emergency MCC,9924E,,,"GE Industrial Systems Canada ( Vanco)
+CED
+Wholesale Electric",USA,6.0,38905.0,2,OL,1.0,23,USD,,
+,9022.0,Relay Panels,,,,,,,,,,,,,,Contractor Supply
+,,Unallocated Budget,,,,,,,,,,,23,,,

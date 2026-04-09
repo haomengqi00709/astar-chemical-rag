@@ -1,0 +1,18 @@
+# doc_id=0-PRC-8002 table=2 inline=true
+Injury or Loss,"Fatality: A work-related injury resulting in death of the injured person (even if the death occurs some time later).
+Lost Time Incident (LTI): A work-related injury or illness where a medical practitioner recommend that the employee stay home from work as a result of his/her injuries or illness, beginning the first work day after the incident.
+Medical Treatment: A work-related injury or illness that requires treatment of a medical practitioner. This does not include visits to a medical practitioner for the purpose of diagnosis (e.g. x-rays, scans, blood tests, administration of prescription drugs for diagnostic purposes), observation or counselling or when a medical practitioner provides first aid treatment. Includes any medical treatment beyond first aid, and when the employee loses consciousness other than simple fainting.
+First Aid: An incident wherein an employee requires minor medical attention, not requiring the intervention of a medical practitioner.
+Lost Time Incident Frequency (LTIF): Number of LTI’s per 1 million worked hours.
+Total Recordable Incidents Frequency (TRIF): Total number of recordable incidents (Fatalities, LTI’s, Restricted Work Cases and Medical Treatment) per 1 million worked hours."
+Worked Hours,"All worked hours in the unit in the period of reporting, including subcontractor and agency hours for which incidents are reported to Aker Kvaerner (as defined by each project)."
+Sick Leave,Work days lost due to illness. Total sick leave and long term sick leave (more than 16 consecutive days).
+Environmental Data,"Energy Consumption: Oil, gas and electricity measured in MWh.
+Material Usage: Steel, paint, aluminium, and titanium measured in Metric tonnes.
+Emissions: CO2, NOx, SO2 and VOCs measured in Metric tonnes.
+Waste: Recycled, disposed of as landfill, or other, measured in Metric tonnes."
+Leading Indicators,"Risk Observations: Observations of at risk behaviours and/or conditions logged through a documented system. Excluding those during planned inspections or audits.
+Near Misses: Incidents that, under slightly altered circumstances, could have resulted in injury, harm or damage. Energy must be expended for a near miss to occur. 
+Task Risk Analysis: Planned risk assessments linked to upcoming tasks, carried out by a team or individual prior to a specific task.  E.g. Take 2, Step Back, Task Safety Awareness, Time Out For Safety, Job Safety Analysis, Job Hazard Analysis, Task Risk Assessment etc.
+Inspections: Documented inspections as part of planned HSE management programme.  Includes site walkabouts, safety tours, scorecard rounds, office inspections etc.
+HSE Training: Number of hours of HSE training participation where attendance is documented and it is given in a ‘classroom’ or ‘mess room’ environment. Also includes site induction and short, non-task specific HSE training sessions to site teams.  Excludes tool-box talks carried out on the work site."

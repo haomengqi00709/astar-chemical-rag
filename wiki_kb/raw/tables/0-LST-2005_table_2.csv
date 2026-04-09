@@ -1,0 +1,55 @@
+# doc_id=0-LST-2005 discipline=0 revision=R1
+Subject,Summary
+Contract Price,[fixed price/reimbursable]
+Tax,[paid by]
+Payment Terms,
+Pricing and Payment Risk,
+price escalation,[risk allocation]
+currency risk,[risk allocation]
+security for payment,[specify if any]
+Security from Aker Kvaerner Chemetics,
+form,[eg. bank guarantee and/or cash retention]
+amount,
+when required,
+recourse,
+expiry,
+Parent Company or Third Party Guarantees,[state if required]
+Limitations on Liability,
+consequential or indirect loss,
+design defects,
+workmanship,
+delay,
+performance,
+overall cap on liability,[ specify any exceptions to overall cap]
+Guarantees,
+plant and equipment warranties,
+performance guarantees,
+Defects liability and warranty periods,
+Insurance,"[for each insurance type below, specify who is to take out insurance and terms including deductibles and exclusions]"
+Contract works,
+Third party/public liability,
+Marine Transit,
+PI,
+"Other Insurance [eg. tools and equipment, comprehensive MV damage, Compulsory Third Party MV, Workers Compensation]",
+Schedule/Time,
+"commencement  date
+access to site",
+milestone and completion,[specify definitions and dates for achievement]
+entitlement to EOT,
+entitlement to delay costs,
+force majeure clause,
+Changes,
+entitlement,"[specify Owner’s power to direct changes, Aker Kvaerner Chemetics entitlements to costs and time]"
+valuation,
+latent conditions,
+legislative changes,
+Termination,
+for convenience,
+for insolvency,
+for default,
+restrictions on Aker Kvaerner Chemetics entitlements on termination,"[specify any restrictions, eg. under third party deeds]"
+Claims and Notices,"[specify any Individual time bars, general time bars and notification requirements]"
+Governing Law,
+Dispute Resolution,
+Reporting and Documentation Obligations,
+Issues of particular risk,"[industrial relations, country risk, intellectual property transferred]"

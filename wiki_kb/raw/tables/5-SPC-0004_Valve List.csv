@@ -1,0 +1,471 @@
+# doc_id=5-SPC-0004 discipline=5 revision=R1
+col_0,Client Name,col_2,col_3,col_4,Specification,col_6,col_7,col_8,col_9,col_10,"Aker Kvaerner
+Chemetics
+A Division of Aker Kvaerner Canada Inc.",col_12,col_13,col_14,col_15
+,Project Title,,,,Valves,,,,,,,,,,
+,Location,,,,,,,,,,,,,,
+,,,,,,,,,,,Standard-5-SPC-0004-R1,,,,
+,Valve #,Type,Connection,Material Group,Description,Benchmark,Model,Port,Std.,Rating,Size Range,Approved Manufacturers and Models,Altern.,Manufacturer,Model No.
+,,,,,,,,,,Note 1,Note 2,,,Note 3,
+,V1111,Ball,Screwed FNPT,Carbon Steel,"3 piece carbon steel body, stainless steel ball and stem, reinforced Teflon seats and seals, lever operated.",Contromatics,C7780-2-3,Full,,1000 WOG,1/4 to 50,"Grinnell GB3933.T-FP-CS
+Durco BF3K TN LT X C66G 
+Contromatics C7780-2-3",V1131,Contromatics,C7780-2-3
+,V1112,Ball,Screwed FNPT,Carbon Steel,"2 piece carbon steel body, stainless steel ball and stem, reinforced Teflon seats, and seals, lever operated.",Contromatics,C7000-02-SS,Reduced,,1000 WOG,8 to 50,"Grinnell GB3932.TFPCS
+Durco BR2K TN LT X C66G
+Contromatics C7000-02-SS",V1132,Contromatics,C7000-02-SS
+,V1113,Ball,Screwed FNPT,Carbon Steel,"1 piece carbon steel body, stainless steel ball and stem, reinforced Teflon seats, and seals, lever operated.",Contromatics,C7100-02-SS,Reduced,,1000 WOG,8 to 50,"Durco BRIJ TN LT XC66G
+Contromatics C7100-02-SS",V1133,Contromatics,C7100-02-SS
+,V1115,Ball,Screwed FNPT,Carbon Steel,"2 piece carbon steel body, 316 stainless steel ball and stem, reinforced Teflon seats and seals, standard port, lever operated. Fire safe design. UL listed and FM approved for LP or NG service.",Contromatics,C7000-SS-ULI,Reduced,API 607,1000 WOG,8 to 50,Contromatics C700-SS-ULI,,Contromatics,C7000-SS-ULI
+,V1131,Ball,Screwed FNPT,Stainless Steel,"3 piece CF8M or 316 stainless steel body, ball and stem, reinforced Teflon seats and seals, lever operated.",Contromatics,C8780-23,Full,,1000WOG,8 to 50,"Grinnell GB3933.TFP
+Durco BF3K TN LT X 666G
+FC #12H-3 Full Port
+Meridian #M31SF",,Contromatics,C8780-23
+,V1132,Ball,Screwed FNPT,Stainless Steel,"2 piece CF8M or 316 stainless steel body, ball and stem, reinforced Teflon seats and seals, lever operated.",Contromatics,S8000-02-SS,Reduced,,1000WOG,8 to 50,"Grinnell GB3932.TFP
+Durco BR2K TN LT X 666G
+FC #12B-HP-Full Port
+Meridian #M22SF Full Port",,Contromatics,S8000-02-SS
+,V1133,Ball,Screwed FNPT,Stainless Steel,"1 piece CF8M or 316 stainless steel body, ball and stem, reinforced Teflon seats and seals, lever operated.",Contromatics,S8100-02-SS,Reduced,,800WOG,8 to 50,"Grinnell GB3931T
+Durco BRIJ TN LT X 666G
+FC#13B-1 Reduced Port
+Meridian #M11S Red. Port",,Contromatics,S8100-02-SS
+,V1134,Ball,Screwed FNPT,Stainless Steel,"1 piece CF8M or 316 stainless steel body, ball stem (one piece), virginTeflon seat, Teflon seal, handle operated.",,,,,,8 to 50,,,,
+,V1152,Ball,Screwed FNPT,Plastic,"Screwed ball valve.  PVC Grade A body, ball and stem.  Teflon seats, EPDM seals.",Chemline,21AxxxET,Full,ASTM D-1784-Gr A,"CWP 230
+CWP 150
+150 PSI @
+49 Deg. C","15 to 50
+65 to 100",Asahi #1601xxx,,Chemline,21AxxxET
+,V1153,Ball,Screwed FNPT,Plastic,"Screwed ball valve.  CPVC Grade A Body, Ball and Stem Teflon seats, EPDM seals.",Chemline,21CxxxET,Full,ASTM D-1784-Gr A,"CWP 230
+CWP 150
+55 PSI @
+90 Deg. C","15 to 50
+65 to 100",Asahi #1609xxx,,Chemline,21CxxxET
+,V1156,Ball,Screwed FNPT,Plastic,"Screwed ball valve.  PVC Grade A body, ball and stem.  Teflon seats, Viton seals.",Chemline,21AxxxVT,Full,ASTM D-1784-Gr A,"CWP 230
+CWP 150
+150 PSI @
+49 Deg. C","15 to 50
+65 to 100",Asahi #1605xxx,,Chemline,21AxxxVT
+,V1157,Ball,Screwed FNPT,Plastic,"Screwed ball valve.  CPVC Grade A body, ball and stem.  Teflon seats, Viton seals.",Chemline,21CxxxVT,Full,ASTM D-1784-Gr A,"CWP 230
+CWP 150
+55 PSI @
+90 Deg. C","15 to 50
+65 to 100",Asahi #1613xxx,,Chemline,21CxxxVT
+,V1158,Ball,Screwed (Hose x MNPT),Plastic,Stopcock. All PVC construction.  Viton seats and seals Hose x MNPT connections.,Chemline,LCMTV,Full,ASTM D-1784-Gr A,"150 PSI @
+50 Deg. C",150,Asahi #1078002,,Chemline,LCMTV
+,V1211,Ball,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 RF, ball valve. A216 WCB Carbon steel body, 316 stainless steel ball and stem.  Reinforced teflon seats and seals.",Contromatics,1501-212A,Reduced,B16.34-1998,150.0,15 to 300,,,Contromatics,1501-212A
+,V1212,Ball,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 RF, ball valve.  A216 WCB carbon steel body, monel ball and stem.  Reinforced Teflon seals and gasket.  Body vented to upstream.  A193 B7 bolting. Epoxy coated.  Oval handwheel for 2” and less. Per Chlorine Institute Pamphlet 6.  Cleaned and dried for chlorine service.  Note: For Gaseous Chlorine Service Only.",Worcester,CL51/52-47RT-150,Reduced,,150.0,15 to 100,,,Worcester,CL51/52-47RT-150
+,V1213,Ball,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 RF, ball valve, top entry. A216 WCB Carbon steel body, 316 stainless steel ball and stem.  Graphite seats and seals.",McCanna,S151-CS-G-S6,Reduced,,150.0,15 to 350,,,McCanna,S151-CS-G-S6
+,V1214,Ball,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 RF, ball valve, top entry. A216 WCB Carbon steel body, 316 stainless steel ball and stem.  Reinforced teflon  seats and seals.",McCanna,S151-CS-R-S6,Reduced,,150.0,15 to 350,,,McCanna,S151-CS-R-S6
+,V1215,Ball,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 RF, ball valve. A216 WCB Carbon steel body, 316 stainless steel ball and stem.  Reinforced teflon seats and seals.  Fire safe design.  UL listed and FM approved for LP or NG service.",Contromatics,1501-212A-ULI,Reduced,ULI-YPRV/YSDT,150.0,15 to 300,,,Contromatics,1501-212A-ULI
+,V1216,Ball,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 RF, ball valve. A216 WCB Carbon steel body, 316 stainless steel ball and stem.  Reinforced teflon seats and seals.  Full port.",Contromatics,1801-212A,Full,,150.0,15 to 300,,,Contromatics,1801-212A
+,V1231,Ball,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF, ball valve.  CF8M or 316 stainless steel body, ball and stem.  Reinforced teflon seats and seals.",Contromatics,2501-212A,Reduced,,150.0,15 to 300,,,Contromatics,2501-212A
+,V1232,Ball,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF, ball valve.  CF8M or 316 stainless steel body, ball and stem.  Reinforced teflon seats and seals.  Ball to be vented to upstream side when closed.  Valve to contain cast arrow to indicate flow direction.",Contromatics,2501-212A-VB,Reduced,,150.0,15 to 300,,,Contromatics,2501-212A-VB
+,V1233,Ball,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF ball valve.  CF8M or 316 stainless steel body, ball and stem.  Reinforced teflon seats and seals.  Full port.",Contromatics,2801-212A,Full,,150.0,15 to 300,,,Contromatics,2801-212A
+,V1234,Ball,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF, ball valve.  CF8M or 316 stainless steel body, ball and stem.  Full port.  Reinforced teflon seats and seals.  Steam jacketed.",Contromatics,SJ2801-212A,Full,,150.0,15 to 300,,FJG411 Durco Plug,Contromatics,SJ2801-212A
+,V1235,Ball,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF Ball Valve, top entry.  CF8M or 316 stainless steel body, ball and stem.  Graphite seats and seals.",McCanna,S151-S6-G-S6,Reduced,,150.0,15 to 350,,,McCanna,S151-S6-G-S6
+,V1236,Ball,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF, ball valve.  CF8M or 316 stainless steel body, ball and stem.  Reinforced teflon seats and seals.  Fire safe design.",Worcester,2501-162,Reduced,API 607 4th Ed,150.0,15 to 300,,,Worcester,2501-162
+,V1237,Ball,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF, ball valve.  CF8M or 316 stainless steel body, ball and stem.  Virgin teflon seats and seals.",Contromatics,2501-212A,Reduced,,150.0,15 to 300,,V1231,Contromatics,2501-212A
+,V1252,Ball,"Flanged B16.5
+150# RF",Plastic,"225 CWP FF, ball valve.  PVC Grade A body, ball and stem.  Teflon seats, EPDM seals.",Chemline,21AxxxEF,Full,ASTM D-1784-Gr A,CWP 225,15 to 100,,,Chemline,21AxxxEF
+,V1253,Ball,"Flanged B16.5
+150# RF",Plastic,"225 CWP FF ball valve.  CPVC Grade A body, ball and stem.  Teflon seats, EPDM seals.",Chemline,21CxxxEF,Full,ASTM D-1784-Gr A,CWP 225,15 to 100,,,Chemline,21CxxxEF
+,V1256,Ball,"Flanged B16.5
+150# RF",Plastic,"225 CWP FF, ball valve.  PVC Grade A body, ball and stem.  Teflon seats, Viton seals.",Chemline,21AxxxVF,Full,ASTM D-1784-Gr A,CWP 225,15 to 100,,,Chemline,21AxxxVF
+,V1257,Ball,"Flanged B16.5
+150# RF",Plastic,"225 CWP FF, ball valve.  CPVC Grade A body, ball and stem.  Teflon seats, Viton seals.",Chemline,21CxxxVF,Full,ASTM D-1784-Gr A,CWP 225,15 to 100,,,Chemline,21CxxxVF
+,V1259,Ball,"Flanged B16.5
+150# FF",Plastic,"150#, FF ball valve, reduced port.  Glass fibre reinforced vinyl ester body and ball, reinforced TFE seats, TFE packing, TFE coated Viton o-ring seal and stainless steel bolts.",,,Reduced,,"CWP 275
+CWP 150","25 to 150
+200",,,Nil-Cor,310 R-T-S
+,V1261,,"Flanged B16.5
+150# RF",Plastic Lined,"Class 150 RF, lined ball valve.  Tefzel lined ductile iron body. Tefzel lined ball and stem.  Reinforced teflon seats and seals.",ITT Engineered Valves,Camline 1059,Reduced,,150.0,15 to 150,,,ITT Eng Valves,Camline 1059
+,V1264,Ball (3-way),"Flanged B16.5
+150# RF",Plastic Lined,Class 150 RF 3-way ball valve. PFA lined ductile iron body and ball.  Lever operated,Atomac,AMP3-L/T,Reduced,,CWP 275,25 to 80,,,Atomac,AMP3-L/T
+,V1266,Ball,"Flanged B16.5
+150# RF",Plastic Lined,"Class 150 RF, lined ball valve.  PFA lined ductile iron body. PFA lined ball and stem.  PTFE seats and seals.",Atomac,AKH3-PFA,Reduced,,CWP 275,25 to 250,,,Atomac,AKH3-PFA
+,V1267,Ball,"Flanged B16.5
+150# RF",Plastic Lined,Class 150 RF lined ball valve.  PFA lined ductile iron body. PFA lined ball and stem.  PTFE seats and seals. Full port.,Atomac,AKH2A-PFA,Full,,CWP 275,25 to300,,,Atomac,AKH2A-PFA
+,V1281,Ball,"Flanged B16.5
+150# RF",Alloy,"Class 150 RF, split-body full port ball valve.  CN7M or Alloy 20 body, ball and stem.  Reinforced teflon seats and seals.",Noble,FR150FA2A2RT,Reduced,,150.0,15 to 300,,,Watts,SF-3500-150-01
+,V1282,Ball,"Flanged B16.5
+150# RF",Alloy,"Class 150 RF, ball valve.  CN7M or Alloy 20 body, ball and stem.  Graphite seats and seals",Noble,FR150FA2A2GT,Reduced,,150.0,15 to 300,,,,
+,V1291,Metering Ball,"Flanged B16.5
+150# RF",Special,"150 CWP FF Metering ball valve. Polypropylene body, EPDM seats.",Chemline,,,,,,,,Chemline,
+,V1311,Ball,Socket Weld,Carbon Steel,"3 piece carbon steel body, stainless steel ball and stem, reinforced Teflon seats and seals, lever operated.",Worcester,5946-RT-SW,Full,,600.0,6 to 50,,,Worcester,5946-RT-SW
+,V1312,Ball,Socket Weld,Carbon Steel,"2 piece carbon steel body, stainless steel ball and stem, reinforced Teflon seats, and seals, lever operated.",should not use 2-pc SW,,Reduced,,,,,,2-pc SW valves not recommended,
+,V1313,Ball,Socket Weld,Carbon Steel,"A105 or A216 WCB Carbon steel body, stainless steel ball and stem, reinforced Teflon seats, and seals, lever operated. For steam service to 150WSP",Contromatics,C7481 02 SS,Full,,800.0,6 to 50,"Worcester 5944-RT-SW
+Durco BF38-SX-LG-X-C66G
+Grinnell 3933-SW-SP-CS",,Contromatics,C7481 02 SS
+,V1315,Ball,Socket Weld,Carbon Steel,"A105 or A216 WCB Carbon steel body, 316 stainless steel ball and stem, reinforced Teflon seats and seals, standard port, lever operated. Fire safe design. UL listed and FM approved for LP or NG service.",Contromatics,C7451-SS-ULI,Reduced,,600.0,6 to 50,,,Contromatics,C7451-SS-ULI
+,V1331,Ball,Socket Weld,Stainless Steel,"3 piece CF3M or 316L stainless steel body, ball and stem, reinforced Teflon seats and seals, lever operated.",Worcester,5966-RT-SW,Full,,600.0,6 to 50,,,Worcester,5966-RT-SW
+,V1332,Ball,Socket Weld,Stainless Steel,"2 piece CF3M or 316L stainless steel body, ball and stem, reinforced Teflon seats, Teflon seals, lever operated.",should not use 2-pc SW,,,,,,,,2-pc SW valve not recommended,
+,V1333,Ball,Socket Weld,Stainless Steel,"CF3M or 316L stainless steel body, ball and stem, reinforced Teflon seats, Teflon seals, lever operated. Full port.",Worcester,5966-TT-SW,Full,,600.0,6 to 100,,,Worcester,5966-TT-SW
+,V1336,Ball,Socket Weld,Stainless Steel,"CF3M or 316L stainless steel body, ball and stem, reinforced Teflon seats, Teflon seals, lever operated. Fire safe design.",Worcester,FZ4466-RG-SW,Reduced,,600.0,15 to 50,,,Worcester,FZ4466-RG-SW
+,V1337,Ball,Socket Weld,Stainless Steel,"CF3M or 316L stainless steel body, ball and stem, virgin Teflon seats, Teflon seals, lever operated.",Contromatics,S8481-01-SS,Full,,600.0,6 to 50,Worcester 5966-TT-SW,,Contromatics,S8481-01-SS
+,V1352,Ball,Socket,Plastic,"Socket weld ball valve.  PVC Grade A body, ball and stem.  Teflon seats, EPDM seals.  True union design.",Chemline,21AxxxES,Full,,"CWP 230
+CWP 150
+150 PSI @
+49 Deg. C","15 to 50
+65 to 100",Asahi #1601xxx,,Chemline,21AxxxES
+,V1353,Ball,Socket,Plastic,"Socket weld ball valve.  CPVC Grade A body, ball and stem.  Teflon seats, EPDM seals.  True union design.",Chemline,21CxxxES,Full,,"CWP 230
+CWP 150
+55 PSI @
+90 Deg. C","15 to 50
+65 to 100",Asahi #1609xxx,,Chemline,21CxxxES
+,V1356,Ball,Socket,Plastic,"Socket weld ball valve.  PVC Grade A body, ball and stem.  Teflon seats.  Viton seals.  True union design.",Chemline,21AxxxVS,Full,,"CWP 230
+CWP 150
+150 PSI @
+49 Deg. C","15 to 50
+65 to 100",Asahi #1605xxx,,Chemline,21AxxxVS
+,V1357,Ball,Socket,Plastic,"Socket weld ball valve.  CPVC Grade A body, ball and stem.  Teflon seats, Viton seals.  True union design.",Chemline,21CxxxVS,Full,,"CWP 230
+CWP 150
+55 PSI @
+90 Deg. C","15 to 50
+65 to 100",Asahi #1613xxx,,Chemline,21CxxxVS
+,V1358,Ball,Socket,Plastic,"Socket Weld, True Union, ABS ASTM D3965 Cell Classification 55535 Body and Ball, Viton Seal, Rating : 230 psig at 73 deg F, Special Materials of Construction for compressed air services.",Chemline,Air-Pro,Full,,CWP230,15 to 50,Duraplus #880 xxx,,Chemline,Air-Pro
+,V1364,"3-Way
+Ball",Socket,Stainless Steel,"CF3M or 316L stainless steel body, ball and
+stem, virgin Teflon seats, Teflon seals, lever
+operated",TBV,,,,,,,,TBV,
+,V1531,Ball,Compression,Stainless Steel,"Multi-service ball valve.  316SS construction.  Viton seals, TFE seats.",Swagelok,62TS,Reduced,,,,,,Swagelok,62TS
+,V1532,Ball,Compression,Stainless Steel,"Multi-service ball valve.  316 SS construction.  Viton seals, TFE seats. *Ball to be vented (drilled).  Note: Valve to be installed so that when closed the ball is vented to upstream side.",Swagelok,62TS-V,Reduced,,,,,,Swagelok,62TS-V
+,V1533,Ball,Compression,Stainless Steel,"Multi-service ball valve.  316SS body, ball and stem. Reinforced Teflon seats and seals.",Swagelok,63TS,Reduced,,CWP 1000,,,,Swagelok,63TS
+,V2251,Butterfly,Flanged,Plastic,Flanged butterfly damper.  Custom fabricated FRP per Chemetics specification,Chemline,DBF,,,Custom,400 to 1800,,,Chemline,DBF
+,V2266,Butterfly,"Flanged B16.5
+150# RF",Plastic Lined,"150 CWP RF, flanged butterfly valve.  PTFE lined ductile iron body.  Viton backup elastomer.  PFA encapsulated disc.",Durco,BTW-480/1-V,Reduced,,CWP150,50 to 600,,,Durco,BTW-480/1-V
+,V2411,Butterfly,Butt Weld,Carbon Steel,"Butterfly damper.  Carbon steel body and disc, 316 stainless steel shaft, carbon steel or ceramic tadpole seats, inboard carbon shaft bushing, outboard greasless shaft ball bearing.  Shaft stuffing boxes with packing and double lantern rings, sealant and purge connections on both stuffing boxes piped to a common port with SS tubing.  Custom fabricated per Chemetics specification",Frisch,20-015-AAAG-T,,,Custom,50 to 3600,,,Frisch,20-015-AAAG-T
+,V2431,Butterfly,Butt Weld,Stainless Steel,"Butterfly damper.  Stainless steel (A240 Type 304H) body and disc, 316 stainless steel shaft, stainless steel or ceramic tadpole seats, inboard carbon shaft bushing, outboard greasless shaft ball bearing.  Shaft stuffing boxes with packing and double lantern rings, sealant and purge connections on both stuffing boxes piped to a common port with SS tubing.  Custom fabricated per  Chemetics specification",Frisch,20-015-AFAF-T,,,Custom,50 to 3600,,,Frisch,20-015-AFAF-T
+,V2711,Butterfly,"Wafer
+B16.5 150#",Carbon Steel,"Class 150, wafer type, butterfly valve.  A216 WCB Carbon steel body, 316 stainless steel disc and stem, teflon seat and seal.",Durco,BX2W181SS1V0/1,,API 609,,50 to 900,,,Durco,BX2W181SS1V0/1
+l,V2716,Butterfly,"Wafer
+B16.5 300#",Carbon Steel,"Class 300, wafer sphere, hi performance, cast steel butterfly valve c/w gear operator. Cast steel body, epoxy coated, monel disc & shaft, reinforced PTFE seats & PTFE seals. Cleaned & dried for chlorine service.",,,,,300.0,80 to 600,,,Jamesbury,830WC-11-2271MT
+,V2732,Butterfly,"Wafer
+B16.5 150#",Stainless Steel,"Class 150, wafer type, hi-performance, butterfly valve. CF8M or 316 stainless steel body, disc and stem.  Teflon seat and seal.  .",Durco,BX2W111SS1V0/1,Reduced,API 609,,50 to 900,,,Durco,BX2W111SS1V0/1
+,V2733,Butterfly,"Wafer
+B16.5 150#",Stainless Steel,"Class 150, wafer type, butterfly damper.  Ductile iron body, 316 stainless steel seat, disc and stem, teflon encapsulated O-ring shaft seals.  Metal to metal seats.",Frisch,,,,,,,,Frisch,
+,V2735,Butterfly,"Wafer
+B16.5 150#",Stainless Steel,"Class 150, wafer type, butterfly valve.  Cast iron body, epoxy coated.  316 stainless steel disc and stem. Buna N seat.",Bray,30/125,Reduced,,,50 to 500,,,Bray,30/125
+,V2736,Butterfly,"Wafer
+B16.5 150#",Stainless Steel,"Class 150, wafer type, butterfly valve.  Cast iron body, epoxy coated.  316 stainless steel disc and stem. Teflon seat with EPDM backup elastomer.",Bray,20/126,Reduced,,,25 to 350,,,Bray,20/126
+,V2737,Butterfly,"Wafer
+B16.5 150#",Stainless Steel,"Class 150, wafer type, butterfly valve.  Cast iron body, epoxy coated,  316 stainless steel disc and stem, EPDM seat.",Bray,30/124,Reduced,,,50 to 500,,,Bray,30/124
+,V2763,Butterfly,"Wafer
+B16.5 150#",Plastic Lined,"Class 150, wafer type, butterfly valve.  Cast iron body, epoxy coated.  EPDM moulded metal disc and stem, EPDM seat.",Bray,20/128,Reduced,,,50 to 500,,,Bray,20/128
+,V2764,Butterfly,"Wafer
+B16.5 150#",Plastic Lined,"Class 150, wafer type, butterfly valve.  Cast iron body, epoxy coated.  PTFE moulded metal disc and stem.  PTFE seat with EPDM backup elastomer.",Bray,20/127,Reduced,,,50 to 500,,,Bray,20/127
+,V2766,Butterfly,"Wafer
+B16.5 150#",Plastic Lined,"Class 150, wafer type, hi-performance, butterfly valve.  Ductile iron body, epoxy coated. PFA encapsulated metal disc. PTFE seat with Viton backup elastomer.",Durco,BTW-480/1-V,Reduced,,,50 to 600,,,Durco,BTW-480/1-V
+,V2768,Butterfly,"Wafer
+B16.5 150#",Plastic Lined,"CWP 150 wafer type, hi-performance, butterfly valve.  Ductile iron body, epoxy coated.  PFA encapsulated metal disc. PFA seat with Viton backup elastomer",AMRI,Acris IW-31KF-S9,Reduced,,CWP150,50 to 600,,,AMRI,Acris IW-31KF-S9
+,V2782,Butterfly,"Wafer
+B16.5 150#",Alloy,"Class 150, wafer type, butterfly valve.  Lewmet body, disc and stem, teflon seal.",Chas. S Lewis,,,,,,,,Chas. S Lewis,401/2/3
+,V2811,Butterfly,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 lug tapped, butterfly valve.  Cast steel body, 316 stainless steel disc and stem, teflon seat and seal.",Durco,BX2L181SS1V0/1,,,,50 to 900,,,Durco,BX2L181SS1V0/1
+,V2812,Butterfly,"Flanged B16.5
+150# RF",Plastic lined,Same as V2866 but with Carbon steel (ASTM 216 WCB) Body,Durco,BTW280/1-V,,,,50 to 600,,,Durco,BTW280/1-V
+,V2813,Butterfly,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 lug tapped, butterfly valve.  Cast steel body, 316 stainless steel disc and stem, teflon seat and seal. Fire sealed",Durco,BX2L181SS1V0/1,,API 607,150.0,50 to 900,,,Durco,BX2L181SS9Z0/1
+l,V2816,Butterfly,"Flanged
+B16.5
+300# RF",Carbon Steel,"Class 300, lug tapped, wafer sphere, hi performance, cast steel butterfly valve c/w gear operator. Cast steel body, epoxy coated, monel disc & shaft, reinforced PTFE seats & PTFE seals. Cleaned & dried for chlorine service.",,,,,300.0,80 to 900,,,Jamesbury,830LC-11-2271MT
+,V2832,Butterfly,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, lug tapped, hi-performance, butterfly valve.  316 stainless steel body, disc and stem.  Teflon seat and seal.  .",Durco,BX2L111SS1V0/1,,,,50 to 900,,,Durco,BX2L111SS1V0/1
+,V2835,Butterfly,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, lug tapped, butterfly valve.  Cast iron body, epoxy coated. 316 stainless steel disc and stem. Buna N seat.",Bray,31/125,,,,50 to 500,,,Bray,31/125
+,V2836,Butterfly,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, lug tapped, butterfly valve.  Cast iron body, epoxy coated. 316 stainless steel disc and stem. Teflon seat with EPDM backup elastomer.",Bray,21/126,,,,50 to 350,,,Bray,21/126
+,V2837,Butterfly,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, lug tapped, butterfly valve.  Cast iron body, epoxy coated. 316 stainless steel disc and stem. EPDM seat. (up to 20”)",Bray,31/124,,,CWP 150,50 to 500,,,Bray,31/124
+,V2838,Butterfly,"Flanged B16.5
+150# RF",Stainless Steel,"150# , Flanged, butterfly valve.  Cast iron body, epoxy coated. 316 stainless steel disc and 304 S. Steel stem EPDM seat. Gear operated (24” & Larger)",Bray,31/124,,,CWP 150,>500,,,Bray,36/124
+,V2863,Butterfly,"Flanged B16.5
+150# RF",Plastic Lined,"150#, lug tapped, butterfly valve.  Cast iron body, epoxy coated. EPDM moulded metal disc and stem. EPDM seat.",Bray,21/128,,,,50 to 500,,,Bray,21/128
+,V2864,Butterfly,"Flanged B16.5
+150# RF",Plastic Lined,"150#, lug tapped, butterfly valve.  Cast iron body, epoxy coated.  PTFE moulded metal disc and stem. PTFE seat with EPDM backup elastomer",Bray,21/128,,,,50 to 500,,,Bray,21/128
+,V2866,Butterfly,"Flanged B16.5
+150# RF",Plastic Lined,"150#, lug tapped, hi-performance, butterfly valve.  Ductile iron body, epoxy coated. PFA encapsulated metal disc. PTFE seat with Viton backup elastomer",Durco,BTL-480/1-V,,,CWP 150,"50 to 150
+200 to 500",,,"Neotecha
+Neotecha","SP1BP3GF1-Z
+SP1BP3GF1-G"
+,V2868,Butterfly,"Flanged B16.5
+150# RF",Plastic Lined,"CWP 150, tapped lug, hi-performance, butterfly valve.  Ductile iron body, epoxy coated. PFA encapsulated metal disc. PFA seat with Viton backup elastomer.",AMRI,Acris IL-31KF-S9,,,CWP150,25 to 600,,,AMRI,Acris IL-31KF-S9
+,V3251,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF weir type diaphragm valve.  Polypropylene body, EPDM backed teflon diaphragm.  Indicating stem.",Chemline,DVBxxxPF,Reduced,,CWP150,15 to 250,,,Chemline,DVBxxxPF
+,V3252,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF weir type diaphragm valve.  PVC body.  EPDM backed teflon diaphragm.  Indicating stem.",Chemline,DVAxxxPF,Reduced,,CWP150,15 to 250,,,Chemline,DVAxxxPF
+,V3253,Diaphgram,"Flanged B16.5
+150# FF",Plastic,"150#, FF weir type diaphragm valve.  CPVC body.  EPDM backed teflon diaphragm.  Indicating stem.",Chemline,DVCxxxPF,Reduced,,CWP150,15 to 150,,,Chemline,DVCxxxPF
+,V3254,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF, weir type diaphragm valve.  PVDF body, EPDM backed teflon diaphragm.  Indicating stem.",Chemline,DVKxxxPF,Reduced,,CWP150,15 to 250,,,Chemline,DVKxxxPF
+,V3255,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF, weir type diaphragm valve.  Polypropylene body. EPDM diaphragm.  Indicating stem.",Chemline,DVBxxxEF,Reduced,,CWP150,15 to 250,,,Chemline,DVBxxxEF
+,V3256,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF, weir type diaphragm valve.  PVC body.  EPDM diaphragm.  Indicating stem.",Chemline,DVAxxxEF,Reduced,,CWP150,15 to 250,,,Chemline,DVAxxxEF
+,V3257,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF, weir type diaphragm valve.  CPVC body, EPDM diaphragm.  Indicating stem.",Chemline,DVCxxxEF,Reduced,,CWP150,15 to 150,,,Chemline,DVCxxxEF
+,V3258,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF, weir type diaphragm valve.  PVC body.  EPDM diaphragm.  Indicating stem.",Chemline,DVAxxxVF,Reduced,,CWP150,15 to 250,,,Chemline,DVAxxxVF
+,V3259,Diaphragm,"Flanged B16.5
+150# FF",Plastic,"150#, FF, weir type diaphragm valve.  CPVC body, Viton diaphragm.  Indicating stem.",Chemline,DVCxxxVF,Reduced,,CWP150,15 to 150,,,Chemline,DVCxxxVF
+l,V3261,Diaphragm,"Flanged B16.5
+150# RF",Plastic Lined,"150#, weir type diaphragm valve.  Tefzel (ETFE) lined ductile iron body, epoxy coated.  EPDM backed teflon diaphragm.  Indicating stem.",,,Reduced,,,20 to 200,,,ITT,2559-TM/R2-943
+l,V3262,Diaphragm,"Flanged B16.5
+150# RF",Plastic Lined,"150#, weir type diaphragm valve. Polypropylene lined Ductile Iron body, epoxy coated.  EPDM diaphragm. Indicating stem.",,,Reduced,,,20 to 200,,,ITT,2558-M-943
+,V3264,Diaphragm,"Flanged B16.5
+150# RF",Plastic Lined,"150#, weir type diaphragm valve.  Hard rubber lined cast iron body, epoxy coated.  EPDM diaphragm.  Indicating stem.",Saunders,3422-11-E,Reduced,,,20 to 350,,,Saunders,3422-11-E
+l,V3265,Diaphragm,"Flanged B16.5
+150# RF",Plastic Lined,"150#, weir type diaphragm valve.  PFA lined cast or ductile iron body, epoxy coated.  EPDM backed teflon diaphragm.  Indicating stem.",,,Reduced,,,20 to 150,,,ITT,2556-TM-903
+,V3266,Diaphragm,"Flanged B16.5
+150# RF",Plastic Lined,"150#, weir type diaphragm valve.  Hard rubber lined cast iron body, epoxy coated.  EPDM backed teflon diaphragm.  Indicating stem.",Saunders,3422-11-P4,Reduced,,,20 to 250,,,Saunders,3422-11-P4
+,V3267,Diaphragm,"Flanged B16.5
+150# RF",Plastic Lined,"150#, straight thru diaphragm valve.  Hard rubber lined cast iron body, epoxy coated.  EPDM diaphragm.  Indicating stem.",Saunders,5622-11-KE,Reduced,,,25 to 350,,,Saunders,5622-11-KE
+,V3352,Diaphragm,Socket,Plastic,"Socket end, weir type diaphragm valve.  PVC body. EPDM backed Teflon diaphragm.  Indicating stem.",Chemline,DVAxxxPU,Reduced,,CWP150,15 to 50,,,Chemline,DVAxxxPU
+,V3353,Diaphragm,Socket,Plastic,"Socket end, weir type diaphragm valve. CPVC body.  EPDM backed Teflon diaphragm.  Indicating stem.",Chemline,DVCxxxPU,Reduced,,CWP150,15 to 50,,,Chemline,DVCxxxPU
+,V3354,Diaphragm,Socket,Plastic,"Socket end, weir type diaphragm valve. PVC 
+body, Viton diaphragm, Indicating stem.",Chemline,DVAxxxVU,Reduced,,CWP150,15 to 50,,,Chemline,DVAxxxVU
+,V3355,Diaphragm,Socket,Plastic,"Socket end, weir type diaphragm valve. CPVC 
+body, Viton diaphragm, Indicating stem.",Chemline,DVCxxxVU,Reduced,,CWP150,15 to 50,,,Chemline,DVCxxxVU
+,V3356,Diaphragm,Socket,Plastic,"Socket end, weir type diaphragm valve.  PVC body, EPDM diaphragm.  Indicating stem.",Chemline,DVAxxxEU,Reduced,,CWP150,15 to 50,,,Chemline,DVAxxxEU
+,V3357,Diaphragm,Socket,Plastic,"Socket end, weir type diaphragm valve.  CPVC body, EPDM diaphragm.  Indicating stem.",Chemline,DVCxxxEU,Reduced,,CWP150,15 to 50,,,Chemline,DVCxxxEU
+,V3451,Diaphragm,Butt,Plastic,Weir type diaphragm valve.  Polypropylene body. EPDM backed Teflon diaphragm.  Butt weld connections.  Indicating stem.,Chemline,14BxxxPB,Reduced,,CWP150,15 to 50,,,Chemline,14BxxxPB
+,V3455,Diaphragm,Butt,Plastic,Weir type diaphragm valve.  Polypropylene body.  EPDM diaphragm.  Butt weld connections.  Indicating stem.,Chemline,14BxxxEB,Reduced,,CWP150,15 to 50,,,Chemline,14BxxxEB
+,V4115,Lift Check,Screwed FNPT,Carbon Steel,"Lift check valve, spring assisted.  Carbon steel body, stainless steel trim, teflon seat.  Screwed connections.  UL listed and FM approved for LP or NG service.",Vogt,,,,,,,,,
+,V4121,Swing Check,Screwed FNPT,Iron,Swing check valve.  Malleable iron body and disc.  Screwed connections.,Jenkins,588J,Full,,125.0,50 to 100,,,Jenkins,588J
+,V4131,Swing Check,Screwed FNPT,Stainless Steel,Class 150 swing check valve.  CF8M stainless steel body and disc.  Screwed connections.,Bonney Forge,HL6-8-T,,"ASME
+B16.34",150.0,6 to 50,,,Kitz,150UOM
+,V4132,Lift Check,Screwed FNPT,Stainless Steel,Class 800 Lift check valve.  316 stainless steel body and disc.  Screwed connections.,Bonney Forge,HL4-8-T,,"ASME
+B16.34",800.0,6 to 50,,,Bonney Forge,HL4-8-T
+,V4141,Swing Check,Screwed FNPT,Forged Steel,"Class 800 swing check valve. A105 forged steel body.  13% chrome trim, stellite seat. Screwed connections.",Bonney Forge,HL4-1-T,,"ASME
+B16.34",800.0,6 to 50,,,Vogt,S701
+,V4142,Lift Check,Screwed FNPT,Forged Steel,"Class 800 lift check valve. A105 forged steel body.  13% chrome trim, stellite seat. Screwed connections.",Bonney Forge,HL4-1-T,,"ASME
+B16.34",800.0,6 to 50,,,Bonney Forge,HL4-1-T
+,V4191,Excess Flow,Screwed FNPT,Special,The Chlorine Institute Excess Flow Valve.  Monel Construction.  Cleaned and dried for chlorine service.,,,,,,,,,,
+,V4211,Swing Check,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150, RF, cast steel, swing check valve.  13% chrome trim, stellite seat.  Bolted cap.",Kitz,150SCOS,,"ASME
+B16.34",150.0,50 to 750,,,Kitz,150SCOS
+l,V4212,Lift Check,"Flanged B16.5
+300# RF",Carbon Steel,"Class 300 RF, lift check valve.  A352LCC carbon steel body, Hastelloy-C disc, Stellite seat. Filled TFE disc seat, steel (preferred) or stainless steel spring, bolted bonnet. Cleaned and dried for chlorine service.",Vogt,,,,,,,,Vogt,
+l,V4213,Lift Check,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150, RF, lift check valve.  A352LCC carbon steel body, Hastelloy-C disc, Stellite seat. Filled TFE disc seat, steel (preferred) or stainless steel spring, bolted bonnet. Cleaned and dried for chlorine service.",Vogt,,,,,,,,Vogt,
+l,V4214,Swing Check,"Flanged B16.5
+300# RF",Carbon Steel,"Class 300, RF, cast steel, swing check valve.  13% chrome trim, stellite seat.  Bolted cap.",Kitz,150SCOS,,"ASME
+B16.34",300.0,50 to 200,,,,
+,V4221,Swing Check,"Flanged B16.1 
+125# FF",Cast Iron,"Class 125, FF, swing check valve.  All iron construction.",Jenkins,590J,,,125.0,50 to 300,,,Jenkins,590J
+,V4231,Swing Check,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, RF, swing check valve.  CF8M or 316 Stainless steel construction.",Kitz,150UOAM,,"ASME
+B16.34",150.0,40 to 500,,,Kitz,150UOAM
+,V4232,Lift Check,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF, lift check valve.  CF8M or 316 Stainless steel construction.",Kitz,150UNAM,,,150.0,15 to 25,,,Kitz,150UNAM
+,V4233,Lift Check,"Flanged B16.5
+150# RF",Stainless Steel,"150# Flanged lift spring assisted check valve, 316 Stainless steel body and internals, Teflon seat.  Vertical or horizontal installation.",Vogt,,,,,,,,Vogt,
+l,V4242,Swing Check,"Flanged B16.5
+300# RF",Forged Steel,"Class 300, RF, forged steel, swing check valve, 13% chrome trim, stellite seat.  Bolted cap.",Vogt,,,ASME B16.34,300.0,15 to 50,,,Vogt,
+,V4252,Ball Check,"Flanged B16.1
+125# FF",Plastic,"150#, FF, Flanged ball check valve.  PVC body and ball. EPDM seals.",Chemline,BCAxxxEF,,,CWP150,15 to 100,,,Chemline,BCAxxxEF
+,V4253,Ball Check,"Flanged B16.1
+125# FF",Plastic,"150#, FF, Flanged ball check valve.  CPVC body and ball. EPDM seals.",Chemline,BCCxxxEF,,,CWP150,15 to 150,,,Chemline,BCCxxxEF
+,V4256,Ball Check,"Flanged B16.1
+125# FF",Plastic,"150#, FF, Flanged ball check valve.  PVC body and ball. Viton seals.",Chemline,BCAxxxVF,,,CWP150,15 to 150,,,Chemline,BCAxxxVF
+,V4257,Ball Check,"Flanged B16.1
+125# FF",Plastic,"150#, FF, Flanged ball check valve.  CPVC body and ball. Viton seals.",Chemline,BCCxxxVF,,,CWP150,15 to 150,,,Chemline,BCCxxxVF
+,V4258,Swing Check,"Flanged B16.5
+150# FF",Plastic,"150#, FF, Swing Check Valve, PVC Body and Disc, EPDM Seat, Bolted Bonnet.",Chemline,SCAxxxE,Full,,CWP150,20 to 200,,,Chemline,SCAxxxE
+,V4262,Ball Check,"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged ball check valve.  PFA lined ductile iron body.  Solid PTFE ball.",Durco,ARV2-PFA,Full,,150.0,15 to 300,,,Atomac,ARV2-PFA
+,V4265,Ball Check,"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged ball check valve. Y-type.  FEP lined ductile iron body.  Solid PTFE ball.",Durco,ARL-FEP,Full,,150.0,25 to 80,,,Atomac,ARL-FEP
+,V4266,Lift Check,"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged lift check valve.  PVDF lined cast steel body.  PTFE Poppet.  Horizontal installation.",Dow,355-PVDF,Reduced,,150.0,25 to 200,,,Crane Resistoflex,355-PVDF
+l,V4267,Lift Check,"Flanged B16.5
+150# RF",Plastic Lined,"Class 150, Flanged lift check valve.  PFA lined cast steel body.  PTFE or PFA poppet.  Horizontal installation.",,,Full,,150.0,25 to 100,,,Crane Resistoflex,355-PFA
+l,V4268,Lift Check,"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged check valve.  PVDF lined cast steel body.  PTFE Poppet.  Vertical installation.",Dow,356-PVDF,Reduced,,150.0,25 to 200,,,Crane Resistoflex,356-PVDF
+,V4331,Swing Check,Socket,Stainless Steel,"Class 800 Swing Check valve, 316 Stainless Steel construction, Stellite Seat.",Vogt,SWS718,Reduced,"ASME
+B16.34",800.0,15 to 50,,,Vogt,SWS718
+,V4332,Lift Check,Socket,Stainless Steel,"Class 800 Spring assisted Lift Check valve, 316 Stainless Steel construction, metal to metal seat, Inconel spring.",Vogt,SW718,Reduced,"ASME
+B16.34",800.0,15 to 50,,,Vogt,SW718
+,V4341,Swing Check,Socket,Forged Steel,"Class 800 Swing Check valve.  Forged Steel body, 13% chrome trim, stellite seat.  Bolted bonnet.  Socket weld connection.",Vogt,SWS701,Reduced,"ASME
+B16.34",800.0,15 to 50,,,Vogt,SWS701
+,V4342,Lift Check,Socket,Forged Steel,"Class 800 Lift Check valve.  Forged Steel body, 13% chrome trim, stellite seat.  Bolted cap.  Socket weld connections.",Vogt,SW701,Reduced,"ASME
+B16.34",800.0,15 to 50,,,Vogt,SW701
+,V4352,Ball Check,Socket,Plastic,Socket end ball check valve.  PVC body and ball. EPDM seals.  Double union construction.,Chemline,BTAxxxES,,,"CWP 150
+CWP 100","15 to 50
+65 to 100",,,Chemline,BTAxxxES
+,V4353,Ball Check,Socket,Plastic,Socket end ball check valve.  CPVC body and ball. EPDM seals.  Double union construction.,Chemline,BTCxxxES,,,"CWP 150
+CWP 100","15 to 50
+65 to 100",,,Chemline,BTCxxxES
+,V4356,Ball Check,Socket,Plastic,Socket end ball check valve.  PVC body and ball. Viton seals.  Double union construction.,Chemline,BTAxxxVS,,,"CWP 150
+CWP 100","15 to 50
+65 to 100",,,Chemline,BTAxxxVS
+,V4357,Ball Check,Socket,Plastic,Socket end ball check valve.  CPVC body and ball.  Viton seals.  Double union construction.,Chemline,BTAxxxVS,,,"CWP150
+CWP 100","15 to 50
+65 to 100",,,Chemline,BTAxxxVS
+,V4411,Swing Check,Buttweld,Carbon Steel,"Class 600 swing check valve, cast alloy steel  A216 Gr WCB, 13% Cr trim, stellite seats bolted cover. ASME B16.25 buttweld connection (connecting pipe schedule to be specified with order).",,,,"ASME
+B16.34",600.0,80 to 400,,,Kitz,W600 SCOS
+,V4412,Swing Check,Buttweld,Carbon Steel,"Class 900 swing check valve, cast alloy steel  A216 Gr WCB, 13% Cr trim, stellite seats bolted cover. ASME B16.25 buttweld connection (connecting pipe schedule to be specified with order).",,,,"ASME
+B16.34",900.0,80 to 400,,,Kitz,W900 SCOS
+,V4481,Swing Check,Buttweld,Alloy Steel,"Class 900 swing check valve, cast alloy steel  A217 Gr WC6, 13% Cr trim, full stellite seats (disc & body), bolted cover. ASME B16.25 buttweld connection (connecting pipe schedule to be specified with order).",,,,"ASME
+B16.34",900.0,80 to 400,,,Kitz,W900 SCOS6CY
+,V4712,Swing Check,"Wafer
+B16.5 150#",Carbon Steel,"Class 150, Wafer type, swing check valve.  Carbon Steel body. 316 Stainless Steel internals.  Metal seat.",Hy-Grade,T01-xxG-10AFX,Full,,150.0,25 to 1200,,,Hy-Grade,T01-xxG-10AFX
+,V4713,Swing Check,"Wafer
+B16.5 150#",Carbon Steel,"Class 150, Wafer type, swing check valve.  Carbon Steel body, 316 stainless steel internals, EPDM seat.",Hy-Grade,T01-xxG-9AFX,Full,,150.0,25 to 1200,,,Hy-Grade,T01-xxG-9AFX
+,V4721,Swing Check,"Flanged B16.5
+150# RF",Cast Iron,"Class 125, Wafer type, swing check valve.  Cast iron body, 316 stainless steel internals, Buna N seat.",Ritepro,12-C-B-T,Full,,125.0,50 to 1100,,,Ritepro,12-C-B-T
+,V4732,Swing Check,"Wafer
+B16.5 150#",Stainless Steel,"Class 150, Wafer type, swing check valve. 316 Stainless Steel body and disc, Metal seats.",Hy-Grade,T01-xxG-10FFX,Full,,150.0,25 to 1200,,,Hy-Grade,T01-xxG-10FFX
+,V4733,Swing Check,"Wafer
+B16.5 150#",Stainless Steel,"Class 150, Wafer type, swing check valve. 316 Stainless Steel body and disc, EPDM seat.",Hy-Grade,T01-xxG-9FFX,Full,,150.0,25 to 1200,,,Hy-Grade,T01-xxG-9FFX
+,V4734,Swing Check,"Wafer
+B16.5 150#",Stainless Steel,"Class 150 Wafer type, swing check valve. 316 Stainless Steel body and disc, Teflon seat.",Hy-Grade,T01-xxG-8FFX,Full,,150.0,25 to 1200,,,Hy-Grade,T01-xxG-8FFX
+,V4751,Swing Check,"Wafer
+B16.5 150#",Plastic,"150#, Wafer type, swing check valve.  Polypropylene body and disc. Viton seals.Requires Spacer",Chemline,WPBxxxV,Reduced,,CWP150,50 to 300,,,Chemline,WPBxxxV
+,V4752,Swing Check,"Wafer
+B16.5 150#",Plastic,"150# Wafer type, swing check valve.  PVC body and disc. EPDM seat. Requires Spacer",Chemline,WPAxxxE,Reduced,,CWP150,50 to 300,,,Chemline,WPAxxxE
+,V4754,Swing Check,"Wafer
+B16.5 150#",Plastic,"150#, Wafer type, swing check valve.  PVDF body and disc.  Viton seals. Requires Spacer",Chemline,WPKxxxV,Reduced,,CWP150,50 to 300,,,Chemline,WPKxxxV
+,V4756,Swing Check,"Wafer
+B16.5 150#",Plastic,"150# Wafer type, swing check valve.  PVC body and disc. Viton seat.",Chemline,WPAxxxV,Reduced,,CWP150,50 to 300,,,Chemline,WPAxxxV
+,V4757,Swing Check,"Wafer
+B16.5 150#",Plastic,"Wafer type swing check valve. Two piece glass reinforced PTFE Teflon body and disc, stainless steel phenolic coated sleeve.",Hy-Grade,Pxx-GTT-G1,Reduced,,CWP200,50 to 300,,,Hy-Grade,Pxx-GTT-G1
+,V4763,Swing Check,"Wafer
+B16.5 150#",Plastic Lined,Wafer type swing check valve. PFA lined ductile Iron Body and  Disc,Xomox,070,Reduced,,CWP 250,80 to 300,,,Xomox,070
+,V4767,Swing Check,"Wafer
+B16.5 150#",Plastic Lined,150# Wafer type swing check valve.  PFA lined ductile iron body and disc.,Xomox,070,Reduced,,150**,80 to 300,,,Xomox,070
+,V4781        Was 4711,Lift Check,"Wafer
+B16.5 150#",Alloy,"150#, Wafer type lift check valve.  Monel body and disc.",Noble,Condor-M4,Reduced,,150.0,15 to 250,,,Noble,Condor-M4
+,V5115,Plug,Screwed FNPT,Carbon Steel,"Screwed plug valve.  Carbon steel body and trim, bolted bonnet, wrench operated.  Tapered and lubricated plug.  UL listed and FM approved for LP or NG service.",Nordstom,,Reduced,API 607,,15 to 50,,,,
+,V5215,Plug,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 flanged plug valve.  Carbon steel body and trim, bolted bonnet, wrench operated.  Tapered and lubricated plug.  UL listed and FM approved for LP or NG service.",Nordstom,,Reduced,API 607,150.0,50 to 200,,,,
+l,V5216,Plug,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150 RF, Plug valve, Dynamic balance, metal to metal seats, CS body and trim, Graphoil stem packing. Gear operator DN150 and above.",,,Reduced,,150.0,25 to 200,,,Nordstrom,NVI-1945
+l,V5231,Plug,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, RF, Plug valve, 304 stainless steel body c/w PTFE sleeve, 304 stainless steel plug.  DN15 to DN150 lever operated, DN200 and larger gear operated.",,,Reduced,,150.0,15 to 200,,,,
+l,V5232,Plug,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, RF, Plug valve, 304 stainless steel body c/w PTFE sleeve, 304 stainless steel vented (drilled) plug.  DN15 to DN150 lever operated, DN200 and larger gear operated.  Note: Valve to be installed so that when closed the ball is vented to upstream side.",,,Reduced,,150.0,15 to 200,,,,
+,V5261,Plug,"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged plug valve.  PTFE or PFA lined ductile iron body and plug.",Durco,T-41,Reduced,,150.0,15 to 300,,,Durco,T-41
+,V5262,Plug,"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged plug valve.  PTFE or PFA lined ductile iron body and plug.  Plug to be vented (drilled) if required by service.  Note: *Valve to be installed so that when closed the ball is vented to upstream side.",Durco,T-41-V,Reduced,,150.0,15 to 300,,,Durco,T-41-V
+,V5263,Plug,"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged plug valve.  PFA lined cast iron body.  PFA lined steel plug. Viton Seals.  Full bore.",Technova,CPL150-B1L1E1C1-01,Full,,150**,15 to 100,,,Technova,CPL150-B1L1E1C1-01
+,V5264,Plug (3-way),"Flanged B16.5
+150# RF",Plastic Lined,"150#, Flanged 3-way plug valve.  FEP or PFA lined ductile iron body and plug.",Xomox,031-PFA,Multi,,150.0,25 to 100,,,Xomox,031-PFA
+l,V5266,Plug,"Flanged B16.5
+150# RF",Plastic Lined,"Class 150 RF, Plug valve, PTFE sleeve and diaphragm, SS plug, CS body, Graphoil stem packing. Gear operator DN100 and above.",,,Reduced,,150.0,15 to 450,,,Durco,G411 DS/D4
+,V5286,Plug (3-way),"Flanged B16.5
+300# RF",Alloy,"300#, RF, 3-way plug valve.  Monel body, plug and stem. PTFE sleeve and seals.  Cleaned and dried for chlorine service.",Durco,MG431-E/H-x-DNZ-DMDM,Multi,,300.0,15 to 250,,,Durco,MG431-E/H-x-DNZ-DMDM
+,V6131,Needle,Screwed FNPT,Stainless Steel,"5000 psi, integral bonnet needle valve.  Straight pattern. 316 Stainless steel construction.  Teflon seals.",Vogt,,,,,,,,Vogt,
+,V6153 Was 6151,Needle,Screwed FNPT,Plastic,"Screwed, angle body needle valve.  CPVC body and stem.  PTFE seal (for application as sample valve see ""Equivalence sheet).",Chemline,NACxxx,Reduced,,CWP150,6 to 15,,,Chemline,NACxxx
+,V6154,Needle,Screwed FNPT,Plastic,"Screwed, globe body needle valve.  PVC body, bonnet and stem.  PTFE seal.",Chemline,NAAxxx,Reduced,,CWP150,6 to 15,,,Chemline,NAAxxx
+,V6251,Needle,Flanged B16.5 RF,Plastic,"150#, Flanged throttling valve.  Polypropylene construction, Hypalon seals, PTFE bellows.",Chemline,Exner,Reduced,,CWP150,15 to 150,,,Chemline,Exner
+,V6256,Needle,Flanged B16.5 RF,Plastic,"150#, Flanged throttling valve.  PVC construction, Viton seals.",Chemline,Exner,Reduced,,CWP150,15 to 150,,,Chemline,Exner
+,V6xxx,Needle,,,For stong sulphuric acid sampling,,,,,,15,,,,
+,V7131,Gate,Screwed FNPT,Stainless Steel,"Class 150, RF, gate valve. CF3M or  316 stainless steel body, 316 stainless steel disc, OS&Y, bolted bonnet.",Kitz,AK150UMM,Full,API 600,150.0,15 to 50,,,Kitz,AK150UMM
+,V7141,Gate,Screwed FNPT,Forged Steel,"Class 800, forged steel gate valve.  Solid disc, 13% chrome trim, stellite seats.  OS&Y, bolted bonnet.  Screwed connections.",Vogt,2801.0,Standard,"ASME
+B16.34",800.0,15 to 50,,,Vogt,12111.0
+,V7171,Gate,Screwed FNPT,Bronze,"Gate valve, screwed connections, all bronze construction, OS&Y, rising stem, bolted bonnet.  UL listed and FM approved for firewater service.",,,Full,,125.0,,,,,
+,V7211,Gate,"Flanged B16.5
+150# RF",Cast Steel,"Class 150, RF, cast steel gate valve.  Flexible Disc.  13% chrome trim, stellite seats.  OS&Y, bolted bonnet.",Kitz,150SCLS,Full,"API 600
+ASME B16.34",150.0,40 to 900,,,Kitz,150SCLS
+,V7212,Gate,"Flanged B16.5
+300# RF",Cast Steel,"Class 300, RF, cast steel gate valve.  Flexible Disc.  13% chrome trim, stellite seats.  OS&Y, bolted bonnet.",Kitz,300SCLS,Full,"API 600
+ASME B16.34",300.0,40 to 600,,,Kitz,300SCLS
+,V7221,Gate,"Flanged B16.1
+125# FF",Cast Iron,"Class 125, FF, all iron gate valve.  Solid wedge.  O.S.&Y, bolted bonnet.",Jenkins,523J,Full,,125.0,50 to 200,,,Jenkins,523J
+,V7222,Gate,"Flanged B16.1
+125# FF",Cast Iron,"Class 125, FF, gate valve.  Cast iron body, bronze trim.  O.S.&Y, rising stem, bolted bonnet.  UL listed and FM approved for firewater service.",Jenkins,825CJ,Full,UL/FM,125.0,,,,Jenkins,825CJ
+,V7223,Gate,"Flanged B16.1
+125# FF",Cast Iron,"Class 125, FF, gate valve.  Cast iron body, bronze trim.  O.S.&Y, rising stem, bolted bonnet.  UL listed and FM approved for fire protection water service. c/w lock (open)",Jenkins,825CJ-LD,Full,UL/FM,125.0,,,,Jenkins,825CJ-LD
+,V7231,Gate,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150 RF, gate valve. Cast 316 stainless steel body, 316 stainless disc, OS&Y, bolted bonnet.",Kitz,150UMAM,Full,"API 600
+ASME B16.34",150.0,15 to 600,,,Kitz,150UMAM
+l,V7241,Gate,"Flanged B16.5
+150# RF",Forged Steel,"Class 150, RF, forged steel gate valve.  Flexible Disc.  13% chrome trim, stellite seats.  OS&Y, bolted bonnet.",Kitz,150SCLS,Full,"API 600
+ASME B16.34",150.0,15 to 50,,,,
+,V7239,Gate,Flanged,Stainless Steel,"Roller Gate Valve Manually Operated Handcrank, Non Rising Stem, 304 S.S. Frame, Blade, Seal and Shear Protectors.",Frisch,,,,,,,,Frisch,
+l,V7242,Gate,"Flanged B16.5
+300# RF",Forged Steel,"Class 300, RF, forged steel gate valve.  Flexible Disc.  13% chrome trim, stellite seats.  OS&Y, bolted bonnet.",Kitz,150SCLS,Full,"API 600
+ASME B16.34",300.0,15 to 50,,,,
+,V7281,Gate,"Flanged B16.5
+150# RF",Alloy,"Class 150 RF, gate valve. Cast Alloy 20 body and bonnet (ASTM A351 Gr. CN7M), Alloy 20 trim. OS&Y, Teflon packing.",Kitz,150UMACN,Full,,150.0,15 to 150,,,Crane Aloyco,Fig 117
+,V7282,Gate,"Flanged B16.5
+150# FF",Alloy,"CWP 150 FF, gate valve. Lewmet body and bonnet (2” to 4”), D24 iron body and bonnet (6” to 24”). Lewmet trim, teflon packing.  Double flexible wedge, OS&Y, rising stem.",Chas. S Lewis,150/151/121,Full,,CWP150,15 to 600,,,Chas. S Lewis,150/151/121
+,V7283,Gate,"Flanged B16.5
+150# FF",Alloy,Same as V7282 with extended hand wheel,Chas. S Lewis,150/151/121,Full,,CWP150,15 to 600,,,Chas. S Lewis,150/151/121
+,V7331,Gate,Socket,Stainless Steel,"Class 800 forged 316 stainless steel gate valve.  Stellite seats, OS&Y, bolted bonnet, rising stem. Socket weld connections.",Vogt,,Standard,"ASME
+B16.34
+API 602",800.0,15 to 50,,,Vogt,SW-12401
+,V7341,Gate,Socket,Forged Steel,"Class 800 gate valve. A105 forged steel body, 13% chrome trim, stellite seats.  OS&Y, bolted bonnet, graphite pacing.  Socket weld connections.",Vogt,SW-2801,Standard,"ASME
+B16.34
+API 602",800.0,15 to 50,,,Vogt,SW-12111
+l,V7381,Gate,Socket,Alloy Steel,"Class 800 gate valve. A182 F22 Class 3 forged alloy steel body, 13% chrome trim, full stellite seats (disc & body),  OS&Y, bolted bonnet, graphite packing.  Socket weld connections.",Vogt,SW-2801,Standard,"ASME
+B16.34
+API 602",800.0,15 to 50,,,Vogt,SW-12321 FHF
+,V7411,Gate,Buttweld,Carbon Steel,"Class 600 gate valve, cast steel  A216 Gr WCB, 13% Cr trim, stellite body seats, graphite packing, OS&Y, bolted bonnet, rising stem, flexible wedge. ASME B16.25 buttweld connection (connecting pipe schedule to be specified with order).",,,,"ASME B16.34
+API 600",600.0,80 to 600,,,Kitz,W600 SCLS
+,V7412,Gate,Buttweld,Carbon Steel,"Class 900 gate valve, cast steel  A216 Gr WCB, 13% Cr trim, stellite body seats, graphite packing, OS&Y, bolted bonnet, rising stem, flexible wedge. ASME B16.25 buttweld connection (connecting pipe schedule to be specified with order).",,,,"ASME B16.34
+API 600",900.0,80 to 600,,,Kitz,W900 SCLS
+,V7481,Gate,Buttweld,Alloy Steel,"Class 900 gate valve, cast alloy steel  A217 Gr WC6, 13% Cr trim, full stellite seats (disc & body), graphite packing, OS&Y, bolted bonnet, rising stem, flexible wedge. ASME B16.25 butweld (connecting pipe schedule to be specified with order).",,,,"ASME B16.34
+API 600",900.0,80 to 600,,,Kitz,W900 SCLS6CY
+,V7831,Knife Gate,Lug Tapped (150#),Stainless Steel,"150#, lug tapped, gate valve. Cast 316 stainless steel body, 316 stainless steel gate.  Viton seat, teflon packing.",Delta Industrial,150-SSSSE2/1-HW,Full,,150.0,50 to 2000,,,Delta Industrial,150-SSSSE2/1-HW
+,V8121,Globe,Screwed FNPT,Cast Iron,"1000# CWP, screwed globe valve.  Malleable iron body, all iron 13% Cr trim.  Union bonnet, rising stem.",Crane,254XR,,,CWP 1000,6 to 50,,,Crane,254XR
+,V8131,Globe,Screwed FNPT,Stainless Steel,"Class 800 globe valve, forged 316 stainless steel body and trim.  Stellite seat, bolted bonnet, rising stem. Screwed connctions",Bonney Forge,HL3-8-T,,"ASME
+B16.34",800.0,15 to 50,,,Bonney Forge,HL3-8-T
+,V8141,Globe,Screwed FNPT,Forged Steel,"Class 800 globe valve, A105 forged steel  body, 13% chrome trim, stellite seats.  OS&Y, bolted bonnet.  Screwed connections.",Vogt,12141.0,,"ASME
+B16.34",800.0,15 to 50,,,Vogt,12141.0
+,V8191,Globe,Screwed (NGT),Special,"The Chlorine Institute Valve for Cylinders and Containers. Alloy B body, monel stem.  Per Chlorine Institute drawing 110 to 113.  Cleaned and dried for chlorine service.  NGT screwed connection.",,,,,,,,,,
+,V8211,Globe,"Flanged B16.5
+150# RF",Carbon Steel,"Class 150, RF, Cast carbon steel globe valve.  13% chrome trim, stellite seats.  OS&Y, bolted bonnet, rising stem.",Kitz,150SCJS,,"ASME
+B16.34",150.0,50 to 400,,,Kitz,150SCJS
+,V8212,Globe,"Flanged B16.5
+300# RF",Carbon Steel,"Class 300, RF, gland type globe valve.  A350 LF2 carbon steel body, bonnet and disc.  Hastelloy C trim, stellite seats. (A352 LCC body and bonnet 1-1/5” and larger).  Cleaned and dried for chlorine service",Vogt,,,,300.0,6 to 50,,,Vogt,
+,V8214,Globe,"Flanged B16.5
+300# RF",Carbon Steel,"300#, RF, bellows type globe valve.  A350 LF2 carbon steel body, bonnet and disc.  Hastelloy C bellows and trim, stellite seats. (A352 LCC body and bonnet 1-1/5” and larger).  Cleaned and dried for chlorine service.",Shaw,M6422,,,300.0,15 to 200,,,Shaw,M6422
+,V8221,Globe,"Flanged B16.1
+125# FF",Cast Iron,"Class 125, FF, All iron globe valve.  OS&Y, bolted bonnet. Bronze Trim (IBBM)",Jenkins,2342J,,,125.0,50 to 250,,,Jenkins,2342J
+,V8231,Globe,"Flanged B16.5
+150# RF",Stainless Steel,"150#, RF, Globe valve.  316 Stainless Steel body and disc. OS&Y, bolted bonnet, rising stem.",Kitz,150UPAM,,"ASME
+B16.34",150.0,15 to 300,,,Kitz,150UPAM
+l,V8241,Globe,"Flanged B16.5
+150# RF",Stainless Steel,"Class 150, RF, Globe valve.  Forged steel body.  13% chrome trim, stellite seat.  OS&Y, bolted bonnet, rising stem.",Kitz,150UPAM,,"ASME
+B16.34",150.0,15 to 50,,,,
+,V8331,Globe,Socket,Stainless Steel,"Class 800 globe valve, 316 stainless steel (A182 F316/F316L) body and trim.  Bolted bonnet, rising stem.",Bonney Forge,HL3-8-SW,Standard,"ASME
+B16.34",800.0,15 to 50,,,Vogt,SW-12501
+,V8341,Globe,Socket,Forged Steel,"Class 800 globe valve, A105 forged steel  body.  13% chrome trim, stellite seat.  Bolted bonnet, rising stem.  Socket weld connections.",Vogt,SW-12141,Standard,"ASME
+B16.34",800.0,15 to 50,,,Vogt,SW-12141
+,V8411,Globe,Buttweld,Carbon Steel,"Class 600 Cast carbon steel globe valve.  13% chrome trim, full stellite seats (body and disc).  OS&Y, bolted bonnet, rising stem. ASME B16.25 buttweld connection (connecting pipe schedule to be specified with order).",Kitz,150SCJS,,"ASME
+B16.34",150.0,50 to 300,,,Kitz,W600 SCJSY
+,V8412,Globe,Buttweld,Carbon Steel,"Class 900 Cast carbon steel globe valve.  13% chrome trim, full stellite seats (body and disc).  OS&Y, bolted bonnet, rising stem. ASME B16.25 buttweld connection (connecting pipe schedule to be specified with order).",Kitz,150SCJS,,"ASME
+B16.34",150.0,80 to 200,,,Kitz,W900 SCJSY
+,V9133,Ram Sampling,"Screwed
+NPT (MxF)",Stainless Steel,Ram type sampling valve.  316 stainless steel construction.  Teflon seals.  MNPT x FNPT connections.,Fetteroff,,,,,,,,Fetterolf,
+,V9134 was V9131,Back Pressure,Screwed FNPT,Stainless Steel,"316 stainless steel body, diaphragm type, back pressure valve.  FNPT x FNPT connection.",Cash Acme,,,,,,,,Cash Acme,
+,V9233 was V9231,Ram Drain,Flanged B16.5 RF,Stainless Steel,"150#, RF, ram type drain valve.  316 stainless steel body and piston.  Carbon Steel bonnet, teflon seals.  60º straight neck.",,,,,,,,,,
+,V9234 was V9232,Ram Drain,"Flanged B16.5
+150# RF",Stainless Steel,"150#, RF, ram type drain valve.  316 stainless steel body and piston.  Carbon Steel bonnet, teflon seals.  45º curved neck.",,,,,,,,,,
+,V9251,Pinch,"Flanged B16.5
+150# RF",Plastic Lined,"CWP 225  clamp valve with PTFE tube, ductile iron body, stainless steel clamping mechanism",Resistoflex,R6000DI,Full,,CWP 225,25 to 200,,,Resistoflex,R6000DI
+,V9252,Pinch,"Flanged B16.1
+125 # FF",Plastic Lined,"125# FF pinch valve with Buna-N rubber tube, steel frame, handwheel actuator with locking device",,,Full,,"CWP 150
+CWP 125","25 to 150
+200",,,Red Valve,Series 70
+,V9253,Pinch,"Flanged B16.1
+125 # FF",Plastic Lined,"125# FF pinch valve with Hypalon rubber tube, steel frame, handwheel actuator with locking device",,,Full,,"CWP 150
+CWP 125","25 to 150
+200",,,Red Valve,Series 70
+,V9261,Sampling Valve,"Flanged B16.5
+150 # RF",Plastic Lined,"Class 150 RF, sampling valve.  PFA lined ductile iron body, epoxy coated.  PTFE bellows and stem seal.  Standard bottle adapter with vent connection.  Supplied with ten (10) 250 ml glass sample botttles.",,,,,150.0,25 to 50,,,ITT Richter,PA1510-GL45 B2

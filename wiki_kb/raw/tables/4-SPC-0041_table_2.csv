@@ -1,0 +1,11 @@
+# doc_id=4-SPC-0041 table=2 inline=true
+a,Nominal Tube Diameter,"32mm
+(1 ¼”)","38mm
+(1 ½”)","51mm
+(2”)","64mm
+(2 ½”)","76mm
+(3”)"
+b,Nominal Hole Diameter,32.11mm (1.264”),38.56mm (1.518”),51.36mm (2.022”),64.16mm (2.526”),76.96mm (3.030”)
+c,Diameter Undertolerance,0.15mm (0.006”),0.18mm (0.007”),0.18mm (0.007”),0.20mm (0.008”),0.20mm (0.008”)
+d,Diameter Overtolerance,0.08mm (0.003”),0.08mm (0.003”),0.08mm (0.003”),0.08mm (0.003”),0.08mm (0.003”)
+e,Diameter Overtolerance,0.25mm (0.010”),0.25mm (0.010”),0.25mm (0.010”),0.25mm (0.010”),0.25mm (0.010”)

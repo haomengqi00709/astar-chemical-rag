@@ -1,0 +1,36 @@
+# doc_id=9-LST-0728 discipline=9 revision=R0
+Items to be checked,
+Complete system installation accepted by Aker Kvaerner Chemetics Field Supervisor. (See signed Contractor Field Check List),
+"Check thermometers mounted, scale correct and reading normal.",
+"Dial type thermometer settings:
+Alarm:	____ C
+Trip:	____ C",
+Oil level indicator mounted and showing correct level (as per manufacturer’s recommendations).,
+"Winding temperature indicator mounted settings:
+Alarm:	____ C
+Trip:	____ C",
+"Buckholz relay installed.  Settings (if applicable):
+Alarm:	1st switch
+Trip:	2nd switch",
+Dehydrating breather installed and contents dry (colour: blue) (if applicable).,
+Pressure relief device installed.,
+Lighting/surge arrestors installed any properly terminated (ph and gnd).,
+Ground current detection device properly mounted and protection set.,
+Check for oil leakage.,
+Check correct phase sequence on incoming and outgoing cables.,
+Test all protection and safety devices.  Check for correct alarm and trips.,
+"Test insulation as follows (____ V megger, duration 60 seconds).  
+HV windings to tank	Phase A	________ M
+		Phase B	________ M
+		Phase C	________ M
+LV windings to tank	Phase A	________ M
+		Phase B	________ M
+		Phase C	________ M
+HV to LV windings	Phase A	________ M
+		Phase B	________ M
+		Phase C	________ M",
+"Oil insulation breakdown test (take sample from bottom of tank)
+Breakdown voltage:	_______ kV	Duration ______ Sec
+GAP setting:	_______ mm",
+Test results accepted.,
+System ready for water batching,

@@ -1,0 +1,22 @@
+# doc_id=0-REP-5 table=6 inline=true
+,Welding,Welding,Welding,Welding,Welding,Welding,Welding
+1.1,Welding Machines,Welding Machines,Welding Machines,Welding Machines,Welding Machines,Welding Machines,Welding Machines
+,Type,Type,Number,Number,Number,Condition,Condition
+,SAW,SAW,,,,,
+,GTAW,GTAW,,,,,
+,SMAW,SMAW,,,,,
+,PAW,PAW,,,,,
+,GMAW/FCAW,GMAW/FCAW,,,,,
+1.2,Number of welders/welding operators qualified to ASME Code Section IX:,Number of welders/welding operators qualified to ASME Code Section IX:,Number of welders/welding operators qualified to ASME Code Section IX:,Number of welders/welding operators qualified to ASME Code Section IX:,Number of welders/welding operators qualified to ASME Code Section IX:,Number of welders/welding operators qualified to ASME Code Section IX:,Number of welders/welding operators qualified to ASME Code Section IX:
+1.3,Materials of welding procedures qualified to ASME Code Section IX:,Materials of welding procedures qualified to ASME Code Section IX:,Materials of welding procedures qualified to ASME Code Section IX:,Materials of welding procedures qualified to ASME Code Section IX:,Materials of welding procedures qualified to ASME Code Section IX:,Materials of welding procedures qualified to ASME Code Section IX:,Materials of welding procedures qualified to ASME Code Section IX:
+1.4,"Are welders qualified to other codes? (if yes, list codes)","Are welders qualified to other codes? (if yes, list codes)","Are welders qualified to other codes? (if yes, list codes)","Are welders qualified to other codes? (if yes, list codes)","Are welders qualified to other codes? (if yes, list codes)","Are welders qualified to other codes? (if yes, list codes)","Are welders qualified to other codes? (if yes, list codes)"
+,Forming,Forming,Forming,Forming,Forming,Forming,Forming
+,Heads,,,Plate Rolling (max. width thickness,Plate Rolling (max. width thickness,Plate Rolling (max. width thickness,
+,Heat Treatment,Heat Treatment,Heat Treatment,Heat Treatment,Heat Treatment,Heat Treatment,Heat Treatment
+,Is this Sub-Contracted?,Is this Sub-Contracted?,Is this Sub-Contracted?,Is this Sub-Contracted?,,,
+,"If , indicate the controls used to ensure conformance to requirements.","If , indicate the controls used to ensure conformance to requirements.","If , indicate the controls used to ensure conformance to requirements.","If , indicate the controls used to ensure conformance to requirements.",,,
+,Recording Facilities,Recording Facilities,Recording Facilities,Recording Facilities,,,
+,Furnace Capacity,Furnace Capacity,Furnace Capacity,Furnace Capacity,,,
+,Condition,Condition,Condition,Condition,,,
+,Automatic/Manual,Automatic/Manual,Automatic/Manual,Automatic/Manual,,,
+,Max. Temp.,Max. Temp.,Max. Temp.,Max. Temp.,,,

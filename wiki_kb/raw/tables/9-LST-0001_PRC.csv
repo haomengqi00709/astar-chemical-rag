@@ -1,0 +1,26 @@
+# doc_id=9-LST-0001 discipline=9 revision=R0
+New Document Number,DOCUMENT DESCRIPTION,Revision,LEAD,Dept,Procedure or Specification,Date issued for Internal comment,Date Issued for general Comments,Date Adopted as Standard,EXISTING DOCUMENT,col_10,col_11,col_12,col_13,col_14,col_15
+,,,,,,,,,Reference,Volume,Section,Code,REV.,DATE,Comments
+,ELECTRICAL PROCEDURES,R,DC,9.0,,,,,,,,,,,
+9-PRC-0001,Index,,,9.0,Procedure,,,,,,,,,,
+9-PRC-0002,Electrical Design Criteria,,AM,9.0,Procedure,,,,Red Procedure Binder,PROCEDURES,8.0,DP12\001,02,NOV.20/93,to be rewritten/replaced
+9-PRC-0003,Equipment design and specification,,AM,9.0,Procedure,,,,,,,,,,
+9-PRC-0004,Definition Of Hazardous Areas (North American),R0,AM,9.0,Procedure,36922.0,36945.0,,Red Standard Binder,STANDARDS,58.0,ES12\011,01,FEB./97,revise and reformat
+9-PRC-0005,Definition Of Hazardous Areas  (Iec),R0,AM,9.0,Procedure,36922.0,36945.0,,Red Standard Binder,STANDARDS,58.0,ES12\011,01,FEB./97,revise and reformat
+9-PRC-0006,Electrical Grounding Design Criteria,R0,,9.0,Procedure,,,,Red Standard Binder,STANDARDS,60.0,ES12\030,01,FEB./97,revise and reformat
+9-PRC-0007,Lighting Design Criteria,R0,,9.0,Procedure,,,,Red Standard Binder,STANDARDS,61.0,ES12\031,01,OCT./93,revise and reformat
+9-PRC-0008,Lightning Protection Design Criteria,R0,,9.0,Procedure,,,,Red Standard Binder,STANDARDS,62.0,ES12\032,01,OCT./93,revise and reformat
+9-PRC-0009,Heat Tracing Design Criteria,R0,,9.0,Procedure,,,,Red Standard Binder,STANDARDS,66.0,,,,to be done
+9-PRC-0010,Bus Bar Design Criteria,R0,,9.0,Procedure,,,,Red Standard Binder,STANDARDS,64.0,,,,to be done
+9-PRC-0011,Fire Detection Design Criteria,R0,,9.0,Procedure,,,,,,,,,,
+9-PRC-0012,Alarm System Design Criteria,R0,,9.0,Procedure,,,,,,,,,,
+9-PRC-0013,Communication System Design Criteria,R0,,9.0,Procedure,,,,,,,,,,
+9-PRC-0014,Project Equipment Manuals (Handling & Storage),R0,,9.0,Procedure,,,,,,,,,,
+9-PRC-0015,Testing And Calibration Devices (For Field Use On Projects),R0,,9.0,Procedure,,,,,,,,,,
+9-PRC-0016,Project Filing System (E/I Dept Filing Only),R0,,9.0,Procedure,,,,Red Procedure Binder,PROCEDURES,13.0,DP30\001,01,OCT.26/93,to be rewritten/replaced
+9-PRC-0017,Vendor Catalog Control,R0,,9.0,Procedure,,,,,,,,,,
+9-PRC-0018,Motor Approval Tag (this is a specification),R0,,9.0,Procedure,,,,,,,,,,
+9-PRC-0019,Field Lockout And Tagout (This is a specification),R0,KB,9.0,Procedure,36936.0,36945.0,,,,,,,,
+9-PRC-0020,Electrical Systems  Contractor Checkout (this is a specification),R0,EM,9.0,Procedure,?,36955.0,,,,,,,,
+9-PRC-0021,Electrical Checking & Approval (Design Documents),R0,EM,9.0,Procedure,,,,,,,,,,
+9-PRC-0022,Electrical Systems Field Checkout & Commissioning,R0,EM,9.0,Procedure,36943.0,36955.0,,,,,,,,

@@ -1,0 +1,652 @@
+# doc_id=5-LST-0003-1 discipline=5 revision=R0
+col_0,Client Name,col_2,col_3,col_4,"Piping Service List
+(Chemical Plant)",col_6,col_7,col_8,col_9,col_10,col_11,col_12,col_13,col_14,"Aker Kvaerner Chemetics
+A Division of Aker Kvaerner Canada Inc.",col_16,col_17,col_18,col_19
+,Project Title,,,,,,,,,,,,,,,,,,
+,Location,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,Standard-5-LST-0003-1-R0,,,,
+,Service Code,Fluid,Fluid Composition,Material Description / Application,ASME B31.3 Fluid Class,Pressure Test Method,Flange Guard,"Corr. Allow.
+(mm)","Service Pres.
+(kPag)","Service Temp.
+(oC)","Pipe Spec Service Limit
+(kPag @ oC)",Pipe Spec,Gasket Spec,Valve Application,Valve Code,"Valve Size
+(Min)","Valve Size
+(Max)",Notes,
+,AA,"Air, Atmospheric
+(incl dilution air)",,"CPVC
+(CA cell room purge)",D,Service,No,0,0 - 21,amb - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,Check (swing),V4754**,50,300,"* Service Limits vary with temp.
+** Remove spring for low dP.",CA
+,,,,"PVC
+(low press/temp, dilution air to ClO2 generator)",D,Service,No,0,0 - 140,amb - 45,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (b'fly),V2864,100,300,* Service Limits vary with temp.,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3252,15,80,TT4 spool may be used for connection to ClO2 generator,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3352,15,50,,SC
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,15,150,,CD
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,150,,CD
+,,,Wet H2 containing Cl2 is present during normal operation,"FRP wrapped CPVC
+(dilution air to degasifiers)",N,Hydro or Pneum,No,0,0 - 90,amb - 90,"1034 @ 38
+234 @ 98
+*",CF1,C,On-Off / Isolation (b'fly),V2864,100,300,"* Service Limits vary with temp.
+
+TT3 spool may be used for connection to the degasifier.",SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3253,15,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3353,15,50,,SC
+,AV,"Air, Vent",,"304L Stainless Steel
+(chlorate drying exhaust fan disch)",D,Service,No,0,atm,amb - 45,1034 @ 204,S43,C,On-Off / Isolation (ball-full port),V1233,15,100,Use V1231 if full port not req'd.,SC
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,300,,SC
+,,,,"Carbon Steel
+(crystallizer vents, vacuum system)",D,Service,No,1.5,atm,amb - 35,1034 @ 204,CS6,B,On-Off / Isolation (ball),V1133,15,50,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2835,100,300,,SC
+,AVC,"Air Vent, Contaminated",Air containing Cl2 or HOCl or HCl,"FRP 
+25# Press.
+(for larger diameter lines)",N,Hydro or Pneum **,No,2.8,-25 to +10,amb - 85,172 @ 93,FR13,C,,,,,"**Per 5-SPC-0102, lines open to atm will not be tested unless specified (on line list)",CD
+,,,,"PVC
+(low temp)",N,Hydro**,No,0,-25 to +10,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (diaphragm-weir),V3256,15,80,"* Service Limits vary with temp. 
+**Per 5-SPC-0102, lines open to atm will not be tested unless specified (on line list)",CD
+,,,,"CPVC
+(high temp)",N,Hydro**,No,0,-25 to +10,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (diaphragm-weir),V3257,15,80,"* Service Limits vary with temp.
+**Per 5-SPC-0102, lines open to atm will not be tested unless specified (on line list)",CD
+,BR,"Brine, Feed
+(raw, precoat, treated, filtered)","27 - 25% NaCl
+solution",FRP,D,Service,No,2.5,200 - 500,60 - 70,1034 @ 93,FR5,D,On-Off / Isolation (ball),V1261,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"CPVC
+(low press, tank overflows, drains)",D,Service,No,0,0 - 200,amb - 70,"1034 @ 38
+234 @ 98
+*",CP3,D,,,,,* Service Limits vary with temp.,CA
+,BRC,"Brine, Chlorinated","18 - 20% NaCl
+solution containing dissolved chlorine","CPVC
+(cell room, low press)",N,Hydro,No,0,atm - 130,80 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (ball),V1261,25,80,"* Service Limits vary with temp.
+
+Use CF1 (FRP wrapped CPVC) where added mechanical protection required on small lines.
+Use CF2 (CPVC-FRP dual laminate) for large sizes in large plants, high temp/press.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2868,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"FRP
+(outside cell room)",N,Hydro,No,2.5,200 - 400,80 - 90,1034 @ 93,FR5,C,On-Off / Isolation (ball),V1261,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2868,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,BRD,"Brine, Dechlorinated","18 - 20% NaCl
+solution",FRP,N,Hydro,No,2.5,200 - 400,80 - 90,1034 @ 93,FR5,D,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"CPVC
+(low press, tank overflows, drains)",N,Hydro,No,0,0 - 200,amb - 90,"1034 @ 38
+234 @ 98
+*",CP3,D,,,,,* Service Limits vary with temp.,CA
+,BRF,"Brine, Deionized","25% NaCl
+solution","CPVC
+(BIX to cells)",D,Service,No,0,0 - 500,amb - 71,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (ball),V1353,15,50,"* Service Limits vary with temp.
+
+Use CF1 (FRP wrapped CPVC) where added mechanical protection required on small lines.
+Use CF2 (CPVC-FRP dual laminate) for large sizes in large plants, high temp/press.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"Titanium w/ Gr. 7 face ring
+(short sections at HX's)",D,Service,No,0,200 - 500,60 - 70,621 @ 149,TT3,A,,,,,Ti Gr 16 may be substituted for Gr. 7.,CA
+,,,,"FRP
+(Chloralkali: Discuss with cell supplier before specifying FRP)",D,Service,No,2.5,0 - 1034,amb - 71,1034 @ 93,FR5,D,On-Off / Isolation (ball),V1261,25,80,,CD
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,300,,CD
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CD
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CD
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CD
+,,,,,,,,,,,,,,On-Off / Isolation (plug - tank drain),V5261,50,200,,CD
+,BRS,"Brine, Sludge","25% NaCl
+solution containing solids","FRP
+(abrasion not a concern)",N,Hydro,No,2.5,100 - 700,60 - 70,1034 @ 93,FR5,D,On-Off / Isolation / Tank Drain (ball-full port),V1267,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-str. thru),V3267,15,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,CAS,Caustic,Caustic soda (>40%),"Nickel
+(Caustic Evaporation)",N,Hydro,Yes,0,200 - 500,90 - 150,800 @ 204,NI1,E,On-Off / Isolation (ball),V1266,25,80,"Alloys 825 and 600 can be considered as lower cost alternatives to nickel.
+
+Teflon in valves must be virgin Teflon.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2868,100,400,,CA
+,,,,,,,,,,,,,,Sample (ram drain),V9234,25x15,25x15,,CA
+,,,,"PVC
+(Caustic Head Tank Overflow)",N,Hydro,Yes,0,atm,amb - 40,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,* Service Limits vary with temp.,CA
+,,,,"PP-FRP dual laminate
+(Fe pick-up IS a concern)",N,Hydro,Yes,0,200 - 500,amb - 90,607 @ 95,PF1,C,On-Off / Isolation (b'fly),V2864,100,400,Teflon in valves must be virgin Teflon.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4267,25,100,,CA
+,,,,"304L Stainless Steel
+(Fe pick-up NOT a concern)",N,Hydro,Yes,0,200 - 500,amb - 90,1034 @ 204,S42 *,B,On-Off / Isolation (ball),V1237,25,80,"* S42 socket weld construction in caustic service is limited to 150oC or less.
+
+Teflon in valves must be virgin Teflon.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1337,15,50,,CA
+,,,,,,,,,,,,,,Control or On-Off (b'fly),V2836,100,350,,CA
+,,,,,,,,,,,,,,Check (swing),V4231,25,150,,CA
+,,,,,,,,,,,,,,Check (swing),V4331,25,50,,CA
+,,,,,,,,,,,,,,Throttling (globe),V8331,15,50,,CA
+,,,,,,,,,,,,,,Drain /Sampling (ram),V9233,25x15,25x15,V9233 to be specified with piston extension where required.,CA
+,CAW,Caustic,Caustic Soda (<40%),"Nickel
+(Caustic Evaporation, short sections at Catholyte HX)",N,Hydro,Yes,0,200 - 500,90 - 150,800 @ 204,NI1,E,On-Off / Isolation (ball),V1266,25,80,"Alloys 825 and 600 can be considered as lower cost alternatives to nickel.
+
+Teflon in valves must be virgin Teflon.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2868,100,400,,CA
+,,,,"Polypropylene
+(cell room low press, drain lines)",N,Hydro,Yes,0,0 - 150,80 - 90,"1070 @ 30
+140 @ 95
+*",PP6,C,On-Off / Isolation (b'fly),V2864,100,400,"* Service Limits vary with temp.
+
+Teflon in valves must be virgin Teflon.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"PP-FRP dual laminate
+(cell room high press)",N,Hydro,Yes,0,200 - 400,80 - 90,607 @ 95,PF1,C,On-Off / Isolation (b'fly),V2864,100,400,Teflon in valves must be virgin Teflon.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4267,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"304L Stainless Steel
+(outside cellroom, caustic storage and distribution)",N,Hydro,Yes,0,0 - 400,amb - 90,1034 @ 204,S42,B,On-Off / Isolation (ball),V1237,25,80,Teflon in valves must be virgin Teflon.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1337,15,50,,CA
+,,,,,,,,,,,,,,Control or On-Off (b'fly),V2836,100,350,,CA
+,,,,,,,,,,,,,,Check (swing),V4231,25,150,,CA
+,,,,,,,,,,,,,,Check (swing),V4331,25,50,,CA
+,,,,,,,,,,,,,,Check (swing),V4732,80,200,,CA
+,,,,"PVC
+(low press tank overflows, drains - low temp)",N,Hydro,Yes,0,atm,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,"* Service Limits vary with temp.
+Use VF6 for 50mm and smaller lines where mechanical protection required",CA
+,,,,"CPVC
+(low press tank overflows, drains - high temp)",N,Hydro,Yes,0,atm,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,,,,,* Service Limits vary with temp.,CA
+,,,,"PTFE-lined steel
+(where NaOCl may be present)",N,Hydro,Yes,0,200 - 400,amb - 90,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,On-Off / Isolation (diaphragm-weir),V3265,20,80,* Service LImits vary with temp.,SC
+,,,,,,,,,,,,,,Check (45o ball),V4265,25,100,,SC
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,25,100,,SC
+,CCC,Chlorine Contaminated Condensate,Water containing dissolved chlorine,CPVC,N,Hydro,No,0,0- 21,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,,,,,"* Service Limits vary with temp.
+
+Use CF1 (FRP wrapped CPVC) where added mechanical protection required on small lines.",CA
+,,,,"FRP
+(on H2 stack drain)",N,Hydro,No,2.5,atm,55,1034 @ 93,FR5,C,On-Off / Isolation (diaphragm-weir),V3253,15,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,"FRP wrapped CPVC 
+(mostly Hydrogen lines)",N,Hydro,No,0,0 - 150,0 - 90,"1034 @ 38
+234 @ 98
+*",CF1,C,On-Off / Isolation (diaphragm-weir),V3265,25,50,"* Service Limits vary with temp.
+
+Use CF1 for 50mm and smaller lines where mechanical protection required.",CD
+,,,,"PVC
+(low press/temp)",N,Hydro,No,0,0 - 150,0 - 60,"1034 @ 32
+345 @ 60
+*",PV6,D,On-Off / Isolation (diaphragm-weir),V3265,25,50,"* Service Limits vary with temp.
+
+Use VF6 for 50mm and smaller lines where mechanical protection required.",CD
+,,,,"PTFE-Lined Steel
+(from process lines that are downstream of flame arrestors)",N,Hydro,No,0,0 - 150,0 - 200,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,On-Off / Isolation (diaphragm-weir),V3265,25,50,* Service Limits vary with temp.,CD
+,CDG,Chlorine Dioxide Gas,,Titanium w/ Gr. 2 face ring,N,Hydro,No,0.0,FV - 100,"amb - 77
+(during ClO2 decomposition temp can go to 170oC)",621 @ 149,TT4,A,On-Off / Isolation (diaphragm-weir),V3265,25,80.0,,CD
+,,,,,,,,,,,,,,Sample,V6153,6.0,,,CD
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (ball-full port),V1267,50,80.0,,CD
+,CDL,Chlorine Dioxide Solution,,FRP,N,Hydro,No,2.5,FV - 750,amb - 25,1034 @ 93,FR5,C,On-Off / Isolation (b'fly),V2864,100,200,,CD
+,,,,"FRP 
+75# Press.",N,Hydro,No,2.5,FV - 500,amb - 25,"516 @ 82
+FV @ 82 (≤DN80)
+*",FR12,C,On-Off / Isolation (b'fly),V2864,100,200,"* Service limits vary with diameter, review requirements against sizes required.",CD
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,100,,CD
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CD
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,,,,CD
+,,,,"FRP 
+25# Press. (overflows)",N,Hydro,No,2.8,FV - 150,amb - 25,172 @ 93,FR13,C,,,,,,CD
+,CGD,"Chlorine, Gas Dry",,Carbon Steel,N,Hydro + Pneum (see 5-SPC-0101),No,3.0,0 - 1250,amb - 70,1379 @ 204,CS11,E,On-Off / Isolation (ball-vented),V1212,25.0,80.0,"No Titanium allowed for dry chlorine service.
+Materials must be cleaned, dried, packaged for dry chlorine service.
+Note CI Class I service limit is 1034 kPag / 149oC.  Review materials and ratings per CI Pamphlet 6 where higher pressure is required.
+V1212 is Class 150 rated, review required rating before using.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2816,100,300,V2816 requires Cl 300 connecting flanges.  Not for low temperature service.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2868,100,300,"V2868 is lined valve with ductile iron body, suitable for CI Class 1 service only.  Valve is 1034 kPag CWP rated, review required rating before using.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,"V3261 is 1034 kPag CWP rated, review required rating before using.",CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4212,25,150,"V4212 requires Cl 300 connecting flanges, used for commonality with low temp Cl2 service.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (globe-gland),V8212,15,50,"V8212 requires Cl 300 connecting flanges, used for commonality with low temp Cl2 service.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (globe-bellows),V8214,15,150,"V8214 requires Cl 300 spec break flanges, used for commonality with low temp Cl2 service.",CA
+,,,,"Carbon Steel
+(low temperature)",N,Hydro + Pneum (see 5-SPC-0101),No,3.0,0 - 1250,-34 to 45,"2068 @ 149
+2068 @ -46",CS12,E,Check (lift - horizontal),V4212,25,150,"No Titanium allowed for dry chlorine service.
+Materials must be cleaned, dried, packaged for dry chlorine service.
+Low temperature steels are required or piping, valves, etc (see CI Pamphlet 6).",CA
+,,,,,,,,,,,,,,On-Off / Isolation (globe-cylinder valve),V8191,15,40,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (globe-gland),V8212,15,150,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (globe-bellows),V8214,15,50,,CA
+,,,,PTFE-Lined Steel (Dry Chlorine to sodium chlorate reactors downstream of double check valve),N,Hydro + Pneum (see 5-SPC-0101),No,0,0 - 1034,amb - 70,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,Check (45o ball),V4265,25,100,* Service Limits vary with temp.,CD
+,,,,,,,,,,,,,,On-Off / Isolation (plug-vented),V5262,25,100,,
+,CGW,"Chlorine, Gas Wet",,"CPVC 
+(in cellroom)",N,Hydro,No,0,0-100,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (b'fly),V2868,100,400,"* Service Limits vary with temp.
+
+Use CF1 (FRP wrapped CPVC) where added mechanical protection required on small lines.
+Use CF2 (CPVC-FRP dual laminate) for large sizes in large plants, high temp/press.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3253,15,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3353,15,50,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,,,,,,,,,,,Check (ball),V4353,25,50,,CA
+,,,,"FRP
+(downstream of cellroom from Weak Brine Tank)",N,Hydro or Pneum,No,5.7,0-100,20 - 90,"1034 @ 100 (≤ DN80)
+345 @ 100
+(> DN80)",FR9,C,On-Off / Isolation (ball),V1266,25,80,"Consider FR13 for low pressure (vent) lines, FR5 for higher pressure lines not requiring the corrosion barrier of FR9.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2868,100,400,,CA
+,,,,FRP wrapped PVC (Cl2 Drying System),N,Hydro or Pneum,No,0.0,21,20 - 40,"1034 @ 32
+345 @ 60
+*",VF6,T,,,,,* Service Limits vary with temp.,CA
+,,,,"PTFE-lined steel
+(downstream of shut off valves @HCl Synthesis unit)",N,Hydro or Pneum,No,0,0 - 1034,amb - 70,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,On-Off / Isolation (diaphragm-weir),V3261,20,100,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,"PVC
+(low press/temp)",N,Hydro,No,0,0 - 100,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,"* Service Limits vary with temp.
+
+Use VF6 where mechanical protection required on small lines. Large lines unsuitable for vacuum.",CD
+,,,,"Titanium w/ Gr. 7
+face ring",N,Hydro,No,0,FV - 100,0 - 120,621 @ 149,TT3,A,On-Off / Isolation (diaphragm-weir),V3265,25,100,Ti Gr 16 may be substituted for Gr. 7.,CD
+,,,,,,,,,,,,,,Sample,V6153,6,6,,CD
+,,,,"FRP 
+25# Press.
+(for larger diameter pipe in vent service; e.g. upstream of Hypo tower)",N,Hydro or Pneum,No,2.8,0 - 170,0 - 90,172 @ 93,FR13,C,,,,,,CD
+,CL,"Chlorine, Liquid",,"Carbon Steel
+(low temperature)",N,Hydro + Pneum (see 5-SPC-0101),No,3.0,0 - 800,-34 to 0,"2068 @ 149
+2068 @ -46",CS12,E,Excess Flow,V4191,25.0,50.0,"No Titanium allowed for dry chlorine service.
+Materials must be cleaned, dried, packaged for dry chlorine service.
+Valves that may trap chlorine to be vented.",CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4212,25,150,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (globe-bellows),V8214,15,100,,CA
+,CML,"Calcium Chloride, Solution",,PVC,N,Hydro,No,0.0,100 - 300,amb,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball),V1352,15.0,50.0,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3356,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4352,25,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4252,25,100,,CA
+,,,,"Carbon Steel
+(chilled brine used as coolant, at Sulphate Crystallizer cooler)",N,Hydro,No,1.5,200 - 400,-20 to amb,1034 @ 204,CS9,B,On-Off / Isolation (b'fly),V2837,100,300,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7141,15,50,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,80,200,,SC
+,DIL,"Sodium Dichromate, Solution",,316L Stainless Steel,N,Hydro,Yes,0,200 - 400,amb,1034 @ 204,S63,C,,,,,,SC
+,DRC,"Drain, Chemical",,"PVC
+(low temp)",N,Hydro **,No,0,atm,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,"* Service Limits vary with temp.
+** Per 5-SPC-0102, lines open to atm will not be tested unless specified (on Line List).",CA
+,,,,"CPVC
+(high temp)",N,Hydro **,No,0,atm,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,,,,,"* Service Limits vary with temp.
+** Per 5-SPC-0102, lines open to atm will not be tested unless specified (on Line List).",CA
+,DRF,"Drain, Floor",,"PVC
+(low temp)",N / D,Hydro ** / Service,No,0,atm,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,"* Service Limits vary with temp.
+** Per 5-SPC-0102, lines open to atm will not be tested unless specified (on Line List).",CA
+,,,,"CPVC
+(high temp)",N / D,Hydro ** / Service,No,0,atm,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,,,,,"* Service Limits vary with temp.
+** Per 5-SPC-0102, lines open to atm will not be tested unless specified (on Line List).",CA
+,DRN,"Drain, Neutral",,"PVC
+(low temp)",N / D,Hydro ** / Service,No,0,atm,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,D,,,,,"* Service Limits vary with temp.
+** Per 5-SPC-0102, lines open to atm will not be tested unless specified (on Line List).",CA
+,,,,"CPVC
+(high temp)",N / D,Hydro ** / Service,No,0,atm,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,D,,,,,"* Service Limits vary with temp.
+** Per 5-SPC-0102, lines open to atm will not be tested unless specified (on Line List).",CA
+,EA,"Effluent, Acid",pH<4,"PVC
+(low temp)",N,Hydro,No,0,atm - 300,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball),V1356,15,50,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1256,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3352,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4356,25,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4256,80,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"CPVC
+(high temp)",N,Hydro,No,0,atm - 300,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (ball),V1357,15,50,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1257,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3353,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4357,25,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4257,80,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,EC,"Effluent, Alkaline",pH>10,"PVC
+(low temp)",N,Hydro,No,0,atm - 300,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball),V1352,15,50,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1252,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3352,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4352,25,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4252,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,80,200,Valve not for PE tanks.,CA
+,,,,"CPVC
+(high temp)",N,Hydro,No,0,atm - 300,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (ball),V1353,15,50,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1253,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3353,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4353,25,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4253,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,80,200,Valve not for PE tanks.,CA
+,EN,"Effluent, Neutral",4<pH<10,"PVC
+(low temp)",N,Hydro,No,0,atm - 300,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball),V1352,15,50,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1252,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3352,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4352,25,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4252,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,80,200,Valve not for PE tanks.,CA
+,,,,"CPVC
+(high temp)",N,Hydro,No,0,atm - 300,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (ball),V1353,15,50,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1253,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3353,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4353,25,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4253,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,80,200,Valve not for PE tanks.,CA
+,EV,"Effluent, Vent",,"PVC
+(low temp)",N,Hydro**,No,0,atm,amb - 60,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,"* Service Limits vary with temp.
+
+**Per 5-SPC-0102, lines open to atm will not be tested unless specified (on line list)",CD
+,,,,"CPVC
+(high temp)",N,Hydro**,No,0,atm,60 - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,,,,,"* Service Limits vary with temp.
+
+**Per 5-SPC-0102, lines open to atm will not be tested unless specified (on line list)",CD
+,FA,Filter Aid,Water + Cellulose,304L Stainless Steel,D,Service,No,0,< 700,amb,1034 @ 204,S42,D,On-Off / Isolation (ball),V1252,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1331,15,50,,CA
+,,,"Brine + 
+Cellulose",FRP,D,Service,No,2.5,< 700,60 - 70,1034 @ 93,FR5,D,On-Off / Isolation (ball),V1261,25,80,,CA
+,,,"Water or Brine + 
+Cellulose","Tygon® Tubing
+(Pump suction and discharge line)",D,Service,No,0,< 700,amb - 70,See Manuf Info,*,D,,,,,* Tygon tubing lines to be handled using piping specialty items (PSI's).,CA
+,HCG,Hydrogen Chloride Gas,,"FRP wrapped CPVC
+(between HCl absorber and tail gas scrubber)",N,Hydro,No,0,0 - 50,amb - 60,"1034 @ 38
+234 @ 98
+*",CF1,M,,,,,* Service Limits vary with temp.,CD
+,HCL,Hydrochloric Acid,Up to 32% w/w,FRP wrapped PVC,N,Hydro,Yes,0,0 - 600,amb - 50,"1034 @ 32
+345 @ 60
+*",VF6,D,On-Off / Isolation / Tank Drain (ball-full port),V1267,25,80,* Service Limits vary with temp.,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3254,15,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,SC
+,,,,,,,,,,,,,,Check (ball-vertical),V4262,25,100,,SC
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,SC
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,80,200,,SC
+,,,,"PVC
+(atm drains / overflows)",N,Hydro **,Yes,0,atm,amb - 50,"1034 @ 32
+345 @ 60
+*",PV6,D,,,,,"* Service Limits vary with temp.
+** Per 5-SPC-0102, lines open to atm will not be tested unless specified (on Line List).",SC
+,,,,"PTFE-lined steel
+(high press or small diameter line)",N,Hydro,Yes,0,0 - 1034,amb - 50,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,,,,,* Service Limits vary with temp.,SC
+,HPL,Hydrogen Peroxide,,316L Stainless Steel,N,Hydro,Yes,0,300 - 400,amb,1034 @ 204,S63,A,On-Off / Isolation (ball-vented),V1232,15,80,"Materials to be cleaned, dried, passivated, packaged for H2O2 service.
+Valves that may trap fluid internally must be vented.",SC
+,,,,"PVC
+(low press and Cl2 can be present)",N,Hydro,Yes,0,atm,amb,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,* Service Limits vary with temp.,SC
+,HY,,Wet Hydrogen,"FRP wrapped CPVC
+(cell room)",N,Hydro or Pneum,No,0,0 - 22,80 - 90,"1034 @ 38
+234 @ 98
+*",CF1,C,On-Off / Isolation (b'fly),V2864,100,400,"* Service Limits vary with temp.
+
+Use CF2 for larger sizes in large plants, high temp/press.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,"304L Stainless Steel
+(non-cell room, Fe pickup is a concern)",N,Hydro or Pneum,No,0,0 - 22,amb - 90,1034 @ 204,S42,C,On-Off / Isolation (ball),V1231,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1331,15,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,100,400,,CA
+,,,,,,,,,,,,,,Check (swing),V4231,25,150,,CA
+,,,,,,,,,,,,,,Check (swing),V4331,25,50,,CA
+,,,,,,,,,,,,,,Check (lift),V4332,25,50,,CA
+,,,,"Carbon Steel
+(non-cell room, Fe pickup not a concern)",N,Hydro,No,1.5,0 - 100,amb - 90,1034 @ 204,CS6,B,On-Off / Isolation (ball),V1112,15,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,25,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,100,400,,CA
+,,,,,,,,,,,,,,Check (swing),V4211,25,150,,CA
+,,,,"PTFE-lined steel
+(HCL Synthesis Unit Inlet)",N,Hydro,No,0,0 - 100,amb - 90,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,On-Off / Isolation (diaphragm-weir),V3261,20,100,"* Service Limits vary with temp.
+
+PTFE-lined steel used if moisture is a concern.",CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,HYC,Hydrogen Contaminated,Hydrogen containing Cl2 or HCl,FRP wrapped CPVC,N,Hydro,No,0,0 - 100,amb - 90,"1034 @ 38
+234 @ 98
+*",CF1,C,On-Off / Isolation (b'fly),V2864,100,300,* Service Limits vary with temp.,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3253,80,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3353,15,50,,SC
+,,,,,,,,,,,,,,Check (45o ball),V4265,25,100,,SC
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,25,100,,SC
+,,,,"Titanium w/ Gr. 2 
+face ring",N,Hydro,No,0,0 - 100,amb - 60,621 @ 149,TT4,A,,,,,,SC
+,,,,"Titanium w/Gr. 7 
+face ring
+(high temp)",N,Hydro,No,0,0 - 100,60 - 90,621 @ 149,TT3,A,,,,,Ti Gr 16 may be substituted for Gr. 7.,SC
+,,,,"PTFE-lined steel
+(HCL Synthesis Unit Inlet)",N,Hydro,No,0,0 - 100,amb - 90,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,,,,,* Service Limits vary with temp.,SC
+,,,,"FRP
+25# Press.",N,Hydro,No,2.8,atm,amb - 90,172 @ 93,FR13,C,,,,,,SC
+,MCL,"Magnesium Chloride, Solution",,PVC,N,Hydro,No,0,100 - 300,amb,"1034 @ 32
+345 @ 60
+*",PV6,D,On-Off / Isolation (ball),V1252,25,80,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,15,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3256,15,80,,CA
+,SAS,"Sulphuric Acid, Strong",≥ 93% H2SO4 *,"Carbon Steel
+(from storage to end users)",N,Hydro,Yes,1.5,200 - 500,amb *,1034 @ 204,CS7 *,H,On-Off / Isolation (ball),V1237,25.0,80.0,* Carbon steel is suitable for cold sulphuric acid (acid temp up to 50oC) for ≥ 93% acid.  For hotter or weaker acid consult Materials Engineer.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4267,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,SAW,"Sulphuric Acid, Weak",Dilute sulphuric acid (may contain dissolved chlorine),"FRP wrapped PVC
+(Cl2 drying system and weak acid storage)",N,Hydro,Yes,0.0,100 - 300,20 - 40,"1034 @ 32
+345 @ 60
+*",VF6,T,On-Off / Isolation (b'fly),V2864,100.0,400.0,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,20,80,,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,SCD,"Sodium Chlorate, Drain",,"FRP
+(used on chlorate filter drain line)",N,Hydro **,No,2.5,0 - 250,amb - 90,1034 @ 93,FR5,C,On-Off / Isolation / Tank Drain (plug),V5261,25,100,"**Per 5-SPC-0102, lines open to atm will not be tested unless specified (on line list)",SC
+,,,,CPVC,N,Hydro**,No,0,0 - 250,amb - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,,,,,"* Service Limits vary with temp.
+Intermittent use
+
+**Per 5-SPC-0102, lines open to atm will not be tested unless specified (on line list)",CD
+,SCE,"Sodium Carbonate, Solution",,PVC,N,Hydro,No,0,100 - 300,amb,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball),V1252,25,80,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,15,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3256,15,80,,CA
+,SCL,"Sodium Chlorate, Solution",Contains sodium hypochlorite (electrolytic),FEP lined FRP (electrolyzer headers and risers),N,Hydro,No,0,0 - 250,93,Custom per spool drawings,EF1,F / M *,,,,,* Gasket F used on electrolyzer headers.  Gasket M used on electrolyzer risers.,SC
+,,,,"Titanium w/ Gr. 2
+face ring
+(low temp)",N,Hydro,No,0,0 - 600,amb - 60,621 @ 149,TT4,A,On-Off / Isolation (b'fly),V2868,80,200,,
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,100,,
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,
+,,,,Titanium w/ Gr. 7 face ring (high temp),N,Hydro,No,0,0 - 600,amb - 93,621 @ 149,TT3,"F
+A *",On-Off / Isolation (b'fly),V2868,100,300,"* Gasket A used downstream of Mother LIquor Scrubber.
+Ti Gr. 16 may be substituted for Gr. 7.",SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,,,,,,,,,,,Check (45o ball),V4265,25,100,,SC
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,25,100,Valve not for PE tanks.,SC
+,,,Sodium hypochlorite free,FRP,N,Hydro,No,2.5,200 - 400,amb - 90,1034 @ 93,FR5,C,On-Off / Isolation (b'fly),V2868,100,300,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,25,100,,SC
+,,,,CPVC,N,Hydro,No,0,0 - 200,amb - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (b'fly),V2868,100,300,* Service Limits vary with temp.,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,25,100,,SC
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25,100,,
+,,,,"PVC
+(low press/temp)",N,Hydro,No,0,atm,amb - 25,"1034 @ 32
+345 @ 60
+*",PV6,C,,,,,,
+,,,,"PTFE-lined steel
+(Chlorate transfer pumps to storage tanks, Mother Liquor pump discharge)",N,Hydro,No,0,0 - 400,90,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),F,On-Off / Isolation (b'fly),V2868,100,300,* Service Limits vary with temp.,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,,,,,,,,,,,Check (45o ball),V4265,25,100,,SC
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,25,100,,SC
+,,,,316L Stainless Steel,N,Hydro,No,0,0 - 400,40,1034 @ 204,S63,C,On-Off / Isolation (ball-full port),V1233,15,100,Use V1231 if full port not req'd.,SC
+,,,,,,,,,,,,,,Sampling (piston),V9133,20x15,20x15,,SC
+,,,,,,,,,,,,,,Drain (ram),V9233,80,80,V9233 to be specified with piston extension where required.,SC
+,,,Contains fines,CPVC,N,Hydro,No,0,0 - 200,amb - 90,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation (ball-full port),V1233,15,100,"* Service Limits vary with temp.
+Use V1231 if full port not req'd.",SC
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,100,300,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3253,15,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,,,,,,,,,,,Check (ball),V4253,25,100,,SC
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,SC
+,,,,,,,,,,,,,,Check (ball),V4353,15,50,,SC
+,,,,PVC,N,Hydro,No,0,0 - 200,25,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball-full port),V1233,15,100,"* Service Limits vary with temp.
+
+Use V1231 if full port not req'd.",SC
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,100,300,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3252,15,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,20,80,,SC
+,,,,,,,,,,,,,,Check (ball),V4252,25,100,,SC
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25,100,,SC
+,,,,,,,,,,,,,,Check (ball),V4352,15,50,,SC
+,,,,316L Stainless Steel,N,Hydro,No,0,0 - 400,40,1034 @ 204,S63,C,On-Off / Isolation (ball-full port),V1233,15,100,Use V1231 if full port not req'd.,SC
+,,,,,,,,,,,,,,Sampling (piston),V9133,20x15,20x15,,SC
+,,,,,,,,,,,,,,Drain (ram),V9233,80,80,V9233 to be specified with piston extension where required.,SC
+,SCS,"Sodium Chlorate, Solid",Crystal,"304L Stainless Steel
+(downstream of dryer)",N,Hydro,No,0,-10 to +10,amb - 100,1034 @ 204,S43,B,On-Off / Isolation (ball-full port),V1233,15,100,Use V1231 if full port not req'd.,SC
+,SCY,NaClO3 Slurry,,316L Stainless Steel,N,Hydro,No,0,200 - 400,amb - 45,1034 @ 204,S63,C,On-Off / Isolation (ball-full port),V1233,15,100,Use V1231 if full port not req'd.,SC
+,,,,,,,,,,,,,,Sampling (piston),V9133,20x15,20x15,,SC
+,,,,,,,,,,,,,,Drain (ram),V9233,80,80,V9233 to be specified with piston extension where required.,SC
+,SHL,"Sodium Hypochlorite, Solution",,"PVC
+(low temp)",N,Hydro,Yes,0,0 - 600,0 - 50,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation / Tank Drain (ball-full port),V1267,25,150,"* Service Limits vary with temp.
+
+Use VF6 for added mechanical strength where required on small lines.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,15,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3252,15,100,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,50,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3352,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4252,80,100,,CA
+,,,,,,,,,,,,,,Check (ball),V4352,25,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"CPVC
+(high temp)",N,Hydro,Yes,0,0 - 600,50 - 60,"1034 @ 38
+234 @ 98
+*",CP3,C,On-Off / Isolation / Tank Drain (ball-full port),V1267,25,150,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1353,15,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2864,100,400,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3253,15,80,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3261,50,80,,SC
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3353,15,50,,CA
+,,,,,,,,,,,,,,Check (ball),V4253,80,100,,CA
+,,,,,,,,,,,,,,Check (ball),V4353,25,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,200,Valve not for PE tanks.,CA
+,,,,"PTFE-lined steel
+(high press, subject to water hammer)",N,Hydro,Yes,0,0 - 600,0 - 50,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,On-Off / Isolation (diaphragm-weir),V3261,25.0,80.0,* Service Limits vary with temp.,CA
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,25.0,100.0,,CA
+,,,,,,,,,,,,,,Check (lift - horizontal),V4267,25.0,100.0,,CA
+,SPL,"Sodium Sulphite, Solution",,PVC,N,Hydro,No,0,100 - 300,amb,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball),V1252,25,80,"* Service Limits vary with temp.
+
+Use VF6 for added mechanical strength where required on small lines.",CA
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1352,15,50,,CA
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3256,15,80,,CA
+,STL,Sodium Chlorite,,"PVC
+(ClO2 scrubber)",N,Hydro,No,0,0 - 600,0 - 50,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (b'fly),V2864,100,200,* Service Limits vary with temp.,CD
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3352,15,50,,CD
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3252,50,80,,CD
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (plug),V5261,50,100,,CD
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm-weir),V3265,40,80,,CD
+,,,,,,,,,,,,,,On-Off / Isolation / Tank Drain (ball-full port),V1267,50,50,,CD
+,,,,"PTFE-Lined Steel
+(high press, subject to water hammer)",N,Hydro,No,0,0 - 600,0 - 50,"1724 @ 38
+1275 @ 232
+*",TC3 (or TC4),A,On-Off / Isolation (diaphragm-weir),V3265,25.0,80.0,* Service Limits vary with temp.,CD
+,,,,,,,,,,,,,,Check (ball - vertical),V4262,40.0,80.0,,CD
+,,,,,,,,,,,,,,Check (lift - horizontal),V4266,25.0,100.0,,CD

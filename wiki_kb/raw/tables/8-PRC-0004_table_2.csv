@@ -1,0 +1,24 @@
+# doc_id=8-PRC-0004 table=2 inline=true
+Document Description,Primary Usage,"Typical 
+Document No."
+Control System Design Criteria,Design,8-PRC-0017
+Piping and Instrumentation Drawings,Design,"Refer to 
+1-PRC-0003"
+Basic Control System Specification,Procurement,8-SPC-0004
+Control System Architecture - Block Diagram,Design,8-DTL-XXXX
+Process Logic Narrative,Design,1-LST-0003
+Process Control - DCS Configuration Parameters,Design,8-LST-0104
+"Alarms, Interlocks and Setpoints",Design,8-LST-0103
+Electrical Control - Logic Narrative,Design,9-LST-0003
+Logic Diagrams,Design,8-SCM-XXXX
+Control System I/O List,Design,8-LST-0003
+Electrical System I/O List,Design,8-LST-0005
+Control Equipment-Cabinet Layouts and Internal Interconnection Wiring,Construction,
+Process Control – I/O Interface Wiring diagrams,Construction,
+Control System Graphics Sketches,Design,
+Control System Graphics,Design,
+DCS Operating System Configuration,Design,
+Process Control Configuration (Application Software),Design,----------
+Control System Spare Parts List,Construction,----------
+Construction Subcontract Supply and Erection Scope,Construction,0-LST-6x90-1
+Document for Enquiry / Purchase / Vendor Document Review,Procurement,

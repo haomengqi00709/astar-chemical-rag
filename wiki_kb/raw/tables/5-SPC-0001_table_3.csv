@@ -1,0 +1,30 @@
+# doc_id=5-SPC-0001 table=3 inline=true
+"Metric
+DN","Imperial
+NPS (inch)",Notes
+6,⅛,Not an official DN designation.
+8,¼,Not an official DN designation.
+10,⅜,
+15,½,
+20,¾,
+25,1,
+32,1 ¼,Non-standard size.
+40,1 ½,
+50,2,
+65,2 ½,Non-standard size.
+80,3,
+90,3 ½,Not an official DN designation.
+100,4,
+125,5,"Non-standard size, only to be used where required for connections to process equipment."
+150,6,
+200,8,
+250,10,
+300,12,
+350,14,
+400,16,
+450,18,
+500,20,
+600,24,
+750,30,Not an official DN designation.
+900,36,
+1100,42,

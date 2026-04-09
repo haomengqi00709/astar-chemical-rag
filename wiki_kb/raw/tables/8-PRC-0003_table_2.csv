@@ -1,0 +1,17 @@
+# doc_id=8-PRC-0003 table=2 inline=true
+Document Description,Primary Usage,"Typical 
+Document No."
+Instrument Design Criteria,Design,8-PRC-0002
+Plant Instrument Numbering,Design,8-PRC-0001
+Project Drawing List,Design,0-LST-0001
+Piping and Instrumentation Drawings,Design,"Refer to 
+1-PRC-0003"
+Instrument Index - Preliminary,Design,8-LST-0002
+Instrument Index – Final,Design,8-LST-0002
+Instrument Hydraulic Requirements,Design,5-CAL-XXXXXX
+Instrument Process Data List (PDL) – Preliminary,Design,8-LST-01XX
+Instrument Process Data List (PDL) – Final,Design,8-LST-01XX
+Pipe Specifications,Mechanical/Design,5-SPC-0001
+Standard ANSI Piping Connections for Instrumentation,Design/Procurement,5-LST-XXXX
+Instrument Specification Sheets,Procurement,8-DST-Tag No.
+Instrument Sizing Calculations,Design,8-CAL-Tag No.

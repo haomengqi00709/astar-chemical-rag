@@ -1,7 +1,44 @@
 # Project Progress
 
-## Status: Demo-Ready
-Last updated: 2026-03-27
+## Status: Deployed — Pending End-to-End Verification
+Last updated: 2026-03-30
+
+---
+
+## Web UI + Deployment (Phase 2)
+
+### Deployment
+- [x] GitHub repo: https://github.com/haomengqi00709/astar-chemical-rag
+- [x] Docker image: ghcr.io/haomengqi00709/astar-chemical-rag:latest (built via GitHub Actions)
+- [x] GitHub Actions: auto-builds on push to main — embeds chroma_db at build time using GOOGLE_API_KEY secret
+- [x] Railway: live at astar-chemical-rag-production-1802.up.railway.app (port 8080)
+- [ ] **TODO:** Verify end-to-end — create new project → run PM → Process → Mechanical agents
+
+### Dashboard — Project Detail View
+- [x] Project Files section (full-width, bottom) — docs grouped by role (PM / Process / Mechanical)
+- [x] PumpCalcPanel inside Mechanical CAL DocRow extraContent
+- [x] ProcessStepsPanel inside Process CAL DocRow extraContent
+- [x] Removed: Handoff Brief, Process Results, Mechanical Results panels
+
+### Calc Sheets
+- [x] Pump calc sheet: INPUT / CALC / OUTPUT structure (matches Excel template)
+- [x] Expandable formula rows — chevron reveals how each variable was calculated
+- [x] Editable notes + AI chat for the document owner
+- [x] Read-only view for cross-role access
+- [x] Gate 1 fix — mechanical engineer can view/edit their own calc before publish
+
+### Library Page
+- [x] Standard section: discipline list (collapsible)
+- [x] Reference Projects section: completed projects as indented children (collapsible hierarchy)
+- [x] ProjectRefView: project files grouped by role with inline doc viewer
+
+### Branding & Demo
+- [x] Company name → A Star Chemical (Sidebar + SignIn)
+- [x] Demo SOW → B Star Chemetics MEG Transfer Pump Skid (Sarnia, Ontario)
+- [x] "Use Demo" button wired to B Star Chemetics SOW
+- [x] Removed all visible AI model references (Gemini, etc.)
+
+---
 
 ---
 
@@ -183,6 +220,77 @@ Fluid code AA identifies Air, Atmospheric service. It is within project scope (c
 | `/corrosion_allowance` brine pipe, 0.15mm/yr, 25yr | NON-COMPLIANT — 3.75mm calc > 2.5mm req, margin −1.25mm |
 | `/fluid_scope` fluid code WC | Not found — WC not in 1-LST-0002 (correct behaviour) |
 | `/pressure_test` AVC vent, 200 kPa design, 280 kPa hydro | NON-COMPLIANT — need 300 kPa min, margin −20 kPa |
+
+---
+
+## How Files Are Generated (Agentic Pipeline)
+
+The system runs three agents in sequence. Each agent reads the previous agent's output, queries the RAG knowledge base (ChromaDB), and produces structured deliverables.
+
+```
+Client SOW (text)
+      │
+      ▼
+┌─────────────────────────────────────────────────────┐
+│  PM Agent — Daniel (pm_agent.py)                    │
+│  Input:  SOW text                                   │
+│  RAG:    catalog.json (routing) + ChromaDB          │
+│  Output: project_context.json                       │
+│          deliverables/                              │
+│            0-LST-0001.md  — Document Register       │
+│            0-PRC-2003.md  — Project Execution Plan  │
+│            0-DAT-3001_0.md — Project Schedule       │
+└─────────────────────────────────────────────────────┘
+      │  project_context.json
+      ▼
+┌─────────────────────────────────────────────────────┐
+│  Process Agent — Aria (process_agent.py)            │
+│  Input:  project_context.json                       │
+│  RAG:    fluid codes (1-LST-0002), design criteria  │
+│          pressure class, corrosion margins          │
+│  Calcs:  TDH, NPSHa (Python maths)                  │
+│  Output: process_output.json                        │
+│          process_calc_summary.md                    │
+│  UI:     populates Process CAL doc (1-CAL-xxxx)     │
+│          structured as INPUT / CALC / OUTPUT        │
+└─────────────────────────────────────────────────────┘
+      │  process_output.json
+      ▼
+┌─────────────────────────────────────────────────────┐
+│  Mechanical Agent — Hunter (mechanical_agent.py)    │
+│  Input:  process_output.json                        │
+│  RAG:    pump specs (4-SPC-0002, 4-PRC-0007),       │
+│          material selection (5-LST-0003)            │
+│  Calcs:  shaft power, motor sizing, specific speed, │
+│          NPSH margin, API 610 motor margin          │
+│  Output: mechanical_output.json                     │
+│          pump_datasheet.md                          │
+│  UI:     populates Pump CAL doc (4-CAL-0001)        │
+│          structured as INPUT / CALC / OUTPUT        │
+└─────────────────────────────────────────────────────┘
+```
+
+### What each output file contains
+
+| File | Location | Contents |
+|---|---|---|
+| `project_context.json` | `work_agents/Daniel - Project Manager /` | Project metadata, doc register, scope, all PM deliverables embedded |
+| `0-LST-0001.md` | `work_agents/Daniel - Project Manager /deliverables/` | Document Register — full list of deliverables per discipline |
+| `0-PRC-2003.md` | `work_agents/Daniel - Project Manager /deliverables/` | Project Execution Plan |
+| `0-DAT-3001_0.md` | `work_agents/Daniel - Project Manager /deliverables/` | Project Schedule |
+| `process_output.json` | `work_agents/Aria - Process Engineer/` | Fluid props, TDH, NPSHa, design criteria flags, RAG citations |
+| `process_calc_summary.md` | `work_agents/Aria - Process Engineer/` | Human-readable process calc narrative |
+| `mechanical_output.json` | `work_agents/Hunter - Mechnical Engineer/` | Pump hydraulics, motor sizing, material specs, NPSH margin |
+| `pump_datasheet.md` | `work_agents/Hunter - Mechnical Engineer/` | Filled pump datasheet (4-PDS equivalent) |
+
+### How the UI consumes them
+
+- **server.js** runs each agent as a Python subprocess, captures stdout/stderr
+- Agent outputs are stored in `context.deliverables[docId]` keyed by document ID
+- `buildCalcSheet()` maps `process_output.json` → structured calc sheet JSON (`_type: 'calc_sheet'`)
+- `buildPumpCalcSheet()` maps `mechanical_output.json` → pump calc sheet JSON (`_subtype: 'pump_calc'`)
+- Dashboard renders calc sheets as INPUT / CALC / OUTPUT tables with expandable formula rows
+- All generated files are also shown in the **Project Files** section grouped by role
 
 ---
 

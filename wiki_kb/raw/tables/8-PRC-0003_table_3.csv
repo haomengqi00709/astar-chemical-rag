@@ -1,0 +1,23 @@
+# doc_id=8-PRC-0003 table=3 inline=true
+,,
+Instrument Testing,Construction,8-SPC-0133
+Spare Parts List,Construction,----------
+Construction Subcontract Supply and Erection Scope,Construction,0-LST-6X90-1
+Requisition for Quotation (for Quotation) – Field Instruments,Procurement,8-REQ-8###
+Requisition for Quotation (for Quotation) – Instrument Bulk Material,Procurement,8-REQ-8###
+Vendor Document Requirements (VDR) – Field Instruments,Procurement,8-VDR-8###
+Vendor Document Requirements (VDR) – Instrument Bulk Material,Procurement,8-VDR-8###
+Quality Data Sheets (QDS) – Field Instruments,Procurement,8-QDS-8###
+Quality Data Sheets (QDS) – Instrument Bulk Material,Procurement,8-QDS-8###
+Request for Quotation (RFQ),Procurement,[Project #]-8XXX
+Preliminary Cost Tabulation (< CAD 10 k) – Field Instruments,Procurement,8-TAB-8###-1
+Preliminary Cost Tabulation (< CAD 200 k) – Field Instruments,Procurement,8-TAB-8###-1
+Preliminary Cost Tabulation (> CAD 200 k) – Field Instruments,Procurement,8-TAB-8###-1
+Final Cost Tabulation – Field Instruments,Procurement,8-TAB-8###-1
+Commercial Evaluation – Field Instruments,Procurement,8-TAB-8###-3
+Financial Evaluation – Field Instruments,Procurement,----------
+Technical Evaluation – Field Instruments,Procurement,0-TAB-8###-2
+Risk Assessment – Field Instruments,Procurement,0-TAB-8###-4
+Final Review and Vendor Selection – Field Instruments,Procurement,----------
+Preliminary Cost Tabulation (< CAD 10 k) – Instrument Bulk Material,Procurement,8-TAB-8###-1
+Preliminary Cost Tabulation (< CAD 200 k) – Instrument Bulk Material,Procurement,8-TAB-8###-1

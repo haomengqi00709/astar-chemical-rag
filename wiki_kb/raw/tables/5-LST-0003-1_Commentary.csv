@@ -1,0 +1,21 @@
+# doc_id=5-LST-0003-1 discipline=5 revision=R0
+col_0,Client Name,col_2,col_3,col_4,col_5,col_6,col_7,col_8,col_9,col_10,col_11,col_12,col_13,"Aker Kvaerner
+Chemetics
+A Division of Aker Kvaerner Canada Inc."
+,Project Title,,,,"Piping Service List
+(Chemical Plant)",,,,,,,,,
+,Location,,,,,,,,,,,,,
+,,,,,,,,,,,,,,Standard-5-LST-0003-1-R0
+,Commentary,,,,,,,,,,,,,
+,1.0,,"This standard is intended to be used as a starting point for piping material and valve selections on chemical plant projects, to be modified as required for project-specific conditions and contract requirements.",,,,,,,,,,,
+,2.0,,Standard material and valve selections are based on:,,,,,,,,,,,
+,,,"- Chlor-Alkali:  materials used in similar service for SMP (02C03000), Orica (97C10900), and Odyssey (98C02800).",,,,,,,,,,,
+,,,- ClO2:  materials used in similar service for the Jinag Lin CLO2 project (99C00400),,,,,,,,,,,
+,,,- Sodium Chlorate:  materials used in similar service for Nexen Phase 5 (00C11900).,,,,,,,,,,,
+,,,- Materials have been rationalized for same services between the chemical technologies for commonality.,,,,,,,,,,,
+,3.0,,"Pressures and temperatures in this list do not necessarily reflect typical service conditions, but are intended as boundaries on the standard material selections.  If actual project service conditions are outside these boundaries, then the selections require specific review by mechanical/materials engineer.",,,,,,,,,,,
+,,,"Note valve service limits may differ from pipe service limits, may also differ between manufacturers, and must be confirmed to meet the project required service conditions.",,,,,,,,,,,
+,4.0,,Design temperature for category D fluid service is limited to 186o C per ASME B31.3 which is below some pipe spec service limits.,,,,,,,,,,,
+,5.0,,"Thermoplastic piping is not to be pneumatic tested for safety (e.g. CPVC, PVC)",,,,,,,,,,,
+,6.0,,Butterfly valves listed are lug type.  Wafer type may be used.,,,,,,,,,,,
+,7.0,,"When using this service list for a project, copy the applicable utilities from 5-LST-0004: Piping Service List (Utilities).",,,,,,,,,,,

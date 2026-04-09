@@ -1,0 +1,4 @@
+# doc_id=8-LST-0116 discipline=8 revision=R0
+col_0,Instrument No.,col_2,P&ID,Fluid,"Composition
+(%w/w)",Temperature (°C),col_7,col_8,Pressure (kPa(g)),col_10,col_11,Recommended Type,Calibration Range (Kpag),Material of Construction,col_15,col_16,Operating Case Reference,Comments
+,Aker Kvaerner Chemetics,Owner,,,,Min.,Norm.,Max.,Min.,Norm.,Max.,,,Wetted parts,Non-Wetted Parts,Gasket/Seal,,

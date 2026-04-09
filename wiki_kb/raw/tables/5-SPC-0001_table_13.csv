@@ -1,0 +1,13 @@
+# doc_id=5-SPC-0001 table=13 inline=true
+,,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E,B  R  A  N  C  H    S  I  Z  E
+,,8,10,15,20,25,32,40,50,80,100
+H,100,S7,S7,S7,S13,S13,S13,S26,S26,S51,S51
+E,80,S7,S7,S7,S7,S7,S7,S13,S13,S26,
+A,50,S,S,S,S,S,S,S,S7,,
+D,40,S,S,S,S,S,S,S,,,
+E,32,S,S,S,S,S,S,,,,
+R,25,S,S,S,S,S,,,,,
+S,20,S,S,S,S,,,,,,
+I,15,S,S,S,,,,,,,
+Z,10,S,S,,,,,,,,
+E,8,S,,,,,,,,,

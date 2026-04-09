@@ -1,0 +1,8 @@
+# doc_id=5-LST-0002 discipline=5 revision=R0
+col_0,Tie,Battery,Line Number,col_4,col_5,col_6,P&ID,Design Conditions,col_9,col_10,col_11,Tie Point Connection,col_13,col_14,Pressure Relief,col_16,Tie Point Location,Remarks
+,Point,Limit,Pipe,Fluid,Mat'l,Line,,Temperature,,Pressure,,Size,Type,Rating,Device,Setting,,
+,No.,No.,Size,Code,Code,No.,,Max.,Min.,Max.,Min.,,,,Tag,,,
+,,,DN,,,,,°C,°C,kPa(g),kPa(g),DN,,,,kPa(g),,
+,1.0,1.0,250.0,WCR,CS9B,100201.0,2500.0,45.0,0.0,950.0,0.0,250.0,RF flange,ASME CL 150,PRV823401,1034.0,A/1/ 5.5m elelvation,Sample data to be deleted.
+,2.0,2.0,40.0,CA,S42A,450065.0,1068.0,85.0,0.0,500.0,0.0,25.0,NPT,ASME B2.1,Battery,750.0,A/1/ 5.5m elelvation,Sample data to be deleted.
+,3.0,3.0,50.0,BR,CP3A,256980.0,4002.0,100.0,0.0,250.0,0.0,50.0,FF flange,DIN PN40,3006P,250.0,A/1/ 5.5m elelvation,Sample data to be deleted.

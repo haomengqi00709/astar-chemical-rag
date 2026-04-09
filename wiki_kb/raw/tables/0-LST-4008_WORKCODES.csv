@@ -1,0 +1,225 @@
+# doc_id=0-LST-4008 discipline=0 revision=R0
+col_0,Codes,col_2,col_3,Process,Equipment,CSA,Ele,Instru.,D.O.
+,,DRAWINGS (HEADER ONLY),,,,,,,
+1.0,1000.0,"General: Change block titles, OR FOR COST ROLL UP",1.0,x,x,x,x,x,x
+1.0,1001.0,Standards Drawings: Review and issue Standard Drawings,,,,x,,,x
+,1002.0,"Block Flow Drawings: Prepare, review anc issue Block Flow Drawings",,,,,,,
+,1003~1009,Project Specified: User Defined for engineering deliverables not typical for Chemetics,,,,,,,
+1.0,1010.0,P&IDs: All work on P&IDs.,1.0,x,x,,x,x,x
+1.0,1020.0,Plant Layout Drawings: Review and issue Plant Layout Drawings including Plant Perspective drawings from PDMS model,,,x,,,,x
+,1025.0,"Plant Perspective Drawings: Prepare, review and issue drawings from PDMS model",,,,,,,
+1.0,1030.0,"Site Preparation Drawings: Obtain Geo-Tech Report, Prepare, check and issue drawings.",1.0,,,x,,,
+1.0,1040.0,"Grading & Earthwork Drawings: Prepare, check and issue drawings, including final grading drawing",1.0,,,x,,,
+1.0,1050.0,"Location Drawings:  Prepare, check and issue drawings. Includes equipment foundation location drawing, instrument conduit and cable tray, power and control layouts, Emergency Escape route and Safety Equipment location drawings.",1.0,,x,,x,x,x
+1.0,1090.0,"Equipment Support Criteria Drawings:  Develop, review and issue support criteria drawings.",1.0,,x,,,,x
+1.0,1100.0,"Piping & Ducting Support Criteria Drawings:  Develop, review and issue support criteria drawings.",1.0,,x,,,,x
+,1120.0,"Electrical Special Equipment Installation Detail Drawings: Develop, review, ad issue drawings for Electrical Special Equipment such as polarizer connections to electrolyzer cells",,,,,,,
+1.0,1130.0,"M & E Balance and Flow sheets(PFDs): All work on flow sheets, mass balance & utility block diagrams",1.0,x,,,,,
+,1140.0,"Piping Specialty (PSI) Drawings: Prepare, check and PSI drawings",,,,,,,
+1.0,1170.0,"Tie-in Details:  Prepare, check and Issue drawings, including interface drawings.",1.0,,x,,,,x
+1.0,1190.0,"Outline Drawings:  Prepare, check and issue drawings",1.0,,x,,,,x
+1.0,1210.0,"Detail Drawings:  Prepare, check and issue drawings.",1.0,,x,,,,x
+1.0,1230.0,"Vessel Trim Drawings:  Prepare, check and issue drawings.",1.0,,x,,,,x
+1.0,1510,Finishing Schedules:  Prepare and issue finishing schedules.,1.0,,,x,,,
+1.0,1530,"Wiring, Rack and Panel Drawings:  Prepare, check and issue drawings.",1.0,,,,x,,
+1.0,1540.0,"DCS/PLC Block Diagram:  Develop, review and issue DCS/PLC Block Diagram.  Include all interface communications to various mechanical packages.  Include communications links to existing Owner systems.",,,,,,x,
+,1560.0,Instrument Dimensional Drawings: Prepare and issue drawings,,,,,,,
+1.0,1570,Logic Diagrams: Prepare and issue logic diagrams.,1.0,,,,,x,
+1.0,1590.0,"Loop Diagrams: Prepare, check and issue loop diagrams.",1.0,,,,,x,
+1.0,1610,"Communications/Security/CCTV:  Prepare, check and issue diagrams",1.0,,,,x,,
+1.0,1630,"Control System Graphics:  Prepare and issue graphics info and drawings.  Includes time spent programming graphics into a DCS, PLC, PC or other display device.",1.0,x,,,x,x,x
+1.0,1640.0,"HVAC  Drawings: Develop, Prepare, check and issue drawings",,,x,x,,,
+1.0,1660.0,"Building Fire Protecting System Drawings: Develop, Prepare, check and issue drawings",,,,x,,,
+1.0,1670,"Duct Detail Drawings:  Prepare, check and issue drawings",1.0,,x,,,,x
+,1671.0,"Orifice Drawings: Prepare, check and issue drawings",,,,,,,
+,1672.0,"Expansion Joint Drawings: Prepare, check and issue drawings",,,,,,,
+1.0,1680.0,"Insulation drawings: Develop and issue drawings for piping, equipment and ducting insulation.",,,x,,,,x
+1.0,1690,"Plot Plan:  Develop, review and issue plot plan.",1.0,,x,x,,,x
+1.0,1710,Piping Supports Drawings:  Develop and issue support drawings.,1.0,,x,x,,,x
+1.0,1720.0,"Structural Criteria drawings: Develop, Engineering ,review & issue drawings",,,,x,,,x
+1.0,1730,"Pipe Bridge Drawings:  Prepare, check and issue drawings.",1.0,,,x,,,x
+1.0,1750,"Demolition Drawings:  Review, development and issuance of  U/G, Piping, Foundations, Structure demolition drawings and plans.",1.0,,,x,x,,x
+1.0,1760.0,"Foundation General Arrangement Drawings:  Prepare, engineering ,check and issue drawings.",1.0,,,x,,,x
+1.0,1770,"Foundation Detailed Drawings:  Prepare, engineering ,check and issue foundation drawings. Includes piping and ducting support piling",1.0,,,x,,,
+1.0,1780.0,"Slab on Grade drawings: Prepare, Engineering, check and issue drawings.",,,,x,,,
+1.0,1790,"Elevated Concrete Drawings:  Prepare, check and issue drawings.",1.0,,,x,,,
+1.0,1800.0,"Area Classification Drawings:  Develop, review and issue area classification layout",,,,,x,,
+1.0,1810,"Power Distribution/Single Line Diagrams: Prepare, check and issue drawings/Single Line Diagrams",1.0,,,,x,,
+1.0,1850,"Lighting, Small Power, Signaling:  Prepare, check and issue drawings including details.(incl. lighting panels)",1.0,,,,x,,
+1.0,1870,"Schematics and Wiring Diagrams:  Prepare, review and issue Schematics and Wiring Diagrams)",1.0,,,,x,,
+1.0,1880.0,"Above-ground Grounding:  Prepare, check and issue drawings including details.",,,,,x,,
+1.0,1890,"Below-ground Grounding:  Prepare, check and issue drawings including details.",1.0,,,,x,,
+1.0,1910,Electrical Heat Tracing:  Prepare and issue drawings.,1.0,,,,x,,
+1.0,1950,"Architectural Drawings: Prepare, check and issue drawings.",1.0,,,x,,,
+1.0,1960,"MCC/Control Room Detail Drawings:  Prepare, review and issue MCC/Control Room Detail drawings.",1.0,,,x,,,
+1.0,1970,"Electrical & Instrument Detail Drawings:  Prepare, review and issue. Including ""IO allocation Spreadshee, Instrument Dimensional Drawings, Electrical hook-up detail drawings.",1.0,,,,x,x,
+1.0,1980,As-Builts:  Develop and issue as-built drawings.,1.0,,x,x,x,x,x
+1.0,1990,"Equipment Installation Details:  Prepare, check and issue installation details.",,,x,,x,,x
+1.0,2030,"Detailed Building, Structural Plans and Elevations:  Prepare, Engineering, check and issue drawings",1.0,,,x,,,
+1.0,2600.0,"Electrical Vendor Guide Drawing: Prepare, Engineering, check and issue drawings",,,,,x,,
+1.0,2610,"Cable and Tray Layouts:  Prepare, check and issue drawings including details, conduit layouts and schedules. Includes conduit and tray layouts for instrumentation and communication.",,,,,x,x,x
+1.0,2640,"Electrical/MCC Room Layout:  Prepare, check and issue Electrical/MCC Room Layout.",,,,,x,,
+1.0,2670,"Equipment Layout Plans/Elevations/General Arrangement Drawings:  Prepare, check and issue drawings",,,x,,x,,
+1.0,2710,"Floor, Trench, Sump lining Specs drawings & Layouts:  Develop, review and issue floor lining specs and layouts.",,,,x,,,
+1.0,2730,"JB/Marshalling Layout:  Develop, review and issue JB/Marshalling layouts.",,,,,x,,
+1.0,2740.0,"Panelboard & Schedule Drawing:Develop, review and issue drawing",,,,,x,,
+1.0,2760,Piping Layouts: All work on piping layouts,,,x,,,,
+1.0,2770,Piping Isometrics:  All work on ISOs,,,x,,,,
+1.0,2780.0,"Minor Structures: Develop, engineering ,review & issue minor structure drawings",,,,x,,,
+1.0,2790,"Major Structural Supports & Access Platform Drawings:  Develop, engineering, review and issue structural supports and access platform drawings.",,,,x,,,
+1.0,2820,"Underground Services Layout:  Develop, review and issue UG Services specs and layouts.",,,,x,x,,
+2.0,,CRITERIA & SPECIFICATIONS  (HEADER ONLY),,,,,,,
+2.0,1070.0,"Design Criteria:  Develop, review and issue design criteria.",,x,x,x,x,x,
+2.0,1110.0,"Process Criteria:  Develop, review and issue process criteria.",,x,,,,,
+2.0,1270.0,"Narrative Logic:  All work on control system logic including process control logic narrative, alarm interlock and set point list. Includes alarm and shutdown logic around main electrical switchgear i.e.: protection relays, breakers",,x,,,x,,
+2.0,1550,Control System Prog. and Configuration:  Program and configure the Control System from Boolean Block Logic drawings.  Includes intermediate steps and post programming operational simulation.,,,,,,x,
+2.0,1650,"Protection Settings:  Prepare and issue settings, including system analysis and setting / programming of relays. Includes configuration parameters for Multilink Motor Relays. Includes time spent programming graphics into a DCS, PLC, PC or other display device.",,,,,x,,
+2.0,2010,Standards:  Prepare and issue standards,1.0,,x,x,x,x,x
+2.0,2020,General Specifications:  Prepare and issue general specifications not listed seperately.,1.0,x,x,,x,x,x
+,2021.0,"Fabrication/Welding Specifications: Develop, review and issue Fabrication/Welding specs",,,,,,,
+2.0,2040,Design Basis:  Develop and issue design basis.,1.0,x,x,,x,x,x
+2.0,2050,"Area Classification Specification:  Develop, review and issue area classification specs",,,,,x,,
+2.0,2070,"Type ""A"" Equipment Specs:  Develop and issue equipment specs.",1.0,,x,,,,
+2.0,2110,"Type ""B"" Equipment Specs:  Develop and issue equipment specs.",1.0,,x,,,,
+2.0,2130,"Type ""C"" Equipment Specs:  Develop and issue equipment specs.",1.0,,x,,,,
+2.0,2160,"Type ""D"" Equipment Specs:  Develop and issue equipment specs.",1.0,,x,,,,
+2.0,2190,"Type ""E"" Equipment Specs:  Develop and issue equipment specs.",1.0,,x,,,,
+,2210.0,Electrical Strategy Specs:  Develop and issue electrical Strategy specs.,,,,,,,
+2.0,2220,"Electrical Specs:  Develop and issue electrical equipment, cable etc specs.",1.0,,,,x,,
+2.0,2250,Control System Functional Specs:  Prepare and issue documentation describing function of the control system.,1.0,,,,,x,
+2.0,2310,"Pipe & Valve Specs: Includes pipe specs, valve & inline specs",1.0,,x,,,,
+2.0,2320,Pipe Support Specs: Includes engineered and non-engineered pipe support specs,1.0,,x,x,,,
+2.0,2370,"Material Specs:  Develop, review and issue duct material specs.",1.0,,x,,,,
+2.0,2410,Tracing Specs:  Develop and issue tracing specs.,1.0,,x,,x,,
+2.0,2430,Painting and Coating Specs:  Develop and issue specs for painting and coatings.,1.0,,x,,,,
+2.0,2460,"Insulation Specs: Develop and issue specs for piping, equipment and ducting insulation.",1.0,,x,,,,
+2.0,2490,Cleaning Specs:  Develop and issue cleaning specs.,1.0,,x,,,,
+2.0,2520,Civil/Structure Tender Specs:  Develop and issue specs and drawings for civil and structural tenders.,1.0,,,,,,
+2.0,2550,Installation Specs:  Erection and Installation Instructions and specifications.,1.0,,x,,,,
+2.0,2800,"HVAC Design Criteria: Develop, review and issue HVAC Design Criteria for Outsiding HVAC Engineering",1.0,,,x,,,
+2.0,2810,"Fire Protecting/Fire Proofing Specs/Design Criteria: Develop, review and issue Fire Protection/Proofing Specs/Design Criteria",1.0,,,x,,,
+2.0,2970,Instrument Specs:  Prepare and issue spec sheets.  Does not include RFQ and purchase of instruments.,1.0,,,,,x,
+3.0,,DATASHEETS (HEADER ONLY),,,,,,,
+2.0,2060.0,"Site Conditions Datasheet: Compile, Review and issue Site Condition Datasheet",,,x,,,,
+2.0,2870.0,Electrical Equipment Datasheets:   Develop and issue Electrical Equipment Datasheets,,,,,x,,
+,2880.0,"Structure Support Datasheets: Develop, review and issue Structural Support Datasheets for equipment, piping and ducting",,,,,,,
+2.0,2890.0,"Mechanical Datasheets:  Develop, prepare, review and issue Spring supports , Rupture Disc ,Orifice Plate, Steam trap etc. Datasheets",,,x,,,,
+,2895.0,"Speciality Item Datasheets: Develop, prepare, review, and issue Piping Speciality item Datasheets",,,,,,,
+2.0,2900,Equipment Datasheets:  Prepare and issue equipment Datasheets.,1.0,,x,,,,
+2.0,2910,"Type ""A"" Equipment Datasheets:  Develop and issue equipment Datasheets",1.0,,x,,,,
+2.0,2920,"Type ""B"" Equipment Datasheets:  Develop and issue equipment Datasheets",1.0,,x,,,,
+2.0,2930,"Type ""C"" Equipment Datasheets:  Develop and issue equipment Datasheets",1.0,,x,,,,
+2.0,2940,"Type ""D"" Equipment Datasheets:  Develop and issue equipment Datasheets",1.0,,x,,,,
+2.0,2950,"Type ""E"" Equipment Datasheets:  Develop and issue equipment Datasheets",1.0,,x,,,,
+2.0,2960,Process Datasheets:  Prepare and issue process Datasheets.,1.0,x,,,,,
+2.0,2980,Motor Datasheets:  Prepare and issue equipment Datasheets.,1.0,,,,x,,
+2.0,2990,Valves Datasheets: Prepare and issue valves Datasheets.,,,x,,,,
+3.0,,LISTS (HEADER ONLY),,,,,,,
+3.0,1080.0,"Spare Parts List: Prepare, review and issue list.",,,x,,x,,x
+3.0,1150.0,"Battery Limits:  Develop, review and issue battery limit conditions.",,x,,,,,
+3.0,1250.0,"I/O Lists:  Prepare, review and issue I/O List.  List will include all devices as indicated in the Preliminary P&ID's",,,,,,x,
+3.0,1290.0,Equipment Lists: All work related to development of equipment lists.,,,x,,x,,x
+3.0,1291.0,"Insulation Equipment List: Develop, review and issue  Insulation Equipment list",,,x,,,,x
+3.0,1292.0,"Expansion Joint list: Develop, review and issue Expansion Joint list",,,x,,,,x
+3.0,1293.0,"Metal Gas Damper List: Develop, review and issue Metal Gas Damper list",,,x,,,,x
+3.0,1294.0,"Nameplate List: Develop, review and issue Nameplate list",,,x,,,,x
+3.0,1295.0,"Lubricant List: Prepare, check, and issue Lubricant list",,,x,,,,x
+,1296.0,"Registered Equipment List: Prepare, check, and issue Registered Equipment list",,,,,,,
+,1297.0,"Existing Equipment Assessment List: Prepare, check, and issue Existing Equipment Assessment list",,,,,,,
+,1298.0,"Equipment Installation List: Prepare, check, and issue Equipment Installation list",,,,,,,
+3.0,1300.0,"Electrical Cable Schedule: Develop, review and issue Electrical Cable Schedule",,,,,x,,x
+3.0,1310,"Instrument Lists:  Prepare, check and issue Line, Specials, Valves, Drawings lists",,,,,,x,x
+3.0,1320.0,Electrical Equipment Lists: All work related to development of equipment lists.,,,x,,x,,
+3.0,1330,"Motor List:  Prepare, check and issue motor lists",,,,,x,,
+,1335.0,"Load List:  Prepare, check and issue load lists",,,,,,,
+3.0,1340,"Piping Specialty (PSI): Prepare, check and issue PSI lists",,,x,,,,x
+,1345.0,"Equipment Parts (EPN) Lists: Prepare, check and isuue EPN lists",,,,,,,
+3.0,1350,Pipe Class and Service Index:  All work related to the pipe service lists.,,x,x,,,,x
+3.0,1360,Piping Line List:  All Process work related to the pipe line lists,1.0,x,x,,,,x
+3.0,1380.0,"Tie-in Point List:  Prepare, check and Issue Tie-in Point list",,,x,,,,
+3.0,2230,Instrument Process Data List: Prepare and define process parameters.,,x,,,,,
+3.0,2240.0,"Instrument Index:  Prepare, check and issue Instrument Index.",,,,,,x,
+,2420.0,"Plant Checkout List: Prepare, check, and issue Plant Checkout lists",,,,,,,
+,2470.0,"Pump/Fan List: Prepare, check and issue Pump/Fan lists",,,,,,,
+,2480.0,"Coating and Lining Lists: Prepare, check and issue Coating and Lining lists",,,,,,,
+6.0,4001.0,"Document List: Develop, update, issue Document list",,x,x,x,x,x,x
+3.0,4250,Material Take-off:  Compile and issue bulk quantities.  Does not include RFQs and Purchasing.,,,x,,x,x,x
+4.0,,CALCULATIONS (HEADER ONLY),,,,,,,
+4.0,1370,"MCC/Control Room Load Calculations:  Develop, review and issue MCC/Control Room load Calculations.",,,,,x,,
+4.0,1390,Pressure Drop Calculations for Ducting:  Drop calculations for ducting.,,x,,,,,
+4.0,1410,Piping Stress Calculations: Stressing calculations of piping and duct.,,,x,,,,
+4.0,1430,"Duct Stress Analysis:  Develop, review and issue duct stress analysis.",,,x,,,,
+4.0,1450,"Process, Heat Transfer and Mechanical Calculations:  Conduct, review and issue Calculations.",,x,,,,,
+4.0,1470,"Configuration Data:  Prepare, check and issue data.",,,,,,x,
+,2330.0,"Bunded Area Calculations:  Conduct, review and issue Bunded Area Calculations.",,,,,,,
+4.0,2340,"Piping Hydraulic Calculations:  Develop, review and issue piping hydraulic Calculations.",,x,x,,,,
+4.0,2349.0,"Piping/Ducting Design Calculations: Conduct, review and issue Calculations.",,,?,,,,
+4.0,2350,Control Valve Sizing: Calculate Control Valve size,,x,,,,x,
+,2355.0,Instrument Sizing and Calculations: Calculate Instrument Size,,,,,,,
+4.0,2359.0,"Pressure Relief Valve Study: Conduct, review and issue Calculations.",,,,x,,x,
+4.0,2360.0,"Structure Load Calculations:  Develop, review and issue structural Load calculations.",,,,x,,,
+4.0,2369.0,"Civil Load Calculations:  Develop, review and issue Civil Load calculations.",,,,x,,,
+4.0,2380.0,"Vessel Calculations; Conduct, review and issue Calculations.",,,x,,,,
+4.0,2390.0,"Insulation Calculations: Conduct, review and issue Calculations.",,,x,,,,
+5.0,3000.0,ENGINEERING REQUISITIONS & PURCHASING (HEADER ONLY),,,,,,,
+,3010,"Requisitions:  All work on Requisition including requisition VDR, QDS. (Alternative codes for 3011~3013)",,,,,,,x
+5.0,3020,Vendor Data & Vendor Drawing Review: Includes all vendors' drawing reviews.,1.0,x,x,x,x,x,x
+5.0,3030,Bid Analysis  Engineering hours only.,1.0,x,x,x,x,x,x
+5.0,3040,Bulk Material:  Engineering hours only.,1.0,,x,x,x,x,x
+5.0,3050,Fab. Shop Coordination/Audits:  Engineering hours only.,1.0,,,,,,
+5.0,5020,Condition/Preparation/Issue P.O:  Engineering hours only.,1.0,,x,x,x,x,x
+6.0,,GENERAL ENGINEERING (HEADER ONLY),,,,,,,
+6.0,4010,Reports & Studies:  Development and issuance of general reports and studies.,1.0,x,x,x,x,x,x
+6.0,4090,Engineering Planning & Coordination:  Supervision and coordination of engineering and design functions.,1.0,x,x,x,x,x,x
+6.0,4170,Scope & Concept Description & Definition:  Activity includes scope and concept description and design intent.,1.0,x,x,x,x,x,x
+6.0,4330,Estimating:  Development of project specific estimate for internal and external scope changes.,1.0,x,x,x,x,x,x
+6.0,4410,Trending & Forecasting:  Review and support of progress measurement and trending activities.,1.0,x,x,x,x,x,x
+6.0,4490,Codes and Permits: Permit support activities.,1.0,,,x,,,
+6.0,4570,Client Meetings and Assistance:  Specific tasks or interface with Client.  Includes interface in the Chemetics office or elsewhere.  Does NOT include travel or incidentals.,1.0,x,x,x,x,x,x
+6.0,4650,"Project Meetings:  General project meetings including design reviews, status updates, and PEM Gateway Reviews.",1.0,x,x,x,x,x,x
+6.0,4730,HAZOP:  HAZOP review.  Corrections or design changes resulting from the HAZOP will be coded against the direct engineering code.,1.0,x,x,,x,x,x
+7.0,,SUBCONTRACT (HEADER ONLY),,,,,,,
+7.0,6010,Construction Sub-contract Scope/Intent Prep:  Engineering hours only,1.0,,x,x,x,x,x
+,6015.0,Engineering Sub-contract Scope/Intent Prep:  Engineering hours only,,,,,,,
+7.0,6090,IFB Prep/Inquiry:  Engineering hours only.,1.0,,x,x,x,x,x
+7.0,6170,Subcontract Bid Analysis/Contract Prep:  Engineering hours only.,1.0,,x,x,x,x,x
+7.0,6250,IFC Package:  Engineering hours only.,1.0,,x,x,x,x,x
+7.0,6490,Inspection/Expediting:  Engineering hours only.  Does not include travel or incidental expenses.,,,,,,,
+8.0,,MANUALS (HEADER ONLY),,,,,,,
+8.0,7010,"Operating Manuals:  Write, assemble & issue operating manuals.  Includes engineering hours only--not document control or clerical support.",1.0,x,,,,,
+8.0,7030,"Training Manuals: Write, assemble & issue operating manuals.  Includes engineering hours only--not document control or clerical support.",1.0,x,,,,,
+8.0,7050,"Analytical Manuals:  Write, assemble & issue analytical manuals.  Includes engineering hours only--not document control or clerical support.",1.0,x,,,,,
+8.0,7070,Maintenance Manual:  Compile and issue maintenance manual and procedures.  Includes engineering hours only--not document control or clerical support.,1.0,x,,,,,
+8.0,7080.0,"Commissionning Plan: Prepare Process system definition, Start-up sequence, resource requirments including vendors commissioning requirments, performance testing procedures for Commissioning",1.0,x,,,,,
+8.0,7090,"Instrumentation Manual:  Compile and issue Instrument Manual.  Includes engineering hours only, not document control or clerical supports.",1.0,,,,,x,
+8.0,7110,"Equipment Manual:  Compile and issue Equipment Manual.  Includes engineering hours only, not document control or clerical supports.",,,x,,,,
+8.0,7210.0,"Electrical Manual:  Compile and issue Electrical Manual.  Includes engineering hours only, not document control or clerical supports.",1.0,,,,x,,
+8.0,7310.0,Piping Manual:  Compile and issue Piping manual and procedures.  Includes engineering hours only--not document control or clerical support.,,,x,,,,
+9.0,,3-D MODELS (HEADER ONLY),,,,,,,
+,7500.0,Existing Plant Model: Develop & Check Existing Plant PDMS 3-D Model,,,,,,,
+9.0,7510,Equipment 3-D Model:  Develop & Check PDMS 3-D Model.,1.0,,,,,,x
+9.0,7530,Structure 3-D Model:  Develop & Check PDMS 3-D Model.,1.0,,,x,,,x
+9.0,7550,Piping 3-D Model:  Develop & Check PDMS 3-D Model.,1.0,,,,,,x
+9.0,7570,3-D Model Review:  Check PDMS 3-D Model.,1.0,x,x,x,x,x,x
+10.0,,FIELD AND CONSTRUCTION SUPPORT (HEADER ONLY),,,,,,,
+10.0,8010,Field Support:  Field support for construction activities from Home Office,1.0,x,x,x,x,x,x
+10.0,8030,"Field Engineering:  On site technical assistance during plant erection. Does not include field assigned engineers, travel or incidental expenses.",1.0,,,,,,
+10.0,8050,Mechanical or Plant Checkout:  Mechanical checkout of plant.  Does NOT include travel or incidental expenses.,1.0,x,x,,x,x,x
+10.0,8070,Client Training:  Train client personnel on site or away from the Chemetics office.,1.0,x,,,,,
+10.0,8090,Commissioning Support:  Support for commissioning activities from home office.,1.0,x,x,x,x,x,x
+10.0,8110,Start-up Support:  Support for start-up activities from home office.,1.0,x,x,,x,x,x
+10.0,8130,"DCS Acceptance Tests:  DCS Factory/Staging Acceptance Tests--includes only engineering hours, not travel or incidental costs.",1.0,x,,,,x,
+10.0,8150,"Constructability and Safety:  Review of design for constructability and safety, Prepare Constructability review drawings.",1.0,x,x,x,x,x,x
+11.0,,LAB (HEADER ONLY),,,,,,,
+11.0,9010,"Materials Testing:  All testing, does not include anode coatings.",1.0,,,,,,
+11.0,9030,"Analytical Procedures:  Develop, review and issue analytical procedures.",1.0,,,,,,
+11.0,9050,"Anode Coating Inspection:  Anode coating inspection, testing and report preparation.",1.0,,,,,,
+11.0,9070,Lab Equipment Lists and Specs:  Develop and issue lab equipment lists and specifications.,1.0,,,,,,
+11.0,9090,General Investigation:  Preliminary product/process evaluations and research,1.0,,,,,,
+11.0,9110,Process Evaluation and Development:  Experiments and definition of process including economic evaluation.,1.0,,,,,,
+12.0,,Materials Engineering (HEADER ONLY),,,,,,,
+12.0,9452.0,"FRP Equipment: Review of RFQs, drawings, vendor inspection plans.  Includes final documentation.",HOURS,,,,,,
+12.0,9454.0,"Engineered Packages:  Review of RFQs, drawings, vendor inspection plans. Includes final documentation.",HOURS,,,,,,
+12.0,9456.0,"Metallic Equipment:  Review of RFQs, drawings, vendor inspection .  Includes final documentation.",HOURS,,,,,,
+12.0,9458.0,Materials Engineering: review of material selections.,HOURS,,,,,,
+12.0,9459.0,"Inspection:  Equipment or material inspection, recommendations and reporting.  Does NOT include travel or incidental expenses.",HOURS,,,,,,

@@ -1,0 +1,159 @@
+# doc_id=9-PRC-0003 table=3 inline=true
+TABLE # 2,TABLE # 2,,,,
+Electrical Drawing/document type,Electrical Drawing/document type,Prepared by,Checked by,Approved by,Audit by
+Note: see legend below the table,Note: see legend below the table,,,,
+Electrical Design Criteria,Electrical Design Criteria,,PE,E,
+Process Data Sheets – T/R & CPU,Process Data Sheets – T/R & CPU,P,E,P,
+Equipment Data Sheets,Equipment Data Sheets,,,,
+,Transformer/rectifier,E,P,E,
+,CPU,E,P,E,
+,Bus bars,E,P,E,
+,MV switchgear,,,,E
+,MCCs,,,,E
+,Power transformers,,,,E
+,LV Power Distribution Centre,,,,E
+,Motors,,M,,E
+,Emergency generator,,,,E
+,Emergency transfer switch,,,,E
+,UPS,,,,E
+,Harmonic filter equipment,,,,E
+,Electrical Room HVAC requirements,,,,
+Specifications,Specifications,,,,
+,Transformer/rectifier,E,P,E,
+,CPU,E,P,E,
+,Bus bars,E,P,E,
+,MV switchgear,,,,E
+,Electrical Control Narrative,E,P,E,
+,MCCs,,,,E
+,Power transformers,,,,E
+,LV Power Distribution Centre,,,,E
+,Motors,,M,,E
+,Emergency generator,,,,E
+,Emergency transfer switch,,,,E
+,UPS,,,,E
+,Harmonic filter equipment,,,,E
+,Heat Tracing,,P/M,,E
+,Electrical Materials,,,,E
+,Hazardous Area Classification Requirements,P,T,P,
+Lists,Lists,,,,
+,Project Drawing List,,PE,PE,
+,Motors,,M,,
+,Electrical System I/O List,,,,
+,Power and control cables,,,,E
+,Electrical materials,,,,
+,Spare parts,,PE,,
+Detail drawings,Detail drawings,,,,
+,Grounding,,,,
+,Lighting,,,,
+,Cable trays,,,,
+,Lightning protection,,,,
+,Wiring,,,,E
+,Motor installations,,,,
+,"Boxes, cabinets, panels",,,,
+,Bus bar layout,D,E,D,
+,Pushbutton stations,,,,
+,Electrical Installation Criteria,E,EC,DoE,
+,Electrical Installation Details,,,,E
+General arrangement drawings,General arrangement drawings,,,,
+,Equipment layout review,,,,
+,Electrical site plan,,D,D,
+,Grounding,,"D, Ci, S",,E
+,Power and control,,,,
+,Cable trays routing criteria,D,,,
+,Cable trays,,D,,
+,Lighting Layout,,P,,
+,Lightning protection layout,,S,,
+,Fire Detection Layout,,P,,
+,Hazardous area classification,,,P,
+,MCC/switchgear room layout,,,E,
+,Electrical room civil criteria,,"Ci, D",,
+,Plant communication- tel. & PA,,PE,,
+,Instrument electrical layout,,,,
+Schematics,Schematics,,,,
+,Single line diagrams - preliminary,E,,E,
+,Single line diagrams - final,,,,E
+,Motor control schematic wiring diagram,,,,E
+,Wiring diagrams,,,,E
+,Block diagrams,,,,E
+,Misc. schematics,,,,E
+Calculations,Calculations,,,,
+,Electrical power study,,,,E
+,Motor starting voltage drop,,,,E
+,Protective relay settings,,,,E
+"Requisitions – quotation, T/R & CPU","Requisitions – quotation, T/R & CPU",,,,
+,Requisition for quotation (REQ),E,,,
+,Vendor document requirements (VDR),E,QA,E,
+,Quality data sheets,E,,QA,
+,Request for quotation (RFQ),PR,,,
+Bid evaluation – T/R & CPU,Bid evaluation – T/R & CPU,,,,
+,Preliminary cost tabulation,,,,
+,Order value < CAD 10 K,,,,
+,Order value < CAD 200 K,,,PE,
+,Order value > CAD 200 K,,,PE,
+,Final cost tabulation,,,PM,
+,Commercial bid tabulation,PR,,MPR,
+,Financial evaluation,F,,,
+,Technical bid tabulation,,OD,,E
+,Order risk assessment,,,,
+,Risk assessment – value<CAD 10 K,-----,,----,
+,Risk assessment – value<CAD 200 K,,,PE,
+,Risk assessment – value>CAD 200 K,,,PM,
+,Final review and vendor selection,E,,"PE,PM,PR",
+"Requisition – Purchase, T/R & CPU","Requisition – Purchase, T/R & CPU",,,,
+,Requisition purchase order (REQ),,,,
+,Purchase order,PR,PE/,PM,
+,Vendor document review,,,E,
+"Requisitions – quotation, exclude T/R & CPU","Requisitions – quotation, exclude T/R & CPU",,,,
+,Requisition for quotation (REQ),,,,
+,Vendor document requirements (VDR),,QA,,
+,Quality documentation sheets (QDS),,,QA,
+,Request for quotation (RFQ),PR,,,
+Bid evaluation – exclude T/R & CPU,Bid evaluation – exclude T/R & CPU,,,,
+,Preliminary cost tabulation,,,,
+,Order value < CAD 10 K,,,,
+,Order value < CAD 200 K,,,PE,
+,Order value > CAD 200 K,,,PE,
+,Final cost tabulation,,,PM,
+,Commercial bid tabulation,PR,,MPR,
+,Financial evaluation,F,,,
+,Technical bid tabulation,,OD,,
+,Order risk assessment,,,,
+,Risk assessment–value < CAD 10 K,----,,----,
+,Risk assessment–value < CAD 200 K,,,PE,
+,Risk assessment–value > CAD 200 K,,,PM,
+,Final review and vendor selection,E,,"PE, PM, PR",
+"Requisition – Purchase, exclude T/R & CPU","Requisition – Purchase, exclude T/R & CPU",,,,
+,Requisition for purchase order (RFQ),,,,
+,Purchase order,PR,PE,PM,
+,Vendor document review,,,,
+,Vendor document review - mechanical,,,,
+,Vendor document review – structure,,,,
+,Electrical equipment manual,,,,
+Shop inspection & witness testing,Shop inspection & witness testing,,,,
+,Shop inspection prior to purchase,"/
+CV",,,
+,Shop inspection during manufacturing,,,,
+,Witness testing of electrical equipment,"/
+CV",,,
+Construction,Construction,,,,
+,Construction subcontract supply & erection scope,,PE,,E
+,Electrical installation specification,,,,E
+,Below grade grounding specification,,,,E
+,Instrument installation specification – field instrument,,,,
+Construction support,Construction support,,,,
+,Field instrument,DDE,,,
+,Electrical equipment,,,,
+,DCS,DDE,,,
+Mechanical check-out and commissioning,Mechanical check-out and commissioning,,,,
+,Electrical field check list,CV,EC,DoE,
+,Field instrument testing,CV,EC,DoE,
+,Field instrument check-out list,DDE,,DDE,
+,Field instrument,DDE,,,
+,Electrical equipment,"/
+CV",,,
+,DCS,DDE,,,
+As-Built Documentation,As-Built Documentation,,,,
+,Single line diagrams,,,,
+,Schematics,,,,
+,Wiring diagrams,,,,
+,Block diagrams,,,,

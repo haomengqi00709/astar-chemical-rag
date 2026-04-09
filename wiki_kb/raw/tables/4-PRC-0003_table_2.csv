@@ -1,0 +1,53 @@
+# doc_id=4-PRC-0003 table=2 inline=true
+,Type A,Type B (Pkg),Type B (Equip within Package),Type C,Type D,Type E
+Equipment Design Criteria,,,,,,
+Typ. Doc. Number,4-PRC-0002,4-PRC-0002,4-PRC-0002,4-PRC-0002,4-PRC-0002,4-PRC-0002
+Issue for Procurement,,,,,,
+Equipment List,,,,,,
+Typ. Doc. Number,4-LST-0001,4-LST-0001,4-LST-0001,4-LST-0001,4-LST-0001,4-LST-0001
+Issue for Procurement,,,,,,
+Process Data Sheet,√,√,,√,√,√
+Typ. Doc. Number,4-PDS-7841,4-PDS-7510,,4-PDS-6533,4-PDS-7540,4-PDS-2601
+Issue for Procurement,,,,,,
+Process Calculation,√,√,,√,√,√
+Typ. Doc. Number,4-CAL-7841-P,4-CAL-7510-P,,4-CAL-6533-P,4-CAL-7540-P,4-CAL-2601-P
+Issue for Procurement,,,,,,
+Heat Transfer Calculations,,,,√,√,
+Typ. Doc. Number,,,,4-CAL-6533-HT,4-CAL-7540-HT,
+Issue for Procurement,,,,,,
+Equipment Data Sheet,√,,√,√,√,√
+Typ. Doc. Number,4-DST-7841,,4-DST-7515,4-DST-6533,4-DST-7540,4-DST-2601
+Issue for Procurement,√,,√,√,√,
+Package Data Sheet,,√,,,,
+Typ. Doc. Number,,4-PKG-7510,,,,
+Issue for Procurement,,√,,,,
+Outline Drawing,,,,√,√,√
+Typ. Doc. Number,,,,4-OTL-6533,4- OTL -7540,4- OTL -2601
+Issue for Procurement,,,,√,√,
+Mechanical Calculation,,,,√,√,√
+Typ. Doc. Number,,,,4-CAL-6533-M,4-CAL-7540-M,4-CAL-2601-M
+Issue for Procurement,,,,,,
+Support Criteria,√,√,√,√,√,√
+Typ. Doc. Number,4-SCR-7841,4-SCR-7510,4-SCR-7515,4-SCR-6533,4-SCR-7540,4-SCR-2601
+Issue for Procurement,,,,,,
+Equipment Layout Drawing,,,,,,
+Typ. Doc. Number,4-GAD-0100,4-GAD-0100,4-GAD-0100,4-GAD-0100,4-GAD-0100,4-GAD-0100
+Issue for Procurement,,,,,,
+Specification,√,√,,√,√,√
+Typ. Doc. Number,4-SPC-0101,4-SPC-7510,,4-SPC-0113,4-SPC-0113,4-SPC-0316
+Issue for Procurement,√,√,,√,√,√
+Detail Drawing,,,,√,√,
+Typ. Doc. Number,,,,4-DTL-6533,4-DTL-7540,
+Issue for Procurement,,,,√,√,
+Proprietary Drawing,,,,,,√
+Typ. Doc. Number,,,,,,4-PRP-2601
+Issue for Procurement,,,,,,√
+Quality Data Sheet,√,√,√,√,√,√
+Typ. Doc. Number,4-QDS-7841,4-QDS-7510,4-QDS-7515,4-QDS-6533,4-QDS-7540,4-QDS-2601
+Issue for Procurement,√,√,√,√,√,√
+Vendor Doc. Requirements,√,√,√,√,√,√
+Typ. Doc. Number,4-VDR-4001,4-VDR-4002,4-VDR-4002,4-VDR-4003,4-VDR-4004,4-VDR-4005
+Issue for Procurement,√,√,√,√,√,√
+Vendor Documents,√,√,√,√,√,√
+Typ. Doc. Number,4-VEN-7841,4-VEN-7510,4-VEN-7515,4-VEN-6533,4-VEN-7540,4-VEN-2601
+Document Review,Mechanical,Project,Mechanical,Mechanical,Mechanical,Mechanical

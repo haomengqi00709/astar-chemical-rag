@@ -1,0 +1,15 @@
+# doc_id=0-LST-6 discipline=0 revision=R0
+Information for User
+Signature Page:
+Enter new information ie. Customer name etc.
+Main Page:
+First cell of the workbook will be B3
+Decide how many columns you need and size them to fit the page
+Worksheet should be at 100%
+Font size should be 8
+Row two should be 14.25 height
+Other rows should be 12.00
+"Print range should be A2:""  """
+Rows to repeat at the top should start at row 2 to where required
+To 2005 Name Change Conversion:  Name change has been implemented.  No new revision
+number has been used and changes have not been marked.

@@ -1,0 +1,37 @@
+# doc_id=8-PRC-0001 table=2 inline=true
+,FIRST LETTER,FIRST LETTER,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,SECOND AND SUBSEQUENT LETTERS,
+,"Measuring
+or
+Indicating
+Variable","Measuring
+or
+Indicating
+Variable",Readout Devices,Readout Devices,Readout Devices,Readout Devices,Controlling Devices,Controlling Devices,Controlling Devices,Controlling Devices,Controlling Devices,,,,,,
+,"Measuring
+or
+Indicating
+Variable","Measuring
+or
+Indicating
+Variable",Indicating,Recording,Totalizing Integrating,Alarm,Blind Control,Indicating control,Self-Actuating Valve,Relief Valve,Control Valve,Powered Actuator,Primary Elements,Blind Transmitter,Switches,Transducers Blind,
+,,,I,R,Q,A,C,IC,CV,SV,V,Z,E,T,S,Y,
+,A,Analysis,AI,AR,,AA,AC,AIC,,,AV,AZ,AE,AT,AS,AY,
+,B,Burner Flame,BI,BR,,BA,BC,BIC,,,BV,BZ,BE,BT,BS,,
+,E,Voltage (EMF),EI,ER,EQ,EA,EC,EIC,,,EV,EZ,EE,ET,ES,EY,
+,D,Density,DI,DR,,DA,DC,DIC,DCV,,DV,DZ,DE,DT,DS,DY,
+,F,Flow Rate,FI,FR,FQ,FA,FC,FIC,FCV,,FV,FZ,FE,FT,FS,FY,
+,G,Gauge (Dimension),,GR,GQ,GA,GC,GIC,,,GV,GZ,GE,GT,GS,GY,
+,H,Hand (Manual),,,,,HC,HIC,,,HV,HZ,,,HS,,
+,I,Current (Electrical),II,IR,IQ,IA,IC,IIC,,,IV,IZ,IE,IT,IS,,
+,J,Power,JI,JR,JQ,JA,JC,JIC,,,JV,JZ,JE,JT,JS,JY,
+,K,Time,KI,KR,KQ,KA,KC,LIC,,,KV,KZ,KE,KT,KS,KY,
+,L,Level,LI,LR,,LA,LC,LIC,LCV,,LV,LZ,LE,LT,LS,LY,
+,M,Moisture & Humidity,MI,MR,MQ,MA,MC,MIC,,,MV,MZ,ME,MT,MS,MY,
+,P,Pressure & Vacuum,PI,PR,PQ,PA,PC,PIC,PCV,PSV,PV,PZ,PE,PT,PS,PY,
+,S,Speed,SI,SR,SQ,SA,SC,SIC,SCV,,SV,SZ,SE,ST,SS,SY,
+,T,Temperature,TI,TR,,TA,TC,TIC,TCV,,TV,TZ,TE,TT,TS,TY,
+,U,Multivariable,UI,UR,UQ,UA,UC,UIC,,,UV,UZ,UE,UT,US,UY,
+,V,Vibration,VI,VR,,VA,VC,VIC,,,VV,VZ,VE,VT,VS,VY,
+,W,Weight,WI,WR,WQ,WA,WC,WIC,,,WV,WZ,WE,WT,WS,WY,
+,X,Unclassified,XI,XR,XQ,XA,XC,XIC,,,XV,XZ,XE,XT,XS,XY,
+,Z,Position,ZI,ZR,,ZA,ZC,ZIC,,,ZV,ZZ,ZE,ZT,ZS,ZY,

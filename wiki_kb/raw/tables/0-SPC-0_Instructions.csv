@@ -1,0 +1,20 @@
+# doc_id=0-SPC-0 discipline=0 revision=R1
+Margins:,Top,1.0,col_3,col_4,col_5,col_6,col_7,col_8
+,Bottom,0.5,,,,,,
+,Left,0.25,,,,,,
+,Right,0.5,,,,,,
+,Header,1.0,,,,,,
+,Footer,0.25,,,,,,
+Column 1 should be width 1,,,,,,,,
+Row 1 on the main page will not be included in the print range - it is there to hold the |,,,,,,,,
+for marking changes.,,,,,,,,
+Header should be:,,,,,,,,
+Client Document Number,,,Name,,Standard-X-XXX-XXXX-RX,,,
+Footer should be:,,,,,,,,
+a CHEMETICS.  Unpublished.  Unauthorised use or reproduction prohibited.,,,,,,,,Page 1 of 1
+Column 1 is included in the print range so the left and right margins are different sizes.,,,,,,,,
+To make the signature page fit on the page evenly the last row is sized at 15.,,,,,,,,
+All other empty rows are sized at 12,,,,,,,,
+All empty cells should be formatted as:,,,,,,,,
+TOP Vertical Alignment,,,,,,,,
+Wrap text,,,,,,,,

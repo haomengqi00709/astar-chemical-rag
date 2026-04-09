@@ -1,0 +1,8 @@
+# doc_id=0-REP-8405 table=18 inline=true
+,Year,,,,,
+A,Total number of field manhours.,,,,,
+B,Number of Recordable Incidents with no lost time.,,,,,
+C,Number of Recordable Incidents with lost time.,,,,,
+D,Total number of lost work days.,,,,,
+E,Number of fatalities.,,,,,
+F,"Incident Rate. (B+C)(200,000)/A",,,,,

@@ -1,0 +1,443 @@
+# doc_id=4-LST-0101 discipline=4 revision=R0
+Equipment,Equipment_1,Comments
+Number,Name,
+Area 152,Sulphur Storage,
+5201H,Sulphur Steaming Station,
+5202M,Sulphur Unloading Station,
+5203T,Sulphur Unloading Trench,
+5204H,Sulphur Unloading Trench Heater,
+5205M,Sulphur Railcar Mover,
+5210M,Sulphur Conveyor,
+5211H,Sulphur Conveyor Steaming Station,
+5220T,Sulphur Melt Tank,
+5221A,Sulphur Melt Agitator,
+5222H,Sulphur Melt Heater,
+5225T,Dirty Sulphur Tank,
+5226A,Dirty Sulphur Agitator,
+5227H,Dirty Sulphur Heater,
+5228P,Dirty Sulphur Pump,
+5229K,Sulphur Strainer,
+5230K,Sulphur Filter,
+5231M,Sludge Cart,
+5232T,Sulphur Tote,
+5235T,Filter Precoat Tank,
+5236A,Filter Precoat Agitator,
+5237H,Filter Precoat Heater,
+5238P,Filter Precoat Pump,
+5240T,Liquid Sulphur Unloading Tank,
+5241H,Liquid Sulphur Unloading Tank Heater,
+5242P,Liquid Sulphur Unloading Pump,
+5245T,Clean Sulphur Tank,
+5246P,Clean Sulphur Pump,
+5247H,Clean Sulphur Tank Heater,
+5250T,Sulphur Distribution Tank,
+5252P,Sulphur Distribution Tank Pump,
+5253H,Sulphur Distribution Tank Heater,
+Area 161,Regeneration,
+6101C,Regeneration Air Fan,
+6102H,Regeneration Air Heater,
+6103D,Regeneratoin Air Inlet Screen,
+6110F,Regeneration Preheat Furnace,
+6111H,Regeneration Preheat Exchanger,
+6112C,Combustion Air Fan,
+6113C,Dilution Air Fan,
+6114F,Regeneration Preheat Stack,
+6119D,Atomizing Air Inlet Screen,
+6120C,Atomizing Air Compressor,
+6121B,Spent Acid Nozzle,
+6122B,Weak Acid Nozzle,
+6130F,Regeneration Furnace,
+6131F,Combustion Chamber,Fuel /Air
+6132F,Fuel/Oxygen Combustor,
+6133B,Sulphur Gun,
+6134B,Hydrogen Sulphide Burner,Acid Gas Burner
+6135T,Acid Gas Knock-Out Pot,
+6136B,Oil Burner,
+6137B,Fuel Gas Burner,
+6140F,Furnace Transition Duct,
+6150H,Regeneration Boiler,Water Tube
+6151H,Regeneration Boiler,Fire Tube
+6152T,Regeneration Steam drum,
+6153X,Soot Blower,
+Area 165,Gas Cleaning,
+6505A,Static Mixer,
+6510D,Quench Venturi,
+6511U,Retention Vessel,
+6512T,Quench Pump Tank,
+6513P,Quench Pump,
+6514K,Quench Filter,
+6515T,Emergency Quench Water Tank,
+6520D,Scrubber Venturi,
+6521U,Separator Vessel,
+6522T,Scrubber Pump Tank,
+6523P,Scrubber Pump,
+6530U,Gas Cooling Tower,
+6531B,Cooling Tower Distributor,
+6532K,Cooling Tower Mist Eliminator,
+6533T,Cooling Tower Pump Tank,
+6534P,Cooling Tower Pump,
+6540H,Weak Acid Cooler,
+6541C,Weak Acid Cooler Fan,
+6543T,Weak Acid Holding Tank,
+6544A,Weak Acid Holding Tank Agitator,
+6545P,Weak Acid Filter Feed Pump,
+6546K,Weak Acid Filter,
+6547T,Weak Acid Filtrate Tank,
+6548P,Weak Acid Filtrate Pump,
+6550H,Wet Gas Condenser 1st Stage,
+6551T,Condensate Tank,
+6552P,Condensate Pump,
+6553X,Vacuum Breaker,
+6554A,Condensate Tank Agitator,
+6560D,1st Stage ESP,
+6561C,ESP Purge Air Fan,
+6562H,ESP Purge Air Heater,
+6563P,ESP Flushing Pump,
+6569H,Wet Gas Condenser 2nd Stage,
+6570D,2nd Stage ESP,
+6571C,ESP Purge Air Fan,
+6572H,ESP Purge Air Heater,
+6573P,ESP Fogging Pump,
+6575X,ESP Vacuum Breaker,
+6576T,ESP Flushing Tank,
+6577P,ESP Flushing Tank Pump,
+6579C,Wet Gas Fan,
+6580U,Weak Acid Stripper,
+6581B,Weak Acid Stripper Distributor,
+6582P,Weak Acid Pump,
+6583D,Stripper Air Screen,
+6584C,Stripper Air Fan,
+6585H,Stripper Air Heater,
+6590T,Sodium Silicate Storage Tank,
+6591P,Sodium Silicate Transfer Pump,
+6592T,Sodium Silicate Dilution Tank,
+6593A,Sodium Silicate Agitator,
+6594P,Sodium Silicate Injection Pump,
+6597S,Weak Acid Sample Box,
+6598T,Weak Acid Sump,
+6599P,Weak Acid Sump Pump,
+Area 167,Bisulphite Scrubber,
+6710V,Na2CO3 Eductor,
+6711P,Na2CO3 Mix Pump,
+6712T,Na2CO3 Storage Tank,
+6713T,Na2CO3 Pump Tank,
+6714P,Na2CO3 Supply Pump,
+6730D,Bisulphite Scrubber,
+6732P,Sulphite Pump,
+6733P,Bisulphite Pump,
+6735H,Bisulphite Scrubber,
+6740T,Bisulphite Storage Tank,
+6741P,Bisulphite Product Pump,
+6742K,Bisulphite Strainer,
+6790T,Na2CO3 Sump,
+6791P,Na2CO3 Sump Pump,
+6795T,Biuslphite Sump,
+6796P,Bisulphite Sump Pump,
+Area 169,Mercury Removal,
+6910U,Mercury Absorption Tower,
+6911K,Mercury Tower Mist Eliminator,
+6912B,Mercury Tower Distributor,
+6913T,Mercury Absorption Pump Tank,
+6914P,Mercury Absorption Pumps,
+6920K,Primary Mercury Sludge Settler,
+6925K,Secondary Mercury Sludge Settler,
+6930T,Chlorination Tank,
+6931A,Chlorination Tank Agitator,
+6932P,Chlorination Pump,
+6933X,Chlorinator,
+6940T,Mercuric Chloride Feed Tank,
+6950T,Mercury Effluent Collection Tank,
+6952P,Mercury Effluent Pump,
+6960X,Mercury Vacuum Breaker,
+6998T,Mercury Sump,
+6999P,Mercury Sump Pump,
+Area 175,Contact Plant - Gas,
+7503U,Predry Tower,
+7504K,Predry Mist Eliminator,
+7505D,Air Filter,
+7506U,Dry Tower,
+7507K,Dry Mist Eliminator,
+7509C,Start-up Blower,
+7510C,Blower,
+7511T,Blower Lube Oil Reservoir,
+7512H,Blower Lube Oil Heater,
+7513P,Blower Lube Oil Pump,
+7514P,Blower Lube Oil Auxilliary Pump,
+7515H,Blower Lube Oil Cooler,
+7516K,Blower Lube Oil Filter,
+7517M,Blower Hoist,
+7520F,Sulphur Furnace,
+7521B,Sulphur Gun,
+7522B,Start-up Burner,
+7523V,Start-up Burner Pilot Ejector,
+7525H,Boiler,Water Tube
+7526H,Boiler,Fire Tube
+7527T,Steam Drum,
+7530H,Cold Exchanger,
+7531H,Inter Exchanger,Single Abs
+7532H,Hot Exchanger,
+7538M,Catalyst Hoist,
+7539X,Converter Catalyst,
+7540R,Converter,
+7541H,Superheater,
+7542H,Boiler #2,Water Tube
+7543H,Boiler #2,Fire Tube
+7546H,3-4 Cooler,Single Abs
+7547C,3-4 Cooler Fan,Single Abs
+7548D,Air Screen,
+7549X,Silencer,
+7550H,SO3 Cooler,Single Abs
+7551C,SO3 Cooler Fan,Single Abs
+7552D,Air Screen,
+7553X,Silencer,
+7554C,Inter SO3 Cooler Fan,Double Abs
+7555H,Inter SO3 Cooler,Double Abs
+7556H,Inter Reheat Exchanger,Double Abs
+7557H,Cold Reheat Exchanger,Double Abs
+7558H,Economizer,Single Abs
+7559H,Inter Economizer,Double Abs
+7560H,Inter Superheater,
+7561U,Oleum Tower,
+7562K,Oleum Tower Mist Eliminator,
+7565U,Absorber Tower,Single Abs
+7566K,Absorber Mist Eliminator,Single Abs
+7567U,Inter Tower,Double Abs
+7568K,Inter Mist Eliminator,Double Abs
+7570H,4-5 Cooler,
+7581H,4-5 Exchanger,
+7582H,4-5 Economizer,
+7575H,Final SO3 Cooler,
+7576C,Final SO3 Cooler Fan,
+7577D,Air Screen,
+7578X,Silencer,
+7579H,Final Economizer,
+7580H,Final Superheater,
+7585U,Final Tower,
+7586K,Final Mist Eliminator,
+7587F,Stack,
+7590F,Preheat Furnace,
+7591H,Preheat Exchanger,
+7592C,Combustion Air Fan,
+7593C,Dilution Air Fan,
+7594F,Preheater Stack,
+Area 176,SO2 Plant,
+7601C,SO2 Booster Fan,
+7605U,Secondary Drying Tower,
+7606K,Secondary Drying Mist Eliminator,
+7607P,Secondary Drying Acid Pump,
+7608H,Secondary Drying Acid Cooler,
+7609B,Secondary Drying  Acid Distributor,
+7615H,SO2 Gas Chiller,
+7616H,SO2 Condenser,
+7617T,Vapour Separator,
+7625P,SO2 Distillation Column Feed Pump,
+7626H,Refrigerant Sub-Cooler,
+7627U,SO2 Distillation Column,
+7628H,SO2 Distillation Reboiler,
+7635P,SO2 Product Pump,
+7640T,SO2 Storage Tank,
+7641P,SO2 Loading Pump,
+7650C,Refrigerant Compressor,
+7655H,Compressor Oil Cooler,
+7656K,Compressor Oil Filter,
+7657P,Compressor Oil Pump,
+7658T,Compressor Oil Separator,
+7659P,Oil Make-up Pump,
+7665H,Refrigerant Condenser,
+7666T,Refrigerant Flash Vessel,
+7667T,Refrigerant Receiver,
+Area 177,Tail Gas Scrubbers,
+7701U,Peroxide Scrubber,
+7702K,Peroxide Scrubber Mist Eliminator,
+7703P,Peroxide Scrubber Pump,
+7704B,Peroxide Scrubber Distributor,
+7710T,Weak Acid Storage Tank,
+7711P,Weak Acid Transfer Pump,
+7715T,Weak Acid Sump,
+7716P,Weak Acid Sump Pump,
+7720T,Peroxide Storage Tank,
+7721P,Peroxide Pump,
+7725T,Peroxide Sump,
+7726P,Peroxide Sump Pump,
+7780U,Caustic Scrubber,
+7781T,Caustic Scrubber Pump Tank,
+7785P,Caustic Scrubber Circulation Pump,
+7788C,Caustic Scrubber Vent Blower,
+7790T,Caustic Storage Tank,
+7791P,Caustic Metering Pump,
+7792A,Caustic Dilution Mixer,
+Area 178,Contact Plant - Acid,
+7804T,Predry Pump Tank,
+7805P,Predry Pump,
+7806H,Predry Cooler,
+7807K,Predry Strainer,
+7808B,Predry Distributor,
+7810T,Dry Pump Tank,
+7811P,Dry Pump,
+7812K,Dry Strainer,
+7813H,Dry Cooler,
+7814B,Dry Distributor,
+7815B,Dry Gas Injection Packing Support,Equipment supply only
+7817T,Acid Pump Tank,Combined Dry Inter Final
+7818H,Acid Cooler,Combined Dry Inter Final
+7820T,Absorber Pump Tank,Single Abs/combined inter final
+7821P,Absorber Pump,Single Abs/combined inter final
+7822K,Absorber Strainer,Single Abs/combined inter final
+7823H,Absorber Cooler,Single Abs/combined inter final
+7824B,Absorber Distributor,Single Abs
+7825B,Absorber Gas Injection Packing Support,Equipment supply only
+7827S,Strong Acid Sample Box,
+7830T,Inter Pump Tank,Double Abs
+7831P,Inter Pump,Double Abs
+7832K,Inter Strainer,Double Abs
+7833H,Inter Cooler,Double Abs
+7834B,Inter Distributor,Double Abs
+7835B,Inter Gas Injection Packing Support,Equipment supply only
+7836A,Inter Dilution Mixer,
+7840T,Final Pump Tank,
+7841P,Final Pump,
+7842K,Final Strainer,
+7843H,Final Cooler,
+7844B,Final Distributor,
+7845B,Final Gas Injection Packing Support,Equipment supply only
+7846A,Final Dilution Mixer,
+7850T,Oleum Pump Tank,
+7851P,Oleum Pump,
+7853H,Oleum Cooler,
+7854B,Oleum Distributor,
+7855H,Oleum Boiler,
+7856H,SO3 Condenser,
+7860U,Crossflow Stripper,
+7861K,Crossflow Stripper Mist Eliminator,
+7862B,Crossflow Stripper Distributor,
+7863P,Crossflow Pump,
+7865U,Product Stripper,
+7866K,Product Stripper Mist Eliminator,
+7867B,Product Stripper Distributor,
+7870T,Dilution Pump Tank,
+7871P,Dilution Pump,
+7872H,Dilution Cooler,
+7873K,Dilution Water Filter,
+7875P,Product Pump,
+7876H,Product Cooler,
+7877P,Acid Drain Pump,
+7878T,Product Transfer Tank,
+7879P,Product Transfer Pump,
+7880U,NOx Stripper,
+7881K,NOx Stripper Mist Eliminator,
+7882B,NOx Stripper Distributor,
+7883P,NOx Stripper Pump,
+7885U,NOx Absorber,
+7886K,NOx Absorber Mist Eliminator,
+7887B,NOx Absorber Distributor,
+7888P,NOx Absorber Pump,
+7889T,NOx Absorber Pump Tank,
+7890T,Peroxide Tank,
+7891P,Peroxide Injection Pump,
+7892T,Candle Drain Tank,
+7893P,Candle Drain Pump,
+7895T,Hydrazine Tank,
+7896P,Hydrazine Injection Pump,
+7898T,Strong Acid Sump,
+7899P,Strong Acid Sump Pump,
+Area 179,Product Acid Storage,
+7910T,Storage Tank,
+7911P,Loading Pump,
+7920P,Strong Acid Transfer Pump,
+7930K,Flame Arrestor,
+7998T,Sump,
+7999P,Sump Pump,
+Area 180,Alpha System,
+8010C,Alpha Booster Fan,
+8020U,Alpha Tower,
+8021B,Alpha Distributor,
+8025T,Alpha Mist Eliminator Vessel,
+8026K,Alpha Tower Mist Eliminator,
+8030T,Alpha Pump Tank,
+8031P,Alpha Pump,
+8035H,Alpha Boiler,Thermosyphon
+8036H,Alpha Boiler,Kettle
+8039T,Alpha BFW Tank,was 9027
+8040P,Alpha Boiler Water Pump,was 9026
+8041H,Alpha Water Preheater,was 9023
+8050T,Alpha Steam Drum,was 9028
+8051K,Alpha Steam Drum Mist Eliminator,
+8080H,Alpha Steam Condenser,was 9029
+Area 185,Effluent Neutralization,
+8501T,Waste Collection Tank,was 9501T
+8502A,Waste Agitator,was 9502A
+8503P,Waste Feed Pump,was 9503P
+8510T,Neutralization Tank,was 9510T
+8511A,Neutralization Agitator,was 9511A
+8515T,Precipitation Tank,was 9515T
+8516A,Precipitation Agitator,was 9516A
+8517P,Precipitation Recirculation Pump,was 9528P
+8524C,Vent Blower,was 9524C
+8525K,Primary Thickener,was 9525K
+8526A,Primary Rake,was 9526A
+8527P,Primary Thickener Underflow Pump,was 9527P
+8530T,Arsenic Precipitation Tank,was 9530T
+8531A,Arsenic Agitator,was 9531A
+8535K,Secondary Thickener,was 9535K
+8536A,Secondary Rake,was 9536A
+8537P,Secondary Thickener Underflow Pump,was 9537P
+8540T,Neutralized Effluent Tank,was 9540T
+8541A,Effluent Agitator,was 9541A
+8542P,Effluent Pump,was 9542P
+8545T,Sludge Holding Tank,was 9545T
+8546A,Sludge Agitator,was 9546A
+8547P,Sludge Pump,was 9547P
+8555A,Flocculant Mixer,was 9555A
+8556P,Flocculant Transfer Pump,was 9556P
+8557T,Flocculant Holding Tank,was 9557T
+8558P,Primary Metering Pump,was 9558P
+8559A,Primary In-line Mixer,was 9559A
+8560P,Secondary Metering Pump,was 9560P
+8561A,Secondary In-Line Mixer,was 9561A
+8565T,H2SO4 Holding Tank,was 9565T
+8566P,Effluent H2SO4 Pump,was 9566P
+8567P,Arsenic H2SO4 Pump,was 9567P
+8569M,Fe2(SO4)3 Chute,was 9569M
+8570T,Fe2(SO4)3 Mix Tank,was 9570T
+8571A,Fe2(SO4)3 Agitator,was 9571A
+8572P,Fe2(SO4)3 Transfer Pump,was 9572P
+8573T,Fe2(SO4)3 Day Tank,was 9573T
+8574A,Day Tank Agitator,was 9574A
+8575P,Fe2(SO4)3 Feed Pump,was 9575P
+8576M,Fe2(SO4)3 Hoist,was 9576M
+8577K,Fe2(SO4)3 Strainer,was 9577K
+8580K,Sludge Filter,was 9548K
+8581T,Weir Box,was 9549T
+8582M,Filter Press Discharge Conveyor,was 9580M
+8583M,Transfer Conveyor,was 9554M
+8585T,Filtrate Tank,was 9550T
+8586P,Filtrate Pump,was 9551P
+8590T,Pressing Water Tank,was 9517T
+8591P,Pressing Water Pump,was 9518P
+8592P,Manifold Flushing Pump,was 9519P
+8593T,Air Release Tank,was 9520T
+8594K,Cloth Wash Water Filter,was 9521K
+8595P,Treated Water Booster Pump,was 9522P
+8598T,Effluent Sump,was 9578T
+8599P,Effluent Sump Pump,was 9579P
+Area 186,Solids Stabilization,
+8610T,Wet Filter Cake Hopper,was 9583T
+8611A,Wet Filter Cake Hopper Screw,was 9584A
+8620M,Drier Feed Conveyor,was 9581M
+8625F,Drier/Calciner,was 9585F
+8626F,Calciner Burner,was 9584F
+8627C,Combustion Air Fan,was 9582C
+8628C,Secondary Air Fan,was 9594C
+8630D,Off-Gas Cyclone,was 9589D
+8631M,Cyclone Dust Feeder,was 9592M
+8632M,Cyclone Discharge Conveyor,was 9596M
+8635D,Off-Gas Filter,was 9590D
+8636M,Filter Dust Feeder,was 9591M
+8645C,Off-Gas Fan,was 9597C
+8646F,Calciner Stack,was 9598F
+8660M,Calcined Product Conveyor,was 9586M
+8661M,Calciner Feed Conveyor,was 9593M
+8665T,Calcined Product Storage,was 9587T
+8666M,Calcined Product Feeder,was 9588M
+8690M,Transport Bin,was 9599M
+8699P,Calciner Sump Pump,was 9595P

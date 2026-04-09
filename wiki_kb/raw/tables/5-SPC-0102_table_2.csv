@@ -1,0 +1,15 @@
+# doc_id=5-SPC-0102 table=2 inline=true
+Fabricator,The contractor who welds pipe into spools for subsequent erection.
+Erector,"The contractor who assembles pipe spools into piping systems (for field fabricated or field run piping systems, the Fabricator and the Erector may be the same contractor)."
+Plant Service Piping,"Piping handling fluids such as steam, condensate, cooling water, air, nitrogen, plant water, etc. which supply and service the process equipment."
+Process Piping,Piping handling the process fluids.
+Plant Utilities Piping,"Piping handling building heating steam and condensate, potable water, supplies to hose stations, safety showers, etc."
+Aker Kvaerner Chemetics Engineer,The person designated by Aker Kvaerner Chemetics' Project Manager to be responsible for the referenced work.
+Aker Kvaerner Chemetics Site Representative,The person designated by Aker Kvaerner Chemetics' Project Manager or Aker Kvaerner Chemetics' Site Manager to be responsible for the referenced work.
+Damaging to Human Tissue (B3.3 para 300.2),"""... this phrase describes a fluid service in which exposure to the fluid caused by leakage, under expected operating conditions, can harm skin, eyes, or exposed mucous membranes so that irreversible damage may result unless prompt restorative measures are taken. (Restorative measures may include flushing with water, administration of antidotes or medication.)"""
+Flammable (B31.3 para 300.2),"""... a fluid which under ambient or expected operating conditions is a vapour or produces vapours that can be ignited and continue to burn in air."""
+Category D Fluid Service (B31.3 para 300.2),"""A fluid service in which all of the following apply:"
+,"(1) the fluid handled is non-flammable, non-toxic, and not damaging to human tissues;"
+,(2) the design gage .... (1030 kPa); and
+,"(3) the design temperature is from -20°F (-29°C) through 366°F  (186°C)."""
+Category M Fluid Service (B31.3 para 300.2),"""A fluid service in which the potential for personnel exposure is judged to be significant and in which a single exposure to a very small quantity of a toxic fluid, caused by leakage, can produce serious irreversible harm to persons on breathing or bodily contact, even when prompt restorative measures are taken."""

@@ -1,0 +1,190 @@
+# doc_id=5-LST-0004 discipline=5 revision=R0
+col_0,Client Name,col_2,col_3,col_4,"Piping Service List
+(Utilities)",col_6,col_7,col_8,col_9,col_10,col_11,col_12,col_13,col_14,"Aker Kvaerner Chemetics
+A Division of Aker Kvaerner Canada Inc.",col_16,col_17,col_18
+,Project Title,,,,,,,,,,,,,,,,,
+,Location,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,Standard-5-LST-0003-R0,,,
+,Service Code,Fluid,Fluid Composition,Material Description / Application,ASME B31.3 Fluid Class,Pressure Test Method,Flange Guard,"Corr. Allow.
+(mm)","Service Pres.
+(kPag)","Service Temp.
+(oC)","Pipe Spec Service Limit
+(kPag @ oC)",Pipe Spec,Gasket Spec,Valve Application,Valve Code,"Valve Size
+(Min)","Valve Size
+(Max)",Notes
+,AC,"Air, Compressed
+(Plant / Mill Air)",,"Carbon Steel, Galvanised",D,Service,No,0,600 - 800,Amb,1034 @ 177,CS4,B,On-Off / Isolation (ball),V1112,15,50,"For SS valves use V1131, V1132 for instr isolation / free ends."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,For SS valve use V1231.
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,For SS valve use V8131.
+,,,,Carbon Steel,D,Service,No,1.5,600 - 800,Amb,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,
+,AI,"Air, Instrument","Dry, oil free air","Carbon Steel,
+Galvanised",D,Service,No,0,600 - 800,Amb,1034 @ 177,CS4,B,On-Off / Isolation (ball),V1112,15,50,"For SS valves use V1131, V1132 for instr isolation / free ends."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,For SS valve use V1231.
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,For SS valve use V8131.
+,,,,Carbon Steel,D,Service,No,1.5,600 - 800,Amb,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,
+,AP,"Air, Padding","Dry, oil free air","Carbon Steel, Galvanised",D,Service,No,0,600 - 800,Amb,1034 @ 177,CS4,B,On-Off / Isolation (ball),V1112,15,50,"For SS valves use V1131, V1132 for instr isolation / free ends."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,For SS valve use V1231.
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,For SS valve use V8131.
+,,,,Carbon Steel,D,Service,No,1.5,600 - 800,Amb,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,
+,CDO,"Carbon Dioxide, Gas",,Carbon Steel,D,Service,No,1.5,< 500,Amb,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,
+,NG,Natural Gas,,Carbon Steel,N*,Pnuem *,No,1.5,< 500 **,Amb,1034 @ 204,CS6,Y1,On-Off / Isolation (ball),V1115,15,50,"* And to applicable local codes and standards (e.g. CSA B149, NFPA 54).
+** Maximum operating pressure may be limited by code."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1215,80,100,
+,,,,,,,,,,,,,,Throttling (b'fly),V2813,150,300,
+,,,,,,,,,,,,,,Check (lift),V4115,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5115,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5215,80,150,
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,100,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,NIG,"Nitrogen, Gas",,Carbon Steel,D,Service,No,1.5,< 1000,Amb,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,
+,OD,"Oil, Diesel",#2 Fuel,Carbon Steel,D*,Service,No,1.5,700,Amb,1034 @ 204,CS7,P,On-Off / Isolation (gate),V7211,50,300,* And to NFPA 30 or lcal codes and standards.
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,OF,"Oil, Fuel",#6 Fuel,Carbon Steel,D*,Service,No,1.5,700,100,1034 @ 204,CS7,P,On-Off / Isolation (gate),V7211,50,300,* And to NFPA 30 or lcal codes and standards.
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,LPG,"Petroleum, Liquified Gas",,Carbon Steel,N*,Pneum *,No,1.5,< 500 **,Amb,1034 @ 204,CS6,Y1,On-Off / Isolation (ball),V1115,15,50,"* And to applicable local codes and standards (e.g. CSA B149, NFPA 54).
+** Maximum operating pressure may be limited by code."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1215,80,100,
+,,,,,,,,,,,,,,Throttling (b'fly),V2813,150,300,
+,,,,,,,,,,,,,,Check (lift),V4115,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5115,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5215,80,150,
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,100,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,PRG,Propane Gas,,Carbon Steel,N*,Pneum *,No,1.5,< 500 **,amb,1034 @ 204,CS6,Y1,On-Off / Isolation (ball),V1115,15,50,"* And to applicable local codes and standards (e.g. CSA B149, NFPA 54).
+** Maximum operating pressure may be limited by code."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1215,80,100,
+,,,,,,,,,,,,,,Throttling (b'fly),V2813,150,300,
+,,,,,,,,,,,,,,Check (lift),V4115,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5115,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5215,80,150,
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,100,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,JLP,"Steam,
+Low Pressure Saturated",,Carbon Steel,N,Hydro,No,1.5,< 400,< 152,1034 @ 204,CS6,P or B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,Check (lift),V4142,15,50,
+,,,,,,,,,,,,,,Check (swing),V4211,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,JMP,"Steam,
+Medium Pressure Saturated",,Carbon Steel,N,Hydro,No,1.5,< 2000,< 215,2068 @ 232,CS14,Y1,Check (lift),V4142,15,50,
+,,,,,,,,,,,,,,Check (swing),V4214,50,200,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7212,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,,,,Carbon Steel,N,Hydro,No,1.5,≤ 1034,≤ 204,1034 @ 204,CS6,Y1,Check (lift),V4142,15,50,
+,,,,,,,,,,,,,,Check (swing),V4211,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,300,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,CLP,"Steam Condensate,
+Low Pressure",,Carbon Steel,N,Hydro,No,1.5,< 400,< 152,1034 @ 204,CS6,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,Check (lift),V4142,15,50,
+,,,,,,,,,,,,,,Check (swing),V4211,50,300,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,300,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,CMP,"Steam Condensate,
+Medium Pressure",,Carbon Steel,N,Hydro,No,1.5,< 2000,< 215,2068 @ 232,CS14,Y1,Check (lift),V4142,15,50,
+,,,,,,,,,,,,,,Check (swing),V4214,50,200,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7212,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,,,,Carbon Steel,N,Hydro,No,1.5,≤ 1034,≤ 204,1034 @ 204,CS6,Y1,Check (lift),V4142,15,50,
+,,,,,,,,,,,,,,Check (swing),V4211,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7211,50,600,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7341,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8211,80,300,
+,,,,,,,,,,,,,,Throttling (globe),V8341,15,50,
+,CHS,"Water, Chilled Supply",,Carbon Steel,D,Service,No,1.5,100 - 400,15,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,50,200,
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Check (swing),V4231,80,200,
+,CHR,"Water, Chilled Return",,Carbon Steel,D,Service,No,1.5,200 - 500,30,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,50,200,
+,,,,,,,,,,,,,,Check (swing),V4131,15,50,
+,,,,,,,,,,,,,,Check (swing),V4231,80,200,
+,WCS,"Water, Cooling
+Supply",<2000 ppm Cl-,Carbon Steel,D,Service,No,1.5,200 - 500,20 - 30,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,25,100,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,80,500,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2838,600,750,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7221,80,200,
+,WCR,"Water, Cooling Return",<2000 ppm Cl-,Carbon Steel,D,Service,No,1.5,200 - 500,30 - 40,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,25,100,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,80,500,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2838,600,750,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7221,80,200,
+,WD,"Water, Demineralized",,304L Stainless Steel,D,Service,No,0,400 - 600,Amb,1034 @ 204,S42,B,On-Off / Isolation (ball),V1231,80,100,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1331,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,100,150,
+,,,,,,,,,,,,,,Check (swing),V4231,80,150,
+,,,,,,,,,,,,,,Check (swing),V4331,15,50,
+,,,,,,,,,,,,,,Throttling (globe),V8331,15,50,
+,,,,PVC,D,Service,No,0,400 - 600,Amb,"1034 @ 32
+345 @ 60
+*",PV6,C,On-Off / Isolation (ball),V1352,15,50,* Service Limits vary with temp.
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1252,80,80,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2837,100,150,
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm),V3356,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm),V3256,80,100,
+,,,,,,,,,,,,,,Check (ball),V4352,15,50,
+,,,,,,,,,,,,,,Check (ball),V4252,80,100,
+,,,,,,,,,,,,,,Check (swing),V4752,80,100,
+,WF,"Water, Fire",,Carbon Steel,n/a*,Hydro,No,1.5,<1034,Amb,1034 @ 204,CS9*,B,,,,,* Design per local code (e.g. NFPA) or FM standards.
+,WP,"Water, Potable",,"Carbon Steel, Galvanized",D,Service,No,0,400 - 600,Amb,1034 @ 177,CS4,B,On-Off / Isolation (ball),V1112,15,50,"For SS valves use V1131, V1132 for instr isolation / free ends."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,For SS valve use V1231.
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,For SS valve use V8131.
+,,,,PVC,D,Service,No,0,400 - 600,Amb,"1034 @ 32
+345 @ 60
+*",PV6,D,On-Off / Isolation (ball),V1352,15,50,* Service Limits vary with temp.
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1252,80,80,
+,WM,"Water, Process (Mill)",,Carbon Steel,D,Service,No,1.5,400 - 600,Amb,1034 @ 204,CS9,B,On-Off / Isolation (ball),V1112,15,50,
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,25,100,
+,,,,,,,,,,,,,,Check (swing),V4141,15,50,
+,,,,,,,,,,,,,,Check (swing),V4221,50,300,
+,,,,,,,,,,,,,,On-Off / Isolation (gate),V7221,80,200,
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,
+,WSS,"Water, Sea Supply",,FRP,D,Service,No,2.5,400 - 600,20 - 30,1034 @ 93,FR5,U or D,On-Off / Isolation (ball),V1259,40,200,
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm),V3264,15,100,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,50,500,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15.0,50,
+,WSR,"Water, Sea Return",,FRP,D,Service,No,2.5,400 - 600,30 - 40,1034 @ 93,FR5,U or D,On-Off / Isolation (ball),V1259,40,200,
+,,,,,,,,,,,,,,On-Off / Isolation (diaphragm),V3264,15,100,
+,,,,,,,,,,,,,,On-Off / Isolation (b'fly),V2863,50,500,
+,,,,,,,,,,,,,,On-Off / Isolation (plug),V5261,15.0,50,
+,WTS,"Water, Tempered Supply",,"Carbon Steel, Galvanized",D,Service,No,0,400 - 600,25,1034 @ 177,CS4,B,On-Off / Isolation (ball),V1112,15,50,"For SS valves use V1131, V1132 for instr isolation / free ends."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,For SS valve use V1231.
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,For SS valve use V8131.
+,,,,PVC,D,Service,No,0,400 - 600,25,"1034 @ 32
+345 @ 60
+*",PV6,D,On-Off / Isolation (ball),V1352,15,50,* Service Limits vary with temp.
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1252,80,80,
+,WTR,"Water, Tempered Return",,"Carbon Steel, Galvanized",D,Service,No,0,400 - 600,25,1034 @ 177,CS4,B,On-Off / Isolation (ball),V1112,15,50,"For SS valves use V1131, V1132 for instr isolation / free ends."
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1211,80,100,For SS valve use V1231.
+,,,,,,,,,,,,,,Throttling (globe),V8121,15,50,For SS valve use V8131.
+,,,,PVC,D,Service,No,0,400 - 600,25,"1034 @ 32
+345 @ 60
+*",PV6,D,On-Off / Isolation (ball),V1352,15,50,* Service Limits vary with temp.
+,,,,,,,,,,,,,,On-Off / Isolation (ball),V1252,80,80,

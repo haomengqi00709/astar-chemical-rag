@@ -1,0 +1,6 @@
+# doc_id=8-LST-0119 discipline=8 revision=R0
+|,1.0,2.0,5.0,6.0,4.0,8.0,10.0,12.0,13.0,14.0,15.0,16.0,17.0,20.0,21.0,20.0_1,21.0_1,col_18,28.0,28.0_1,22.0,23.0,24.0,29.0,32.0
+,Instrument No.,,P&ID,Fluid,"Composition
+(%w/w)",Physical Properties @ N.O.C.,,Flowrate (m3/h),,,Temperature (°C),,,Inlet Pressure (kPa(g)) @,,Pressure Drop (kPa) @ shut-off Press. Kpa(g),,"Press Setting (kPa
+(g))",Recommended Type,Leakage Class,Material of Construction,,,Operating Case Reference,Comments
+,Aker Kvaerner Chemetics,Owner,,,,Dens. (kg/m3),Vap Pres (kPa(a)),Min.,Norm.,Max.,Min.,Norm.,Max.,Norm. Flow,Max. Flow,Norm. Flow,Max. Flow,,,,Wetted parts,Non-Wetted Parts,Gasket/Seal,,

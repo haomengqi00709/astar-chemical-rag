@@ -1,0 +1,21 @@
+# doc_id=0-LST-2004 discipline=0 revision=R3
+Title,Name,Name
+Project Manager,,
+Project Engineer,,
+Construction Manager,[NA or TBA unless known at project start],[NA or TBA unless known at project start]
+Commissioning Manager,[NA or TBA unless known at project start],[NA or TBA unless known at project start]
+Project Controls,,
+Quality Assurance Audit,[NA unless contract requirement],[NA unless contract requirement]
+Procurement,,
+Discipline,Discipline Lead,Discipline Approver
+Technology,,NA
+Process,,
+Mechanical (Equipment),,
+Mechanical Calculations,,
+Mechanical (Type E or D Equipment),,
+Mechanical (Piping),,
+Drafting (Equipment),,
+Drafting (Piping),,
+Civil / Structural,,
+Instrumentation,,
+Electrical,,
