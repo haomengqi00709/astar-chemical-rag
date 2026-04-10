@@ -13,8 +13,20 @@ __pycache__/
 chroma_db/
 
 # Node
+node_modules/
 frontend/AK_chemetics_Company_rag/node_modules/
 frontend/AK_chemetics_Company_rag/dist/
+
+# Wiki KB generated artifacts (rebuilt by pipeline)
+wiki_kb/db/
+wiki_kb/_tmp/
+
+# User project data (runtime only)
+user_projects/
+
+# Parsed caches
+parsed_chunks_doc.json
+parsed_chunks_pdf.json
 
 # OS / temp
 .DS_Store
@@ -25,3 +37,6 @@ Thumbs.db
 
 # Drive downloads
 drive-download-*/
+
+# GitHub workflows (not needed in image)
+.github/

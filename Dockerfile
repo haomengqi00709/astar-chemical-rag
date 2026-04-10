@@ -1,31 +1,33 @@
 # ── Base: Python 3.12 + Node 20 ──────────────────────────────────────────────
 FROM python:3.12-slim-bookworm
 
-# Install Node.js 20 + LibreOffice (for .doc → .docx conversion)
+# Layer 1: System packages — cached unless base image changes
 RUN apt-get update && \
-    apt-get install -y curl libreoffice-writer && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends \
+      curl \
+      libreoffice-writer \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /app
 
-# ── Python dependencies ───────────────────────────────────────────────────────
+# Layer 2: Python deps — cached unless requirements.txt changes
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt
 
-# ── Node dependencies ─────────────────────────────────────────────────────────
-COPY frontend/AK_chemetics_Company_rag/package*.json ./frontend/AK_chemetics_Company_rag/
-RUN cd frontend/AK_chemetics_Company_rag && npm install
+# Layer 3: Node deps — cached unless package*.json changes
+COPY frontend/AK_chemetics_Company_rag/package.json frontend/AK_chemetics_Company_rag/package-lock.json* ./frontend/AK_chemetics_Company_rag/
+RUN cd frontend/AK_chemetics_Company_rag && npm install --prefer-offline 2>/dev/null || npm install
 
-# ── Copy application code ─────────────────────────────────────────────────────
+# Layer 4: App code — rebuilds every push (keep this small via .dockerignore)
 COPY . .
 
-# ── Build React frontend ──────────────────────────────────────────────────────
+# Layer 5: Build React frontend
 RUN cd frontend/AK_chemetics_Company_rag && npm run build
 
-# ── Build ChromaDB vector store ───────────────────────────────────────────────
-# GOOGLE_API_KEY must be set as a Railway Variable (passed as build arg automatically)
+# Layer 6: Build ChromaDB vector store
 ARG GOOGLE_API_KEY
 RUN GOOGLE_API_KEY=${GOOGLE_API_KEY} python3 load_vectorstore.py
 

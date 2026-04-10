@@ -1313,6 +1313,106 @@ app.post('/api/wiki/query', (req, res) => {
 
 
 // ---------------------------------------------------------------------------
+// GET /api/wiki/graph  — knowledge-graph nodes + edges from [[wiki links]]
+// Cached in memory; rebuilt once per hour.
+// ---------------------------------------------------------------------------
+let _graphCache = null;
+let _graphCacheTime = 0;
+
+function buildWikiGraph() {
+  if (!fs.existsSync(WIKI_DIR)) return { nodeMap: new Map(), rawEdges: [] };
+
+  const files = fs.readdirSync(WIKI_DIR).filter(f => f.endsWith('.md') && f !== 'Index.md');
+  const nodeMap  = new Map();  // slug → { id, title, discipline, doc_type, source_folder }
+  const rawEdges = [];         // { source, target }
+
+  for (const file of files) {
+    const slug = file.replace(/\.md$/, '');
+    let raw;
+    try { raw = fs.readFileSync(path.join(WIKI_DIR, file), 'utf-8'); } catch { continue; }
+
+    // Parse frontmatter
+    let meta = { slug, title: slug.replace(/_/g, ' '), discipline: -1, doc_type: '', source_folder: '' };
+    const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/);
+    if (fmMatch) {
+      for (const line of fmMatch[1].split('\n')) {
+        const kv = line.match(/^(\w+):\s*"?(.+?)"?\s*$/);
+        if (kv) {
+          const [, k, v] = kv;
+          if (k === 'title')        meta.title = v;
+          else if (k === 'discipline')   meta.discipline = parseInt(v) || -1;
+          else if (k === 'doc_type')     meta.doc_type = v;
+          else if (k === 'source_folder') meta.source_folder = v;
+        }
+      }
+    }
+    nodeMap.set(slug, meta);
+
+    // Extract [[target]] and [[target|label]] links
+    for (const m of raw.matchAll(/\[\[([^\]|]+?)(?:\|[^\]]+?)?\]\]/g)) {
+      rawEdges.push({ source: slug, target: m[1].trim() });
+    }
+  }
+
+  return { nodeMap, rawEdges };
+}
+
+app.get('/api/wiki/graph', (req, res) => {
+  try {
+    const now = Date.now();
+    if (!_graphCache || now - _graphCacheTime > 3_600_000) {
+      _graphCache = buildWikiGraph();
+      _graphCacheTime = now;
+    }
+    const { nodeMap, rawEdges } = _graphCache;
+
+    const discFilter = req.query.discipline !== undefined && req.query.discipline !== ''
+      ? parseInt(req.query.discipline) : null;
+    const limit = Math.min(parseInt(req.query.limit || '200'), 600);
+
+    // Filter nodes by discipline
+    const filtered = discFilter !== null
+      ? new Map([...nodeMap].filter(([, v]) => v.discipline === discFilter))
+      : nodeMap;
+
+    // Only keep edges where both ends are in the filtered set
+    const edges = rawEdges.filter(e => filtered.has(e.source) && filtered.has(e.target));
+
+    // Degree count
+    const degree = new Map();
+    for (const { source, target } of edges) {
+      degree.set(source, (degree.get(source) || 0) + 1);
+      degree.set(target, (degree.get(target) || 0) + 1);
+    }
+
+    // Sort by degree desc, take top-limit
+    let nodes = [...filtered.values()]
+      .sort((a, b) => (degree.get(b.slug) || 0) - (degree.get(a.slug) || 0))
+      .slice(0, limit)
+      .map(n => ({ id: n.slug, title: n.title, discipline: n.discipline, doc_type: n.doc_type, source_folder: n.source_folder, degree: degree.get(n.slug) || 0 }));
+
+    const nodeIds = new Set(nodes.map(n => n.id));
+
+    // Deduplicated edges within kept nodes
+    const edgeSet = new Set();
+    const finalEdges = edges.filter(e => {
+      if (!nodeIds.has(e.source) || !nodeIds.has(e.target)) return false;
+      const key = [e.source, e.target].sort().join('→');
+      if (edgeSet.has(key)) return false;
+      edgeSet.add(key); return true;
+    });
+
+    res.json({
+      nodes, edges: finalEdges,
+      meta: { total_nodes: filtered.size, shown_nodes: nodes.length, total_edges: edges.length, shown_edges: finalEdges.length },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ---------------------------------------------------------------------------
 // User Projects — custom Karpathy RAG per project
 // ---------------------------------------------------------------------------
 const USER_PROJECTS_DIR  = path.join(RAG_ROOT, 'user_projects');
@@ -1423,6 +1523,72 @@ app.post('/api/user-projects', upload.array('files'), (req, res) => {
   });
 
   res.json(meta);
+});
+
+// GET /api/user-projects/:id/graph — wiki graph for a specific project
+app.get('/api/user-projects/:id/graph', (req, res) => {
+  try {
+    const projDir  = path.join(USER_PROJECTS_DIR, req.params.id);
+    const wikiDir  = path.join(projDir, 'wiki');
+    if (!fs.existsSync(wikiDir)) return res.json({ nodes: [], edges: [], meta: { total_nodes: 0, shown_nodes: 0, total_edges: 0, shown_edges: 0 } });
+
+    const files = fs.readdirSync(wikiDir).filter(f => f.endsWith('.md') && f !== 'Index.md');
+    const nodeMap  = new Map();
+    const rawEdges = [];
+
+    for (const file of files) {
+      const slug = file.replace(/\.md$/, '');
+      let raw;
+      try { raw = fs.readFileSync(path.join(wikiDir, file), 'utf-8'); } catch { continue; }
+
+      let meta = { slug, title: slug.replace(/_/g, ' '), discipline: -1, doc_type: '', source_folder: '' };
+      const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/);
+      if (fmMatch) {
+        for (const line of fmMatch[1].split('\n')) {
+          const kv = line.match(/^(\w+):\s*"?(.+?)"?\s*$/);
+          if (kv) {
+            const [, k, v] = kv;
+            if (k === 'title')         meta.title = v;
+            else if (k === 'discipline')    meta.discipline = parseInt(v) || -1;
+            else if (k === 'doc_type')      meta.doc_type = v;
+            else if (k === 'source_folder') meta.source_folder = v;
+          }
+        }
+      }
+      nodeMap.set(slug, meta);
+
+      for (const m of raw.matchAll(/\[\[([^\]|]+?)(?:\|[^\]]+?)?\]\]/g)) {
+        rawEdges.push({ source: slug, target: m[1].trim() });
+      }
+    }
+
+    const limit = Math.min(parseInt(req.query.limit || '300'), 600);
+    const edges  = rawEdges.filter(e => nodeMap.has(e.source) && nodeMap.has(e.target));
+
+    const degree = new Map();
+    for (const { source, target } of edges) {
+      degree.set(source, (degree.get(source) || 0) + 1);
+      degree.set(target, (degree.get(target) || 0) + 1);
+    }
+
+    let nodes = [...nodeMap.values()]
+      .sort((a, b) => (degree.get(b.slug) || 0) - (degree.get(a.slug) || 0))
+      .slice(0, limit)
+      .map(n => ({ id: n.slug, title: n.title, discipline: n.discipline, doc_type: n.doc_type, source_folder: n.source_folder, degree: degree.get(n.slug) || 0 }));
+
+    const nodeIds = new Set(nodes.map(n => n.id));
+    const edgeSet = new Set();
+    const finalEdges = edges.filter(e => {
+      if (!nodeIds.has(e.source) || !nodeIds.has(e.target)) return false;
+      const key = [e.source, e.target].sort().join('→');
+      if (edgeSet.has(key)) return false;
+      edgeSet.add(key); return true;
+    });
+
+    res.json({ nodes, edges: finalEdges, meta: { total_nodes: nodeMap.size, shown_nodes: nodes.length, total_edges: edges.length, shown_edges: finalEdges.length } });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // POST /api/user-projects/:id/query — run ask.py against project wiki

@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Search, Filter, PlayCircle, FileText, Table2, Settings, Package, Layers,
   ChevronDown, ChevronRight, Briefcase, FlaskConical, Wrench, ArrowLeft, X,
-  BookOpen, Send, Loader2, MessageSquare, Plus, Upload, Trash2, FolderOpen,
+  BookOpen, Send, Loader2, MessageSquare, Plus, Upload, Trash2, FolderOpen, Network,
 } from 'lucide-react';
+import { KnowledgeGraph } from './KnowledgeGraph';
+import { ProjectGraph } from './ProjectGraph';
 import { motion, AnimatePresence } from 'motion/react';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -173,6 +175,7 @@ const CalcViewer: React.FC<{ data: any }> = ({ data }) => {
 
 const ProjectRefView: React.FC<{ project: any }> = ({ project }) => {
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
+  const [tab, setTab] = useState<'files' | 'graph'>('files');
   const ctx        = project.context ?? {};
   const register   = (ctx.document_register ?? []) as any[];
   const deliverables: Record<string, string> = ctx.deliverables ?? {};
@@ -183,18 +186,51 @@ const ProjectRefView: React.FC<{ project: any }> = ({ project }) => {
   const selectedDoc = selectedDocId ? register.find((d: any) => d.doc_id === selectedDocId) : null;
 
   return (
-    <div className="flex flex-1 overflow-hidden">
-      {/* File list */}
-      <div className={`overflow-y-auto ${selectedDocId ? 'w-80 shrink-0 border-r border-slate-100' : 'flex-1'}`}>
-        {/* Project header */}
-        <div className="px-6 py-5 border-b border-slate-100">
-          <p className="text-lg font-extrabold text-slate-900">{ps?.project_title ?? project.id}</p>
-          <p className="text-xs text-slate-400 mt-0.5">{ps?.client} · {ps?.location}</p>
-          <div className="flex items-center gap-2 mt-2">
+    <div className="flex flex-1 flex-col overflow-hidden">
+      {/* Project header + tabs */}
+      <div className="px-6 py-4 border-b border-slate-100 bg-white shrink-0">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-base font-extrabold text-slate-900">{ps?.project_title ?? project.id}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{ps?.client} · {ps?.location}</p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Completed</span>
             <span className="text-[10px] font-mono text-slate-400">{savedDocs.length} file{savedDocs.length !== 1 ? 's' : ''}</span>
           </div>
         </div>
+        {/* Tab bar */}
+        <div className="flex gap-1 mt-3">
+          {(['files', 'graph'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => { setTab(t); if (t === 'files') {} else setSelectedDocId(null); }}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
+                tab === t
+                  ? 'bg-slate-900 text-white'
+                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              {t === 'files' ? <FileText className="w-3.5 h-3.5" /> : <Network className="w-3.5 h-3.5" />}
+              {t === 'files' ? 'Files' : 'Knowledge Graph'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      {tab === 'graph' ? (
+        <div className="flex-1 overflow-hidden">
+          <ProjectGraph
+            register={register}
+            deliverables={deliverables}
+            docStatus={docStatus}
+          />
+        </div>
+      ) : (
+      <div className="flex flex-1 overflow-hidden">
+      {/* File list */}
+      <div className={`overflow-y-auto ${selectedDocId ? 'w-80 shrink-0 border-r border-slate-100' : 'flex-1'}`}>
 
         {savedDocs.length === 0 ? (
           <p className="px-6 py-8 text-sm text-slate-400 italic">No generated files for this project.</p>
@@ -257,6 +293,8 @@ const ProjectRefView: React.FC<{ project: any }> = ({ project }) => {
             onClose={() => setSelectedDocId(null)}
           />
         </div>
+      )}
+      </div>
       )}
     </div>
   );
@@ -393,6 +431,7 @@ const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: ()
 const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (id: string) => void; onRefresh: () => void }> = ({ project, onBack, onDelete, onRefresh }) => {
   const [status, setStatus] = useState<any>({ status: project.status });
   const [files, setFiles] = useState<any[]>(project.files || []);
+  const [tab, setTab] = useState<'chat' | 'graph'>('chat');
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'error'; content: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
@@ -606,7 +645,29 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
       {/* File panel — always visible */}
       <FilePanel />
 
-      {!isReady || isProcessing ? (
+      {/* Tab bar */}
+      {files.length > 0 && (
+        <div className="flex gap-1 px-6 py-2 border-b border-slate-100 shrink-0 bg-white">
+          {(['chat', 'graph'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
+                tab === t ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              {t === 'chat' ? <MessageSquare className="w-3.5 h-3.5" /> : <Network className="w-3.5 h-3.5" />}
+              {t === 'chat' ? 'Chat' : 'Knowledge Graph'}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {tab === 'graph' && files.length > 0 ? (
+        <div className="flex-1 overflow-hidden">
+          <KnowledgeGraph graphUrl={`/api/user-projects/${project.id}/graph`} />
+        </div>
+      ) : !isReady || isProcessing ? (
         <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
           <div className="h-16 w-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-5">
             {isProcessing ? <Loader2 className="w-8 h-8 text-amber-500 animate-spin" /> : <FolderOpen className="w-8 h-8 text-slate-400" />}
@@ -696,8 +757,8 @@ export const Library: React.FC = () => {
   const [docsOpen,          setDocsOpen]          = useState(false);
   const [refProjectsOpen,   setRefProjectsOpen]   = useState(true);
 
-  // view mode: 'query' (chatbot) vs 'docs' (document grid)
-  const [activeView,        setActiveView]        = useState<'query' | 'docs'>('query');
+  // view mode: 'query' (chatbot) | 'docs' (document grid) | 'graph' (knowledge graph)
+  const [activeView,        setActiveView]        = useState<'query' | 'docs' | 'graph'>('query');
 
   // chatbot state
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'error'; content: string }[]>([]);
@@ -842,6 +903,19 @@ export const Library: React.FC = () => {
                 <span className="text-xs">Query</span>
               </button>
 
+              {/* Knowledge Graph */}
+              <button
+                onClick={() => { setActiveView('graph'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
+                className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
+                  !selectedProject && !selectedUserProject && !creatingProject && activeView === 'graph'
+                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Network className="w-3.5 h-3.5" />
+                <span className="text-xs">Knowledge Graph</span>
+              </button>
+
               {/* All Documents dropdown */}
               <button
                 onClick={() => { setDocsOpen(o => !o); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
@@ -980,31 +1054,32 @@ export const Library: React.FC = () => {
                 );
               })}
 
-              {/* Completed agent projects */}
-              {completedProjects.length > 0 && (
-                <div className="ml-5 border-l-2 border-slate-100 mt-1">
-                  {completedProjects.map(proj => {
-                    const ps     = proj.context?.project_summary;
-                    const active = selectedProject?.id === proj.id;
-                    return (
-                      <button
-                        key={proj.id}
-                        onClick={() => { setSelectedProject(active ? null : proj); setSelectedUserProject(null); setCreatingProject(false); }}
-                        className={`w-full text-left pl-4 pr-3 py-2 transition-colors relative ${
-                          active
-                            ? 'bg-primary-container/10 text-primary-container border-r-2 border-primary-container'
-                            : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-                        }`}
-                      >
-                        <p className={`text-[11px] truncate leading-snug ${active ? 'font-bold' : 'font-medium'}`}>
-                          {ps?.project_title ?? proj.id}
-                        </p>
-                        <p className="text-[10px] text-slate-400 font-mono truncate mt-0.5">{ps?.client ?? ''}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+              {/* Completed agent projects — same level as user projects */}
+              {completedProjects.map(proj => {
+                const ps     = proj.context?.project_summary;
+                const active = selectedProject?.id === proj.id;
+                const docCount = (proj.context?.document_register ?? []).length;
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => { setSelectedProject(active ? null : proj); setSelectedUserProject(null); setCreatingProject(false); }}
+                    className={`w-full text-left px-5 py-2 transition-colors ${
+                      active
+                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
+                      <p className="text-[11px] truncate leading-snug font-medium">{ps?.project_title ?? proj.id}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5 ml-5.5">
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Completed</span>
+                      <span className="text-[10px] font-mono text-slate-400">{docCount} doc{docCount !== 1 ? 's' : ''}</span>
+                    </div>
+                  </button>
+                );
+              })}
 
               {completedProjects.length === 0 && userProjects.length === 0 && (
                 <p className="pl-8 pr-4 py-2 text-[11px] text-slate-300 italic">No projects yet.</p>
@@ -1064,6 +1139,11 @@ export const Library: React.FC = () => {
               </div>
             </motion.div>
           </AnimatePresence>
+        ) : activeView === 'graph' ? (
+          /* ── Knowledge Graph view ── */
+          <div className="flex-1 overflow-hidden">
+            <KnowledgeGraph />
+          </div>
         ) : activeView === 'query' ? (
           /* ── Chatbot query view ── */
           <div className="flex-1 flex flex-col overflow-hidden bg-white">
