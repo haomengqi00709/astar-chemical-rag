@@ -583,10 +583,10 @@ app.post('/api/agents/process', (req, res) => {
         }
       }
       res.write(`event: result\ndata: ${JSON.stringify(result)}\n\n`);
-    } catch (parseErr: any) {
+    } catch (parseErr) {
       const snippet = stdout.slice(-500) || '(empty stdout)';
-      console.error('[process-agent] JSON parse failed:', parseErr?.message, 'stdout tail:', snippet);
-      res.write(`event: error\ndata: ${JSON.stringify({ error: `Could not parse process agent output: ${parseErr?.message} — stdout tail: ${snippet}` })}\n\n`);
+      console.error('[process-agent] JSON parse failed:', parseErr && parseErr.message, 'stdout tail:', snippet);
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `Could not parse process agent output: ${parseErr && parseErr.message} — stdout tail: ${snippet}` })}\n\n`);
     }
     res.end();
   });
