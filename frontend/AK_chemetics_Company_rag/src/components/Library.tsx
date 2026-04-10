@@ -431,7 +431,12 @@ const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: ()
 const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (id: string) => void; onRefresh: () => void }> = ({ project, onBack, onDelete, onRefresh }) => {
   const [status, setStatus] = useState<any>({ status: project.status });
   const [files, setFiles] = useState<any[]>(project.files || []);
-  const [tab, setTab] = useState<'chat' | 'graph'>('chat');
+  const [tab, setTab] = useState<'chat' | 'files' | 'graph'>('chat');
+  // Files tab state
+  const [selectedFile,  setSelectedFile]  = useState<{ slug: string; name: string; title: string } | null>(null);
+  const [fileContent,   setFileContent]   = useState<string>('');
+  const [fileLoading,   setFileLoading]   = useState(false);
+  const [wikiFiles,     setWikiFiles]     = useState<{ slug: string; name: string; title: string }[]>([]);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'error'; content: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
@@ -469,6 +474,27 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, chatLoading, thinkingStep]);
+
+  // Load wiki file list when Files tab is first opened
+  useEffect(() => {
+    if (tab !== 'files' || wikiFiles.length > 0) return;
+    fetch(`/api/user-projects/${project.id}/wiki-files`)
+      .then(r => r.json())
+      .then(d => setWikiFiles(d.files ?? []))
+      .catch(() => {});
+  }, [tab, project.id, wikiFiles.length]);
+
+  const loadFileContent = async (file: { slug: string; name: string; title: string }) => {
+    setSelectedFile(file);
+    setFileContent('');
+    setFileLoading(true);
+    try {
+      const r = await fetch(`/api/user-projects/${project.id}/wiki-page/${encodeURIComponent(file.slug)}`);
+      const d = await r.json();
+      setFileContent(d.content ?? '');
+    } catch { setFileContent('Failed to load content.'); }
+    finally { setFileLoading(false); }
+  };
 
   const THINKING = ['Reading wiki index…', 'Searching pages…', 'Analyzing content…', 'Synthesizing answer…'];
 
@@ -648,7 +674,7 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
       {/* Tab bar */}
       {files.length > 0 && (
         <div className="flex gap-1 px-6 py-2 border-b border-slate-100 shrink-0 bg-white">
-          {(['chat', 'graph'] as const).map(t => (
+          {(['chat', 'files', 'graph'] as const).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -656,8 +682,8 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
                 tab === t ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              {t === 'chat' ? <MessageSquare className="w-3.5 h-3.5" /> : <Network className="w-3.5 h-3.5" />}
-              {t === 'chat' ? 'Chat' : 'Knowledge Graph'}
+              {t === 'chat' ? <MessageSquare className="w-3.5 h-3.5" /> : t === 'files' ? <FileText className="w-3.5 h-3.5" /> : <Network className="w-3.5 h-3.5" />}
+              {t === 'chat' ? 'Chat' : t === 'files' ? 'Files' : 'Knowledge Graph'}
             </button>
           ))}
         </div>
@@ -666,6 +692,63 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
       {tab === 'graph' && files.length > 0 ? (
         <div className="flex-1 overflow-hidden">
           <KnowledgeGraph graphUrl={`/api/user-projects/${project.id}/graph`} />
+        </div>
+      ) : tab === 'files' && files.length > 0 ? (
+        /* ── Files tab: left list + right viewer ─────────────────────────── */
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left: file list */}
+          <div className={`overflow-y-auto shrink-0 border-r border-slate-100 ${selectedFile ? 'w-72' : 'flex-1'}`}>
+            {wikiFiles.length === 0 ? (
+              <div className="px-6 py-8 flex flex-col items-center justify-center text-center">
+                {isReady
+                  ? <p className="text-sm text-slate-400 italic">No wiki pages found. The knowledge base may still be processing.</p>
+                  : <p className="text-sm text-slate-400 italic">Build the knowledge base first to view files.</p>
+                }
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-50 py-2">
+                {wikiFiles.map(f => (
+                  <button
+                    key={f.slug}
+                    onClick={() => loadFileContent(f)}
+                    className={`w-full text-left flex items-start gap-3 px-5 py-3 transition-colors ${
+                      selectedFile?.slug === f.slug
+                        ? 'bg-slate-900 text-white'
+                        : 'hover:bg-slate-50 text-slate-700'
+                    }`}
+                  >
+                    <FileText className={`w-4 h-4 mt-0.5 shrink-0 ${selectedFile?.slug === f.slug ? 'text-white' : 'text-slate-400'}`} />
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold font-mono truncate">{f.slug}</p>
+                      <p className="text-[11px] truncate mt-0.5 opacity-70">{f.title !== f.slug ? f.title : ''}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Right: content viewer */}
+          {selectedFile && (
+            <div className="flex-1 overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 shrink-0">
+                <div>
+                  <p className="text-sm font-bold font-mono text-slate-900">{selectedFile.slug}</p>
+                  {selectedFile.title !== selectedFile.slug && (
+                    <p className="text-xs text-slate-400 mt-0.5">{selectedFile.title}</p>
+                  )}
+                </div>
+                <button onClick={() => setSelectedFile(null)} className="text-slate-400 hover:text-slate-700 transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                {fileLoading
+                  ? <div className="flex items-center justify-center h-full"><Loader2 className="w-5 h-5 animate-spin text-slate-400" /></div>
+                  : <pre className="p-5 text-xs font-mono text-slate-700 leading-relaxed whitespace-pre-wrap">{fileContent}</pre>
+                }
+              </div>
+            </div>
+          )}
         </div>
       ) : !isReady || isProcessing ? (
         <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">

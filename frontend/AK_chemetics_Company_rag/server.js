@@ -1635,6 +1635,39 @@ app.post('/api/user-projects', upload.array('files'), (req, res) => {
   res.json(meta);
 });
 
+// GET /api/user-projects/:id/wiki-files — list of wiki pages with metadata
+app.get('/api/user-projects/:id/wiki-files', (req, res) => {
+  try {
+    const wikiDir = path.join(USER_PROJECTS_DIR, req.params.id, 'wiki');
+    if (!fs.existsSync(wikiDir)) return res.json({ files: [] });
+    const files = fs.readdirSync(wikiDir)
+      .filter(f => f.endsWith('.md') && f !== 'Index.md')
+      .map(f => {
+        const slug = f.replace(/\.md$/, '');
+        let title = slug;
+        try {
+          const raw = fs.readFileSync(path.join(wikiDir, f), 'utf-8');
+          const m = raw.match(/^title:\s*"?(.+?)"?\s*$/m);
+          if (m) title = m[1];
+        } catch {}
+        return { slug, title, name: f };
+      });
+    res.json({ files });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET /api/user-projects/:id/wiki-page/:slug — content of one wiki page
+app.get('/api/user-projects/:id/wiki-page/:slug', (req, res) => {
+  try {
+    const filePath = path.join(USER_PROJECTS_DIR, req.params.id, 'wiki', `${req.params.slug}.md`);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Page not found' });
+    let raw = fs.readFileSync(filePath, 'utf-8');
+    // Strip frontmatter before returning
+    raw = raw.replace(/^---\n[\s\S]*?\n---\n*/, '');
+    res.json({ slug: req.params.slug, content: raw });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // GET /api/user-projects/:id/graph — wiki graph for a specific project
 app.get('/api/user-projects/:id/graph', (req, res) => {
   try {
