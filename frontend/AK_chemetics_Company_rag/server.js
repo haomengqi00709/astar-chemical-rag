@@ -793,6 +793,116 @@ app.put('/api/projects/:id/complete', (req, res) => {
 
 
 // ---------------------------------------------------------------------------
+// POST /api/projects/:id/build-reference
+// Convert a completed agent project's deliverables into a user_project wiki.
+// Writes wiki pages directly (no LLM needed — deliverables are already markdown).
+// ---------------------------------------------------------------------------
+const ROLE_TO_DISC      = { 'PM': 0, 'Process Engineer': 1, 'Mechanical Engineer': 4 };
+const DISC_TO_NAME      = { 0: 'Administration', 1: 'Process Technology', 4: 'Equipment' };
+
+app.post('/api/projects/:id/build-reference', (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const projects  = loadProjects();
+    const proj      = projects.find(p => p.id === projectId);
+    if (!proj) return res.status(404).json({ error: 'Project not found' });
+
+    const deliverables = proj.context?.deliverables ?? {};
+    const register     = proj.context?.document_register ?? [];
+    const ps           = proj.context?.project_summary ?? {};
+
+    if (Object.keys(deliverables).length === 0)
+      return res.status(400).json({ error: 'No deliverables — run agents first.' });
+
+    // ── Create directories ──────────────────────────────────────────────────
+    const projDir = path.join(USER_PROJECTS_DIR, projectId);
+    const wikiDir = path.join(projDir, 'wiki');
+    fs.mkdirSync(wikiDir, { recursive: true });
+
+    const docIds = register.map(d => d.doc_id);
+
+    // ── Write one wiki page per deliverable ─────────────────────────────────
+    const written = [];
+    for (const doc of register) {
+      const content = deliverables[doc.doc_id];
+      if (!content) continue;
+
+      const disc     = ROLE_TO_DISC[doc.assigned_to] ?? 0;
+      const discName = DISC_TO_NAME[disc] ?? 'Administration';
+      const typeM    = (doc.doc_id || '').match(/-([A-Z]+)-/);
+      const docType  = typeM ? typeM[1] : (doc.doc_type ?? '');
+
+      // Detect cross-references and append as [[links]]
+      const refs = docIds.filter(other => {
+        if (other === doc.doc_id) return false;
+        const esc = other.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        return new RegExp(esc).test(content);
+      });
+      const refsSection = refs.length > 0
+        ? '\n\n## Referenced Documents\n\n' + refs.map(r => `- [[${r}]]`).join('\n')
+        : '';
+
+      const safeTitle = (doc.title ?? doc.doc_id).replace(/"/g, '\\"');
+      const header = `---
+slug: "${doc.doc_id}"
+title: "${safeTitle}"
+discipline: ${disc}
+discipline_name: "${discName}"
+doc_type: "${docType}"
+source_folder: "${doc.assigned_to ?? ''}"
+revision: "0"
+---
+
+# ${doc.doc_id} — ${doc.title ?? doc.doc_id}
+
+`;
+      fs.writeFileSync(path.join(wikiDir, `${doc.doc_id}.md`), header + content + refsSection, 'utf-8');
+      written.push(doc);
+    }
+
+    // ── Build Index.md ───────────────────────────────────────────────────────
+    const byRole = {};
+    for (const doc of written) {
+      const role = doc.assigned_to ?? 'PM';
+      if (!byRole[role]) byRole[role] = [];
+      byRole[role].push(doc);
+    }
+    const indexLines = [
+      `# ${ps.project_title ?? projectId} — Document Index`,
+      '',
+      ps.client ? `> ${ps.client}${ps.location ? ' · ' + ps.location : ''}` : '',
+      '',
+    ];
+    for (const [role, docs] of Object.entries(byRole)) {
+      indexLines.push(`## ${role}`, '');
+      for (const d of docs) indexLines.push(`- [[${d.doc_id}]] — ${d.title ?? d.doc_id}`);
+      indexLines.push('');
+    }
+    fs.writeFileSync(path.join(wikiDir, 'Index.md'), indexLines.join('\n'), 'utf-8');
+
+    // ── Register as user_project ─────────────────────────────────────────────
+    const meta = {
+      id:             projectId,
+      name:           ps.project_title ?? projectId,
+      status:         'ready',
+      isFromProject:  true,
+      files:          written.map(d => ({ name: `${d.doc_id}.md`, size: (deliverables[d.doc_id] ?? '').length })),
+      createdAt:      new Date().toISOString(),
+    };
+    const all      = loadUserProjects();
+    const existing = all.findIndex(p => p.id === projectId);
+    if (existing >= 0) all[existing] = meta; else all.push(meta);
+    saveUserProjects(all);
+
+    res.json({ success: true, pages: written.length, meta });
+  } catch (err) {
+    console.error('[build-reference]', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ---------------------------------------------------------------------------
 // PUT /api/projects/:id/doc-status
 // Body: { docId, status, userName, userRole }
 // ---------------------------------------------------------------------------

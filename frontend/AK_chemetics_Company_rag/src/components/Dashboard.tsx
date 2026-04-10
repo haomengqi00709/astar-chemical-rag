@@ -5,7 +5,7 @@ import {
   CheckCircle, Circle, Clock, AlertTriangle, ChevronRight,
   ArrowLeft, Upload, Play, Loader2, FlaskConical, Wrench,
   Briefcase, FileText, X, ChevronDown, ChevronUp,
-  Users, MessageCircle, Send, Trash2, Eye,
+  Users, MessageCircle, Send, Trash2, Eye, BookmarkPlus, BookCheck,
 } from 'lucide-react';
 import { User, AgentStatus, Role } from '../types';
 
@@ -575,9 +575,13 @@ const ProjectDetailView: React.FC<{
   onPublish: () => void;
   onMarkComplete: () => void;
   onDelete: () => void;
+  onBuildReference: () => Promise<{ pages: number } | null>;
   isCompleted: boolean;
-}> = ({ project, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, agentRunning, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, onPublish, onMarkComplete, onDelete, isCompleted }) => {
+  isInLibrary: boolean;
+}> = ({ project, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, agentRunning, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, onPublish, onMarkComplete, onDelete, onBuildReference, isCompleted, isInLibrary }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [buildRefStatus, setBuildRefStatus] = useState<'idle' | 'building' | 'done' | 'error'>('idle');
+  const [buildRefPages,  setBuildRefPages]  = useState(0);
   const ps      = project.project_summary;
   const allDocs = [...(project.document_register ?? [])].sort(
     (a, b) => new Date(a.planned_date).getTime() - new Date(b.planned_date).getTime()
@@ -629,15 +633,40 @@ const ProjectDetailView: React.FC<{
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-1 flex-wrap">
             {flags.map((f: any) => <RiskBadge key={f.condition} condition={f.condition} />)}
-            {isCompleted
-              ? <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Completed</span>
-              : userRole === 'pm' && (
-                <button onClick={onMarkComplete}
-                  className="text-[11px] font-bold px-3 py-1.5 rounded-full bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 transition-all">
-                  Mark Complete
-                </button>
-              )
-            }
+            {isCompleted ? (
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Completed</span>
+                {userRole === 'pm' && (isInLibrary || buildRefStatus === 'done') ? (
+                  <span className="flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-700">
+                    <BookCheck className="w-3 h-3" />
+                    In Reference Library
+                  </span>
+                ) : userRole === 'pm' && (
+                  <button
+                    onClick={async () => {
+                      setBuildRefStatus('building');
+                      const result = await onBuildReference();
+                      if (result) { setBuildRefStatus('done'); setBuildRefPages(result.pages); }
+                      else setBuildRefStatus('error');
+                    }}
+                    disabled={buildRefStatus === 'building'}
+                    className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-100 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-300 transition-all disabled:opacity-60"
+                  >
+                    {buildRefStatus === 'building'
+                      ? <><Loader2 className="w-3 h-3 animate-spin" /> Building…</>
+                      : buildRefStatus === 'error'
+                      ? 'Retry Reference Build'
+                      : <><BookmarkPlus className="w-3 h-3" /> Add to Reference Library</>
+                    }
+                  </button>
+                )}
+              </div>
+            ) : userRole === 'pm' && (
+              <button onClick={onMarkComplete}
+                className="text-[11px] font-bold px-3 py-1.5 rounded-full bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 transition-all">
+                Mark Complete
+              </button>
+            )}
             {userRole === 'pm' && (
               <button onClick={() => setConfirmDelete(true)}
                 className="text-[11px] font-bold px-3 py-1.5 rounded-full bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-700 border border-slate-200 hover:border-red-300 transition-all">
@@ -2187,6 +2216,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     await fetch(`/api/projects/${selectedId}/complete`, { method: 'PUT' }).catch(console.error);
   };
 
+  const handleBuildReference = async (): Promise<{ pages: number } | null> => {
+    if (!selectedId) return null;
+    try {
+      const res = await fetch(`/api/projects/${selectedId}/build-reference`, { method: 'POST' });
+      if (!res.ok) { console.error('build-reference failed', await res.text()); return null; }
+      const data = await res.json();
+      return { pages: data.pages ?? 0 };
+    } catch (e) { console.error(e); return null; }
+  };
+
   const handleDelete = async () => {
     if (!selectedId) return;
     const idToDelete = selectedId;
@@ -2500,7 +2539,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             onPublish={handlePublish}
             onMarkComplete={handleMarkComplete}
             onDelete={handleDelete}
+            onBuildReference={handleBuildReference}
             isCompleted={selectedProject.status === 'completed'}
+            isInLibrary={selectedProject._inLibrary === true}
           />
         ) : (
           <ProjectListView
