@@ -21,15 +21,22 @@ RUN pip install --no-cache-dir --upgrade pip \
 COPY frontend/AK_chemetics_Company_rag/package.json frontend/AK_chemetics_Company_rag/package-lock.json* ./frontend/AK_chemetics_Company_rag/
 RUN cd frontend/AK_chemetics_Company_rag && npm install --prefer-offline 2>/dev/null || npm install
 
-# Layer 4: App code — rebuilds every push (keep this small via .dockerignore)
-COPY . .
+# Layer 4: Vector store inputs — cached unless knowledge base changes
+# Copy ONLY the files needed for embedding; this layer stays cached on
+# regular code pushes so load_vectorstore.py doesn't re-run needlessly.
+COPY parsed_chunks.json .
+COPY load_vectorstore.py .
 
-# Layer 5: Build React frontend
-RUN cd frontend/AK_chemetics_Company_rag && npm run build
-
-# Layer 6: Build ChromaDB vector store
+# Layer 5: Build ChromaDB vector store — CACHED when parsed_chunks.json unchanged
 ARG GOOGLE_API_KEY
 RUN GOOGLE_API_KEY=${GOOGLE_API_KEY} python3 load_vectorstore.py
+
+# Layer 6: App code — rebuilds every push (keep this small via .dockerignore)
+# chroma_db/ is in .dockerignore so the vector store from Layer 5 is preserved.
+COPY . .
+
+# Layer 7: Build React frontend
+RUN cd frontend/AK_chemetics_Company_rag && npm run build
 
 # ── Runtime ───────────────────────────────────────────────────────────────────
 ENV PYTHON_PATH=/usr/local/bin/python3
