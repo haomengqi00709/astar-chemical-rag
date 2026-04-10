@@ -543,8 +543,10 @@ app.post('/api/agents/process', (req, res) => {
   });
 
   proc.on('close', code => {
+    if (stderrBuf.trim()) console.error('[process-agent stderr]', stderrBuf);
     if (code !== 0) {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Process agent failed' })}\n\n`);
+      const detail = stderrBuf.trim().slice(-800) || '(no stderr)';
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `Process agent failed (exit ${code}): ${detail}` })}\n\n`);
       res.end(); return;
     }
     try {
@@ -581,8 +583,10 @@ app.post('/api/agents/process', (req, res) => {
         }
       }
       res.write(`event: result\ndata: ${JSON.stringify(result)}\n\n`);
-    } catch {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Could not parse process agent output', raw: stdout.slice(0, 300) })}\n\n`);
+    } catch (parseErr: any) {
+      const snippet = stdout.slice(-500) || '(empty stdout)';
+      console.error('[process-agent] JSON parse failed:', parseErr?.message, 'stdout tail:', snippet);
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `Could not parse process agent output: ${parseErr?.message} — stdout tail: ${snippet}` })}\n\n`);
     }
     res.end();
   });
