@@ -550,13 +550,14 @@ const ProjectCard: React.FC<{
 
 const ProjectDetailView: React.FC<{
   project: any;
+  projectId: string | null;
   status: AgentStatus;
   userRole: Role;
   onBack: () => void;
   processOutput: any;
   mechanicalOutput: any;
   onRunAgent: (agentType?: 'process' | 'mechanical') => void;
-  agentRunning: boolean;
+  runningAgent: 'process' | 'mechanical' | null;
   agentError: string;
   docStatusMap: Record<string, any>;
   deliverables: Record<string, string>;
@@ -576,12 +577,38 @@ const ProjectDetailView: React.FC<{
   onMarkComplete: () => void;
   onDelete: () => void;
   onBuildReference: () => Promise<{ pages: number } | null>;
+  onViewSummary: (entry: { version: number; content: string; createdAt: string }) => void;
   isCompleted: boolean;
   isInLibrary: boolean;
-}> = ({ project, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, agentRunning, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, onPublish, onMarkComplete, onDelete, onBuildReference, isCompleted, isInLibrary }) => {
+}> = ({ project, projectId, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, runningAgent, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, onPublish, onMarkComplete, onDelete, onBuildReference, onViewSummary, isCompleted, isInLibrary }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [buildRefStatus, setBuildRefStatus] = useState<'idle' | 'building' | 'done' | 'error'>('idle');
   const [buildRefPages,  setBuildRefPages]  = useState(0);
+  const [summaries,      setSummaries]      = useState<Array<{ version: number; createdAt: string; content: string }>>(() => project?.deliverable_summaries ?? []);
+  useEffect(() => { setSummaries(project?.deliverable_summaries ?? []); }, [project?.deliverable_summaries]);
+  const [summarizing,    setSummarizing]    = useState(false);
+  const [summarizeError, setSummarizeError] = useState('');
+  const [expandedSummary,    setExpandedSummary]    = useState<number | null>(null);
+  const [summaryDownloading, setSummaryDownloading] = useState<number | null>(null);
+
+  const handleSummarize = async () => {
+    if (!projectId) return;
+    setSummarizing(true);
+    setSummarizeError('');
+    try {
+      const res = await fetch(`/api/projects/${projectId}/summarize-deliverables`, { method: 'POST' });
+      if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed'); }
+      const data = await res.json();
+      const newEntry = { version: data.version, createdAt: new Date().toISOString(), content: data.content };
+      setSummaries(prev => [...prev, newEntry]);
+      setExpandedSummary(data.version);
+    } catch (e: any) {
+      setSummarizeError(e.message || 'Summarize failed');
+    } finally {
+      setSummarizing(false);
+    }
+  };
+
   const ps      = project.project_summary;
   const allDocs = [...(project.document_register ?? [])].sort(
     (a, b) => new Date(a.planned_date).getTime() - new Date(b.planned_date).getTime()
@@ -803,7 +830,7 @@ const ProjectDetailView: React.FC<{
                         onRunStep={onRunStep}
                         onRunAll={() => onRunAgent('process')}
                         stepRunning={stepRunning}
-                        allRunning={agentRunning}
+                        allRunning={runningAgent === 'process'}
                         stepProgress={stepProgress}
                         error={stepError || agentError}
                       />
@@ -813,7 +840,7 @@ const ProjectDetailView: React.FC<{
                       <PumpCalcPanel
                         mechanicalOutput={mechanicalOutput}
                         onRun={() => onRunAgent('mechanical')}
-                        running={agentRunning}
+                        running={runningAgent === 'mechanical'}
                         error={agentError}
                       />
                     )
@@ -869,6 +896,148 @@ const ProjectDetailView: React.FC<{
           </section>
 
         </div>
+
+        {/* Deliverable Summaries — same width as Document Register */}
+        {userRole === 'pm' && (
+          <section className="col-span-12 lg:col-span-7 bg-white rounded-2xl shadow-soft overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <div>
+                <p className="font-bold text-slate-900">Deliverable Summaries</p>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">
+                  {summaries.length > 0 ? `${summaries.length} version${summaries.length !== 1 ? 's' : ''} · latest v${summaries[summaries.length - 1].version}` : 'No summaries yet'}
+                </p>
+              </div>
+              <button
+                onClick={handleSummarize}
+                disabled={summarizing || Object.keys(deliverables).length === 0}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {summarizing ? (
+                  <>
+                    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                    </svg>
+                    Summarizing…
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Summarize Deliverables
+                  </>
+                )}
+              </button>
+            </div>
+
+            {summarizeError && (
+              <p className="px-6 py-3 text-xs text-red-600 bg-red-50">{summarizeError}</p>
+            )}
+
+            {summaries.length === 0 && !summarizing && (
+              <div className="px-6 py-8 text-center text-slate-400 text-sm">
+                Click "Summarize Deliverables" to generate an AI summary of all current deliverables.
+              </div>
+            )}
+
+            {summaries.length > 0 && (
+              <div className="divide-y divide-slate-50">
+                {[...summaries].reverse().map(entry => (
+                  <div key={entry.version} className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setExpandedSummary(expandedSummary === entry.version ? null : entry.version)}
+                        className="flex-1 flex items-center justify-between text-left group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">v{entry.version}</span>
+                          <span className="text-xs text-slate-500">{new Date(entry.createdAt).toLocaleString()}</span>
+                        </div>
+                        <svg
+                          className={`w-4 h-4 text-slate-400 transition-transform ${expandedSummary === entry.version ? 'rotate-180' : ''}`}
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!projectId) return;
+                          setSummaries(prev => prev.filter(s => s.version !== entry.version));
+                          if (expandedSummary === entry.version) setExpandedSummary(null);
+                          await fetch(`/api/projects/${projectId}/delete-summary`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ version: entry.version }),
+                          }).catch(console.error);
+                        }}
+                        className="shrink-0 p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+                        title="Delete this version"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    {expandedSummary === entry.version && (
+                      <div className="mt-3 space-y-3">
+                        <div className="flex items-center flex-wrap gap-2">
+                          <button
+                            onClick={() => onViewSummary(entry)}
+                            className="flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            <FileText className="w-3.5 h-3.5" /> View Document
+                          </button>
+                          <button
+                            onClick={() => {
+                              const blob = new Blob([entry.content], { type: 'text/markdown' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `deliverable_summary_v${entry.version}.md`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            }}
+                            className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            <FileText className="w-3.5 h-3.5" /> Download .md
+                          </button>
+                          <button
+                            disabled={summaryDownloading === entry.version}
+                            onClick={async () => {
+                              if (!projectId) return;
+                              setSummaryDownloading(entry.version);
+                              try {
+                                const res = await fetch(`/api/projects/${projectId}/export-summary-docx`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ version: entry.version, content: entry.content }),
+                                });
+                                const data = await res.json();
+                                if (data.url) {
+                                  const a = document.createElement('a');
+                                  a.href = data.url;
+                                  a.download = `deliverable_summary_v${entry.version}.docx`;
+                                  a.click();
+                                }
+                              } finally { setSummaryDownloading(null); }
+                            }}
+                            className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                          >
+                            {summaryDownloading === entry.version
+                              ? <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+                              : <FileText className="w-3.5 h-3.5" />}
+                            Download .docx
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
       </div>
 
       {/* ── Project Files ─────────────────────────────────────────────────── */}
@@ -1372,7 +1541,17 @@ const DeliverableModal: React.FC<{
     setWordError('');
     try {
       const safeId = doc.doc_id.replace(/\//g, '_').replace(/\./g, '_');
-      const res = await fetch(`${docxUrlBase}/${safeId}.docx`);
+      let res = await fetch(`${docxUrlBase}/${safeId}.docx`);
+      // For summaries: auto-generate docx if not yet created
+      if (!res.ok && doc.doc_id.startsWith('summary_v')) {
+        const version = parseInt(doc.doc_id.replace('summary_v', ''));
+        await fetch(`/api/projects/${projectId}/export-summary-docx`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ version, content }),
+        });
+        res = await fetch(`${docxUrlBase}/${safeId}.docx`);
+      }
       if (!res.ok) throw new Error(`File not found (${res.status})`);
       const buf = await res.arrayBuffer();
       const result = await mammoth.convertToHtml({ arrayBuffer: buf });
@@ -1394,7 +1573,21 @@ const DeliverableModal: React.FC<{
     setSaveState('saving');
     onSave(saveContent);
     try {
-      if (isSessionMode && session) {
+      if (doc.doc_id.startsWith('summary_v')) {
+        // Summary save — update the summary entry, then regenerate docx
+        const version = parseInt(doc.doc_id.replace('summary_v', ''));
+        await fetch(`/api/projects/${projectId}/update-summary`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ version, content: saveContent }),
+        });
+        await fetch(`/api/projects/${projectId}/export-summary-docx`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ version, content: saveContent }),
+        });
+        setWordHtml('');
+      } else if (isSessionMode && session) {
         // Save to session content (not master) — engineer or PM editing a session slice
         await fetch(`/api/projects/${projectId}/session-content`, {
           method: 'PUT',
@@ -2151,12 +2344,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const [showDetail,     setShowDetail]     = useState(false);
   const [loaded,         setLoaded]         = useState(false);
   const [showNewProject, setShowNewProject] = useState(false);
-  const [agentRunning,   setAgentRunning]   = useState(false);
+  const [runningAgent,   setRunningAgent]   = useState<'process' | 'mechanical' | null>(null);
   const [agentError,     setAgentError]     = useState('');
   const [stepRunning,    setStepRunning]    = useState<number | null>(null);
   const [stepError,      setStepError]      = useState('');
   const [stepProgress,   setStepProgress]   = useState<Record<number, 'running' | 'done'>>({});
-  const [docModal,       setDocModal]       = useState<{ docId: string; doc: any; readOnly?: boolean; session?: any } | null>(null);
+  const [docModal,       setDocModal]       = useState<{ docId: string; doc: any; readOnly?: boolean; session?: any; _content?: string } | null>(null);
 
   // Derived from selected project
   const selectedProject   = projects.find(p => p.id === selectedId) ?? null;
@@ -2271,6 +2464,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     finally { setSuggestingSession(null); }
   };
 
+  const handleViewSummary = (entry: { version: number; content: string; createdAt: string }) => {
+    setDocModal({
+      docId: `summary_v${entry.version}`,
+      doc: { doc_id: `summary_v${entry.version}`, title: `Deliverable Summary v${entry.version}`, assigned_to: 'PM' },
+      _content: entry.content,
+    });
+  };
+
   const handleViewDocument = (docId: string, session?: any) => {
     if (!selectedProject) return;
     const doc = (selectedProject.context?.document_register ?? []).find((d: any) => d.doc_id === docId);
@@ -2371,9 +2572,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 
   const runAgent = async (agentType?: 'process' | 'mechanical') => {
     if (!selectedId) return;
-    setAgentRunning(true); setAgentError(''); setStepProgress({});
-
     const target = agentType ?? (user.role === 'process' ? 'process' : 'mechanical');
+    setRunningAgent(target); setAgentError(''); setStepProgress({});
 
     if (target === 'process') {
       try {
@@ -2410,7 +2610,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           };
         });
       } catch (e: any) { setAgentError(e.message); }
-      finally { setAgentRunning(false); }
+      finally { setRunningAgent(null); }
       return;
     }
 
@@ -2432,7 +2632,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         };
       });
     } catch (e: any) { setAgentError(e.message); }
-    finally { setAgentRunning(false); }
+    finally { setRunningAgent(null); }
   };
 
   if (!loaded) {
@@ -2446,11 +2646,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         <DeliverableModal
           doc={docModal.doc}
           initialContent={
-            docModal.session
-              ? (docModal.session.content || extractSessionContent(deliverables[docModal.docId] ?? '', docModal.session.headings ?? []))
-              : (deliverables[docModal.docId] ?? '')
+            docModal._content !== undefined
+              ? docModal._content
+              : docModal.session
+                ? (docModal.session.content || extractSessionContent(deliverables[docModal.docId] ?? '', docModal.session.headings ?? []))
+                : (deliverables[docModal.docId] ?? '')
           }
-          masterContent={deliverables[docModal.docId] ?? ''}
+          masterContent={docModal._content !== undefined ? docModal._content : (deliverables[docModal.docId] ?? '')}
           projectId={selectedId}
           projectContext={projectContext}
           readOnly={docModal.readOnly}
@@ -2458,7 +2660,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           userRole={user.role}
           onClose={() => setDocModal(null)}
           onSave={(content) => {
-            if (!docModal.session) {
+            if (docModal.docId.startsWith('summary_v')) {
+              // Update summary content in local projects state
+              const version = parseInt(docModal.docId.replace('summary_v', ''));
+              if (selectedId) {
+                updateProject(selectedId, p => ({
+                  ...p,
+                  context: {
+                    ...p.context,
+                    deliverable_summaries: (p.context?.deliverable_summaries ?? []).map((s: any) =>
+                      s.version === version ? { ...s, content } : s
+                    ),
+                  },
+                }));
+              }
+            } else if (!docModal.session) {
               handleDeliverableSave(docModal.docId, content);
             } else {
               // Update session.content in local state
@@ -2514,6 +2730,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           <ProjectDetailView
             key="detail"
             project={projectContext}
+            projectId={selectedId}
             status={status}
             userRole={viewAs}
             sessionsConfig={sessionsConfig}
@@ -2521,7 +2738,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             processOutput={processOutput}
             mechanicalOutput={mechanicalOutput}
             onRunAgent={runAgent}
-            agentRunning={agentRunning}
+            runningAgent={runningAgent}
             agentError={agentError}
             docStatusMap={docStatusMap}
             deliverables={deliverables}
@@ -2540,6 +2757,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             onMarkComplete={handleMarkComplete}
             onDelete={handleDelete}
             onBuildReference={handleBuildReference}
+            onViewSummary={handleViewSummary}
             isCompleted={selectedProject.status === 'completed'}
             isInLibrary={selectedProject._inLibrary === true}
           />

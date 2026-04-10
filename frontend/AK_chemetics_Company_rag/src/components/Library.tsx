@@ -426,6 +426,179 @@ const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: ()
   );
 };
 
+// ─── Completed Project view (deliverables + optional wiki build) ─────────────
+
+const CompletedProjectView: React.FC<{
+  project: any;
+  onBack: () => void;
+  onWikiBuilt: () => void;
+}> = ({ project, onBack, onWikiBuilt }) => {
+  const [tab, setTab] = useState<'files' | 'graph'>('files');
+  const [fullProj, setFullProj] = useState<any>(null);
+  const [selectedDoc, setSelectedDoc] = useState<any | null>(null);
+  const [expandedRoles, setExpandedRoles] = useState<Set<string>>(
+    () => new Set(['PM', 'Process Engineer', 'Mechanical Engineer'])
+  );
+  const [wikiStatus, setWikiStatus] = useState<'idle' | 'building' | 'done' | 'error'>('idle');
+
+  const ps        = project.context?.project_summary ?? {};
+  const register: any[]  = project.context?.document_register ?? [];
+  const delivKeys = new Set(Object.keys(project.context?.deliverables ?? {}));
+  const docStatus = project.docStatus ?? {};
+
+  useEffect(() => {
+    fetch(`/api/projects/${project.id}`)
+      .then(r => r.json())
+      .then(d => setFullProj(d))
+      .catch(() => {});
+  }, [project.id]);
+
+  const handleRunWiki = async () => {
+    setWikiStatus('building');
+    try {
+      const r = await fetch(`/api/projects/${project.id}/build-reference`, { method: 'POST' });
+      if (!r.ok) throw new Error('Failed');
+      setWikiStatus('done');
+      setTimeout(onWikiBuilt, 600);
+    } catch { setWikiStatus('error'); }
+  };
+
+  const toggleRole = (role: string) =>
+    setExpandedRoles(prev => {
+      const next = new Set(prev);
+      if (next.has(role)) next.delete(role); else next.add(role);
+      return next;
+    });
+
+  const groups = ROLE_GROUPS
+    .map(rg => ({ ...rg, docs: register.filter((d: any) => d.assigned_to === rg.key && delivKeys.has(d.doc_id)) }))
+    .filter(g => g.docs.length > 0);
+
+  const selectedContent = selectedDoc && fullProj?.context?.deliverables?.[selectedDoc.doc_id];
+
+  return (
+    <div className="flex-1 flex flex-col overflow-hidden bg-white">
+      {/* Header */}
+      <header className="px-6 py-3 bg-white border-b border-outline-variant/10 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5" /> Back
+          </button>
+          <span className="text-slate-200">/</span>
+          <span className="text-xs font-semibold text-slate-700 truncate">{ps.project_title ?? project.id}</span>
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Completed</span>
+        </div>
+        {wikiStatus === 'idle' && (
+          <button onClick={handleRunWiki}
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-700 transition-colors">
+            <Network className="w-3.5 h-3.5" /> Run Wiki
+          </button>
+        )}
+        {wikiStatus === 'building' && (
+          <span className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-amber-100 text-amber-600">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" /> Building Wiki…
+          </span>
+        )}
+        {wikiStatus === 'done' && (
+          <span className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-600">
+            Wiki Ready
+          </span>
+        )}
+        {wikiStatus === 'error' && (
+          <button onClick={handleRunWiki}
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition-colors">
+            Failed — Retry
+          </button>
+        )}
+      </header>
+
+      {/* Tab bar */}
+      <div className="flex gap-1 px-6 py-2 border-b border-slate-100 shrink-0 bg-white">
+        {(['files', 'graph'] as const).map(t => (
+          <button key={t} onClick={() => setTab(t)}
+            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
+              tab === t ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+            }`}>
+            {t === 'files' ? <FileText className="w-3.5 h-3.5" /> : <Network className="w-3.5 h-3.5" />}
+            {t === 'files' ? 'Files' : 'Knowledge Graph'}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'graph' ? (
+        <div className="flex-1 overflow-hidden">
+          <ProjectGraph register={register} deliverables={project.context?.deliverables ?? {}} docStatus={docStatus} />
+        </div>
+      ) : (
+        /* Files tab: deliverables grouped by agent role */
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left: grouped doc list */}
+          <div className={`overflow-y-auto shrink-0 border-r border-slate-100 ${selectedDoc ? 'w-72' : 'flex-1'}`}>
+            {groups.length === 0 ? (
+              <p className="px-6 py-8 text-sm text-slate-400 italic text-center">No deliverables yet.</p>
+            ) : (
+              <div className="py-1">
+                {groups.map(({ key, label, icon: Icon, docs }) => {
+                  const expanded = expandedRoles.has(key);
+                  return (
+                    <div key={key}>
+                      <button onClick={() => toggleRole(key)}
+                        className="w-full text-left flex items-center gap-2 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 border-b border-slate-100 transition-colors">
+                        {expanded ? <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />}
+                        <Icon className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <span className="text-[11px] font-bold font-mono text-slate-700 truncate flex-1">{label}</span>
+                        <span className="text-[10px] text-slate-400 shrink-0 ml-1">{docs.length}</span>
+                      </button>
+                      {expanded && docs.map((doc: any) => (
+                        <button key={doc.doc_id} onClick={() => setSelectedDoc(doc)}
+                          className={`w-full text-left flex items-center gap-2.5 pl-8 pr-4 py-2.5 border-b border-slate-50 transition-colors ${
+                            selectedDoc?.doc_id === doc.doc_id ? 'bg-slate-900 text-white' : 'hover:bg-slate-50 text-slate-600'
+                          }`}>
+                          <BookOpen className={`w-3.5 h-3.5 shrink-0 ${selectedDoc?.doc_id === doc.doc_id ? 'text-white' : 'text-slate-300'}`} />
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-bold font-mono truncate">{doc.doc_id}</p>
+                            <p className="text-[10px] truncate opacity-70">{doc.title ?? ''}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Right: content viewer */}
+          {selectedDoc && (
+            <div className="flex-1 overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 shrink-0">
+                <div>
+                  <p className="text-sm font-bold font-mono text-slate-900">{selectedDoc.doc_id}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{selectedDoc.title ?? ''}</p>
+                </div>
+                <button onClick={() => setSelectedDoc(null)} className="text-slate-400 hover:text-slate-700 transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                {!fullProj
+                  ? <div className="flex items-center justify-center h-full"><Loader2 className="w-5 h-5 animate-spin text-slate-400" /></div>
+                  : selectedContent
+                  ? <pre className="p-5 text-xs font-mono text-slate-700 leading-relaxed whitespace-pre-wrap">{selectedContent}</pre>
+                  : <div className="flex flex-col items-center justify-center h-full text-center px-8 gap-3">
+                      <FileText className="w-10 h-10 text-slate-200" />
+                      <p className="text-sm text-slate-400">Content not available for this document.</p>
+                    </div>
+                }
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ─── User Project view (status + chatbot) ────────────────────────────────────
 
 const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (id: string) => void; onRefresh: () => void }> = ({ project, onBack, onDelete, onRefresh }) => {
@@ -437,6 +610,9 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
   const [fileContent,   setFileContent]   = useState<string>('');
   const [fileLoading,   setFileLoading]   = useState(false);
   const [wikiFiles,     setWikiFiles]     = useState<{ slug: string; name: string; title: string }[]>([]);
+  const [expandedSources, setExpandedSources] = useState<Set<string>>(
+    () => new Set((project.files || []).map((f: any) => f.name))
+  );
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'error'; content: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
@@ -490,9 +666,10 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
     setFileLoading(true);
     try {
       const r = await fetch(`/api/user-projects/${project.id}/wiki-page/${encodeURIComponent(file.slug)}`);
+      if (!r.ok) { setFileContent(''); return; }   // 404 → show placeholder, not error text
       const d = await r.json();
       setFileContent(d.content ?? '');
-    } catch { setFileContent('Failed to load content.'); }
+    } catch { setFileContent(''); }                 // network error → same placeholder
     finally { setFileLoading(false); }
   };
 
@@ -696,36 +873,75 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
       ) : tab === 'files' && files.length > 0 ? (
         /* ── Files tab: left list + right viewer ─────────────────────────── */
         <div className="flex flex-1 overflow-hidden">
-          {/* Left: file list */}
-          {/* Left list: prefer wiki pages if available, fall back to source files */}
+          {/* Left: hierarchical file list — source files with nested wiki pages */}
           {(() => {
-            const listItems = wikiFiles.length > 0
-              ? wikiFiles
-              : files.map((f: any) => ({ slug: f.name.replace(/\.[^.]+$/, ''), name: f.name, title: f.name, isSource: true, size: f.size }));
-            const hasContent = wikiFiles.length > 0;
+            const extractDocId = (filename: string) =>
+              (filename.match(/^(\d+-[A-Z]+-[\d-]+)/)?.[1] ?? filename.replace(/\.[^.]+$/, ''))
+                .replace(/-+$/, '');
+            const norm = (s: string) => s.toLowerCase().replace(/[-_]/g, '_');
+
+            // Group wiki pages under their source file by doc_id prefix match
+            const groups = files.map((sf: any) => ({
+              sf,
+              docId: norm(extractDocId(sf.name)),
+              pages: [] as { slug: string; name: string; title: string }[],
+            }));
+            const assigned = new Set<string>();
+            for (const grp of groups) {
+              grp.pages = wikiFiles.filter(w => norm(w.slug).includes(grp.docId));
+              grp.pages.forEach(p => assigned.add(p.slug));
+            }
+            // Unassigned wiki pages → append to last group
+            const unassigned = wikiFiles.filter(w => !assigned.has(w.slug));
+            if (groups.length > 0) groups[groups.length - 1].pages.push(...unassigned);
+
+            const toggleSource = (name: string) =>
+              setExpandedSources(prev => {
+                const next = new Set(prev);
+                if (next.has(name)) next.delete(name); else next.add(name);
+                return next;
+              });
+
             return (
               <div className={`overflow-y-auto shrink-0 border-r border-slate-100 ${selectedFile ? 'w-72' : 'flex-1'}`}>
-                {listItems.length === 0 ? (
+                {groups.length === 0 ? (
                   <p className="px-6 py-8 text-sm text-slate-400 italic text-center">No files found.</p>
                 ) : (
-                  <div className="divide-y divide-slate-50 py-2">
-                    {listItems.map((f: any) => (
-                      <button
-                        key={f.slug}
-                        onClick={() => hasContent ? loadFileContent(f) : setSelectedFile(f)}
-                        className={`w-full text-left flex items-start gap-3 px-5 py-3 transition-colors ${
-                          selectedFile?.slug === f.slug
-                            ? 'bg-slate-900 text-white'
-                            : 'hover:bg-slate-50 text-slate-700'
-                        }`}
-                      >
-                        <FileText className={`w-4 h-4 mt-0.5 shrink-0 ${selectedFile?.slug === f.slug ? 'text-white' : 'text-slate-400'}`} />
-                        <div className="min-w-0">
-                          <p className="text-xs font-bold font-mono truncate">{f.name}</p>
-                          {f.size && <p className="text-[10px] mt-0.5 opacity-50 font-mono">{f.size < 1024*1024 ? `${(f.size/1024).toFixed(0)} KB` : `${(f.size/(1024*1024)).toFixed(1)} MB`}</p>}
+                  <div className="py-1">
+                    {groups.map(({ sf, pages }) => {
+                      const expanded = expandedSources.has(sf.name);
+                      return (
+                        <div key={sf.name}>
+                          {/* Source file row */}
+                          <button
+                            onClick={() => toggleSource(sf.name)}
+                            className="w-full text-left flex items-center gap-2 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 border-b border-slate-100 transition-colors"
+                          >
+                            {expanded
+                              ? <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                              : <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />}
+                            <FileText className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                            <span className="text-[11px] font-bold font-mono text-slate-700 truncate flex-1">{sf.name}</span>
+                            <span className="text-[10px] text-slate-400 shrink-0 ml-1">{pages.length}</span>
+                          </button>
+                          {/* Nested wiki pages */}
+                          {expanded && pages.map(w => (
+                            <button
+                              key={w.slug}
+                              onClick={() => loadFileContent(w)}
+                              className={`w-full text-left flex items-center gap-2.5 pl-8 pr-4 py-2.5 border-b border-slate-50 transition-colors ${
+                                selectedFile?.slug === w.slug
+                                  ? 'bg-slate-900 text-white'
+                                  : 'hover:bg-slate-50 text-slate-600'
+                              }`}
+                            >
+                              <BookOpen className={`w-3.5 h-3.5 shrink-0 ${selectedFile?.slug === w.slug ? 'text-white' : 'text-slate-300'}`} />
+                              <span className="text-xs truncate">{w.title}</span>
+                            </button>
+                          ))}
                         </div>
-                      </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -1089,8 +1305,8 @@ export const Library: React.FC = () => {
           >
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Reference Projects</p>
-              {(completedProjects.length + userProjects.length) > 0 && (
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{completedProjects.length + userProjects.length} project{(completedProjects.length + userProjects.length) !== 1 ? 's' : ''}</p>
+              {(completedProjects.length + userProjects.filter(p => !p.isFromProject).length) > 0 && (
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{completedProjects.length + userProjects.filter(p => !p.isFromProject).length} project{(completedProjects.length + userProjects.filter(p => !p.isFromProject).length) !== 1 ? 's' : ''}</p>
               )}
             </div>
             {refProjectsOpen
@@ -1113,8 +1329,8 @@ export const Library: React.FC = () => {
                 <span>New Project</span>
               </button>
 
-              {/* User projects */}
-              {userProjects.map(proj => {
+              {/* User projects (exclude isFromProject — those show under completedProjects) */}
+              {userProjects.filter(p => !p.isFromProject).map(proj => {
                 const active = selectedUserProject?.id === proj.id;
                 const isReady = proj.status === 'ready';
                 return (
@@ -1197,6 +1413,7 @@ export const Library: React.FC = () => {
           />
         ) : selectedUserProject ? (
           <UserProjectView
+            key={selectedUserProject.id}
             project={selectedUserProject}
             onBack={() => setSelectedUserProject(null)}
             onDelete={async (id) => {
@@ -1207,31 +1424,34 @@ export const Library: React.FC = () => {
             onRefresh={refreshUserProjects}
           />
         ) : selectedProject ? (
-          /* ── Reference project view (unchanged) ── */
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={selectedProject.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex-1 flex flex-col overflow-hidden"
-            >
-              <header className="px-6 py-3 bg-white border-b border-outline-variant/10 flex items-center gap-3 shrink-0">
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" /> Reference Projects
-                </button>
-                <span className="text-slate-200">/</span>
-                <span className="text-xs font-semibold text-slate-700 truncate">
-                  {selectedProject.context?.project_summary?.project_title ?? selectedProject.id}
-                </span>
-              </header>
-              <div className="flex-1 overflow-hidden">
-                <ProjectRefView project={selectedProject} />
-              </div>
-            </motion.div>
-          </AnimatePresence>
+          /* ── Completed agent project view ── */
+          (() => {
+            // If wiki already built → show full UserProjectView
+            const up = userProjects.find(u => u.id === selectedProject.id);
+            if (up) {
+              return (
+                <UserProjectView
+                  key={up.id}
+                  project={up}
+                  onBack={() => setSelectedProject(null)}
+                  onDelete={async (id) => {
+                    await fetch(`/api/user-projects/${id}`, { method: 'DELETE' });
+                    setSelectedProject(null);
+                    refreshUserProjects();
+                  }}
+                  onRefresh={refreshUserProjects}
+                />
+              );
+            }
+            return (
+              <CompletedProjectView
+                key={selectedProject.id}
+                project={selectedProject}
+                onBack={() => setSelectedProject(null)}
+                onWikiBuilt={refreshUserProjects}
+              />
+            );
+          })()
         ) : activeView === 'graph' ? (
           /* ── Knowledge Graph view ── */
           <div className="flex-1 overflow-hidden">

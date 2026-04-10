@@ -215,19 +215,23 @@ export const ProjectGraph: React.FC<Props> = ({ register, deliverables, docStatu
         nd.fy! += (H / 2 - nd.y) * gravityStr;
       }
 
-      // Apply displacement
-      const maxDisplace = Math.min(k * a, 35);
+      // Apply displacement — small steps reduce overshoot → no oscillation
+      const maxDisplace = Math.min(k * a, 10);
       const drag = mouseRef.current.dragNode;
+      let totalDisp = 0;
       for (const nd of nodes) {
         if (nd === drag) continue;
         const fx = nd.fx!, fy = nd.fy!;
         const mag = Math.sqrt(fx * fx + fy * fy) || 0.01;
         const disp = Math.min(mag, maxDisplace);
+        totalDisp += disp;
         nd.x += (fx / mag) * disp;
         nd.y += (fy / mag) * disp;
       }
 
-      alphaRef.current *= 0.96;
+      alphaRef.current *= 0.92;
+      // Convergence: stop when avg node movement drops below 0.3 px
+      if (n > 0 && totalDisp / n < 0.3) alphaRef.current = 0;
     }
 
     // ── Render ────────────────────────────────────────────────────────────
@@ -500,7 +504,7 @@ export const ProjectGraph: React.FC<Props> = ({ register, deliverables, docStatu
 
         {/* Node detail sidebar */}
         {selectedNode && (
-          <div className="absolute right-0 top-0 bottom-0 w-68 overflow-y-auto flex flex-col"
+          <div className="absolute right-0 top-0 bottom-0 flex flex-col overflow-hidden"
             style={{ width: 260, background: '#1e293b', borderLeft: '1px solid rgba(71,85,105,0.4)' }}>
             <div className="px-4 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(71,85,105,0.3)' }}>
               <div className="flex items-start justify-between gap-2">
@@ -535,7 +539,7 @@ export const ProjectGraph: React.FC<Props> = ({ register, deliverables, docStatu
             </div>
 
             {neighbors.length > 0 && (
-              <div className="px-4 py-3 flex-1">
+              <div className="px-4 py-3 flex-1 overflow-y-auto">
                 <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-3">
                   {neighbors.length} Linked Document{neighbors.length > 1 ? 's' : ''}
                 </p>

@@ -85,6 +85,9 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
   const selRef     = useRef<GNode | null>(null);
   const hoveredRef = useRef<GNode | null>(null);
 
+  // Smooth pan target (world-space node to center on)
+  const panTargetRef = useRef<{ x: number; y: number } | null>(null);
+
   const rafRef = useRef<number>(0);
 
   // ── Fetch graph data from server ────────────────────────────────────────
@@ -147,6 +150,21 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
     const n = nodes.length;
     const a = alphaRef.current;
 
+    // ── Smooth pan toward selected node ───────────────────────────────────
+    const pt = panTargetRef.current;
+    if (pt) {
+      const { tx, ty, scale } = txRef.current;
+      const targetTx = W / 2 - pt.x * scale;
+      const targetTy = H / 2 - pt.y * scale;
+      const newTx = tx + (targetTx - tx) * 0.1;
+      const newTy = ty + (targetTy - ty) * 0.1;
+      txRef.current = { tx: newTx, ty: newTy, scale };
+      if (Math.abs(newTx - targetTx) < 0.5 && Math.abs(newTy - targetTy) < 0.5) {
+        txRef.current = { tx: targetTx, ty: targetTy, scale };
+        panTargetRef.current = null;
+      }
+    }
+
     if (n > 0 && a > 0.002) {
       // Use a virtual area that scales with n so nodes don't spread too far apart for small graphs
       const area = W * H;
@@ -195,20 +213,24 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
         (nd as any).fy += (cy - nd.y) * gravityStr;
       }
 
-      // Apply: pure FR displacement (no velocity accumulation → no oscillation)
-      const maxDisplace = Math.min(k * a, 30);
+      // Apply displacement — small steps reduce overshoot → no oscillation
+      const maxDisplace = Math.min(k * a, 10);
       const drag = mouseRef.current.dragNode;
+      let totalDisp = 0;
       for (const nd of nodes) {
         if (nd === drag) continue;
         const fx = (nd as any).fx as number;
         const fy = (nd as any).fy as number;
         const mag = Math.sqrt(fx * fx + fy * fy) || 0.01;
         const disp = Math.min(mag, maxDisplace);
+        totalDisp += disp;
         nd.x += (fx / mag) * disp;
         nd.y += (fy / mag) * disp;
       }
 
-      alphaRef.current *= 0.96;  // faster cooling — settles in ~2-3 s instead of 10 s
+      alphaRef.current *= 0.92;
+      // Convergence: stop when avg node movement drops below 0.3 px
+      if (n > 0 && totalDisp / n < 0.3) alphaRef.current = 0;
     }
 
     // ── Render ────────────────────────────────────────────────────────────
@@ -369,7 +391,8 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
         m.dragNode.x = (cx - tx) / scale;
         m.dragNode.y = (cy - ty) / scale;
       } else {
-        // Pan
+        // Pan — cancel any auto-pan
+        panTargetRef.current = null;
         txRef.current.tx += cx - m.lastX;
         txRef.current.ty += cy - m.lastY;
       }
@@ -390,6 +413,7 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
       selRef.current = nd;
       setSelectedNode(nd);
       if (nd) {
+        panTargetRef.current = { x: nd.x, y: nd.y };
         const neighbors = simEdges.current
           .filter(e => e.source === nd.id || e.target === nd.id)
           .map(e => e.source === nd.id ? e.target : e.source)
@@ -488,69 +512,71 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
         </div>
       </div>
 
-      {/* Main area */}
-      <div className="flex flex-1 overflow-hidden relative">
+      {/* Main area: canvas wrapper + sidebar as flex siblings */}
+      <div className="flex flex-1 overflow-hidden">
 
-        {/* Canvas */}
-        <canvas
-          ref={canvasRef}
-          className="flex-1 block"
-          style={{ background: '#0f172a', touchAction: 'none' }}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={onMouseLeave}
-          onWheel={onWheel}
-        />
+        {/* Canvas + overlays */}
+        <div className="flex-1 relative overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full"
+            style={{ background: '#0f172a', touchAction: 'none' }}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseLeave}
+            onWheel={onWheel}
+          />
 
-        {/* Loading overlay */}
-        {loading && (
-          <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(15,23,42,0.85)' }}>
-            <div className="flex flex-col items-center gap-3">
-              <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
-              <p className="text-sm text-slate-400">Parsing wiki links…</p>
-            </div>
-          </div>
-        )}
-
-        {/* Error overlay */}
-        {error && !loading && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-sm text-red-400 px-4 py-3 rounded-xl" style={{ background: '#1e293b' }}>{error}</p>
-          </div>
-        )}
-
-        {/* Hint tooltip */}
-        {!loading && !error && !selectedNode && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full pointer-events-none"
-            style={{ background: 'rgba(30,41,59,0.75)', backdropFilter: 'blur(6px)', border: '1px solid rgba(71,85,105,0.3)' }}>
-            <p className="text-[10px] text-slate-400 font-mono">Scroll to zoom · drag to pan · click a node to explore</p>
-          </div>
-        )}
-
-        {/* Legend */}
-        {!loading && !error && (
-          <div className="absolute bottom-4 left-4 rounded-xl p-3 pointer-events-none"
-            style={{ background: 'rgba(30,41,59,0.9)', border: '1px solid rgba(71,85,105,0.4)' }}>
-            <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">Discipline</p>
-            {Object.entries(DISC_NAMES).map(([id, name]) => (
-              <div key={id} className="flex items-center gap-2 mb-1 last:mb-0">
-                <span className="w-2.5 h-2.5 rounded-full shrink-0 block" style={{ background: discColor(parseInt(id)) }} />
-                <span className="text-[10px] text-slate-400">{name}</span>
+          {/* Loading overlay */}
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(15,23,42,0.85)' }}>
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+                <p className="text-sm text-slate-400">Parsing wiki links…</p>
               </div>
-            ))}
-            <div className="flex items-center gap-2 mt-2 pt-2" style={{ borderTop: '1px solid rgba(71,85,105,0.3)' }}>
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 block" />
-              <span className="text-[10px] text-slate-400">Other</span>
             </div>
-            <p className="text-[9px] text-slate-600 mt-2 font-mono">Node size = # of links</p>
-          </div>
-        )}
+          )}
 
-        {/* Node detail sidebar */}
+          {/* Error overlay */}
+          {error && !loading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-sm text-red-400 px-4 py-3 rounded-xl" style={{ background: '#1e293b' }}>{error}</p>
+            </div>
+          )}
+
+          {/* Hint tooltip */}
+          {!loading && !error && !selectedNode && (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full pointer-events-none"
+              style={{ background: 'rgba(30,41,59,0.75)', backdropFilter: 'blur(6px)', border: '1px solid rgba(71,85,105,0.3)' }}>
+              <p className="text-[10px] text-slate-400 font-mono">Scroll to zoom · drag to pan · click a node to explore</p>
+            </div>
+          )}
+
+          {/* Legend */}
+          {!loading && !error && (
+            <div className="absolute bottom-4 left-4 rounded-xl p-3 pointer-events-none"
+              style={{ background: 'rgba(30,41,59,0.9)', border: '1px solid rgba(71,85,105,0.4)' }}>
+              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">Discipline</p>
+              {Object.entries(DISC_NAMES).map(([id, name]) => (
+                <div key={id} className="flex items-center gap-2 mb-1 last:mb-0">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0 block" style={{ background: discColor(parseInt(id)) }} />
+                  <span className="text-[10px] text-slate-400">{name}</span>
+                </div>
+              ))}
+              <div className="flex items-center gap-2 mt-2 pt-2" style={{ borderTop: '1px solid rgba(71,85,105,0.3)' }}>
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 block" />
+                <span className="text-[10px] text-slate-400">Other</span>
+              </div>
+              <p className="text-[9px] text-slate-600 mt-2 font-mono">Node size = # of links</p>
+            </div>
+          )}
+        </div>
+
+        {/* Node detail sidebar — flex sibling, never clipped */}
         {selectedNode && (
-          <div className="absolute right-0 top-0 bottom-0 w-72 overflow-y-auto flex flex-col"
-            style={{ background: '#1e293b', borderLeft: '1px solid rgba(71,85,105,0.4)' }}>
+          <div className="flex flex-col overflow-hidden shrink-0"
+            style={{ width: 260, background: '#1e293b', borderLeft: '1px solid rgba(71,85,105,0.4)' }}>
 
             {/* Header */}
             <div className="px-4 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(71,85,105,0.3)' }}>
@@ -600,7 +626,7 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
 
             {/* Connected pages */}
             {neighbors.length > 0 && (
-              <div className="px-4 py-3 flex-1">
+              <div className="px-4 py-3 flex-1 overflow-y-auto">
                 <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-3">
                   {neighbors.length} Connected Pages
                 </p>
@@ -611,6 +637,7 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
                       onClick={() => {
                         selRef.current = nb;
                         setSelectedNode(nb);
+                        panTargetRef.current = { x: nb.x, y: nb.y };
                         const nbNeighbors = simEdges.current
                           .filter(e => e.source === nb.id || e.target === nb.id)
                           .map(e => e.source === nb.id ? e.target : e.source)
@@ -618,8 +645,7 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
                           .filter(Boolean) as GNode[];
                         setNeighbors(nbNeighbors.sort((a, b) => b.degree - a.degree));
                       }}
-                      className="w-full text-left flex items-start gap-2.5 px-2 py-2 rounded-lg transition-colors group"
-                      style={{ ':hover': { background: 'rgba(71,85,105,0.25)' } } as any}
+                      className="w-full text-left flex items-start gap-2.5 px-2 py-2 rounded-lg transition-colors"
                       onMouseEnter={e => (e.currentTarget.style.background = 'rgba(71,85,105,0.25)')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >

@@ -1230,6 +1230,125 @@ print(json.dumps(sessions))
 
 
 // ---------------------------------------------------------------------------
+// DELETE /api/projects/:id/delete-summary
+// Body: { version } — remove a summary version
+// ---------------------------------------------------------------------------
+app.delete('/api/projects/:id/delete-summary', (req, res) => {
+  const { version } = req.body;
+  if (!version) return res.status(400).json({ error: 'version is required' });
+
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+
+  arr[idx].context.deliverable_summaries = (arr[idx].context?.deliverable_summaries ?? [])
+    .filter(s => s.version !== version);
+  saveProjects(arr);
+  res.json({ success: true });
+});
+
+
+// PUT /api/projects/:id/update-summary
+// Body: { version, content } — update content of an existing summary version
+// ---------------------------------------------------------------------------
+app.put('/api/projects/:id/update-summary', (req, res) => {
+  const { version, content } = req.body;
+  if (!version || content == null) return res.status(400).json({ error: 'version and content are required' });
+
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+
+  const summaries = arr[idx].context?.deliverable_summaries ?? [];
+  const updated = summaries.map(s => s.version === version ? { ...s, content, updatedAt: new Date().toISOString() } : s);
+  if (!arr[idx].context) arr[idx].context = {};
+  arr[idx].context.deliverable_summaries = updated;
+  saveProjects(arr);
+
+  res.json({ success: true });
+});
+
+
+// POST /api/projects/:id/export-summary-docx
+// Body: { version, content } — convert summary markdown to .docx in pm-deliverables
+// ---------------------------------------------------------------------------
+app.post('/api/projects/:id/export-summary-docx', (req, res) => {
+  const { version, content } = req.body;
+  if (!version || content == null) return res.status(400).json({ error: 'version and content are required' });
+
+  const filename   = `summary_v${version}`;
+  const outputPath = path.join(PM_DIR, 'deliverables', `${filename}.docx`);
+
+  const py = spawn(PYTHON, [EXPORT_DOCX_SCRIPT, '--output', outputPath]);
+  py.stdin.write(content, 'utf-8');
+  py.stdin.end();
+
+  let stderr = '';
+  py.stderr.on('data', d => { stderr += d.toString(); });
+  py.on('close', code => {
+    if (code !== 0) return res.status(500).json({ error: stderr || 'export_docx.py failed' });
+    res.json({ success: true, url: `/files/pm-deliverables/${filename}.docx` });
+  });
+});
+
+
+// POST /api/projects/:id/summarize-deliverables
+// Calls Gemini to summarize all deliverables; appends a versioned entry.
+// ---------------------------------------------------------------------------
+app.post('/api/projects/:id/summarize-deliverables', async (req, res) => {
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+
+  const proj = arr[idx];
+  const deliverables = proj.context?.deliverables ?? {};
+  const docRegister  = proj.context?.document_register ?? [];
+
+  const entries = Object.entries(deliverables).filter(([, v]) => typeof v === 'string' && v.length > 0);
+  if (entries.length === 0) return res.status(400).json({ error: 'No deliverable content found to summarize' });
+
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
+  const docMap = Object.fromEntries(docRegister.map(d => [d.doc_id, d]));
+  const projectTitle = proj.context?.project_summary?.project_title ?? 'Untitled Project';
+
+  let prompt = `You are an engineering document analyst summarizing project deliverables.\n`;
+  prompt += `Project: ${projectTitle}\n\n`;
+  prompt += `For each document below, write a concise 3–5 sentence summary covering: what the document is, its key findings or content, and its significance to the project.\n\n`;
+
+  for (const [docId, content] of entries) {
+    const title = docMap[docId]?.title ?? docId;
+    let body = '';
+    try {
+      const parsed = JSON.parse(content);
+      body = JSON.stringify(parsed, null, 2).slice(0, 2500);
+    } catch {
+      body = content.slice(0, 2500);
+    }
+    prompt += `## ${docId}: ${title}\n${body}\n\n---\n\n`;
+  }
+  prompt += `Respond with a well-formatted markdown document. Use ## headings matching each document ID and title. Write 3–5 sentences per document. Be concise and technical.`;
+
+  try {
+    const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
+    const summaryContent = response.text ?? '';
+
+    const existing = proj.context?.deliverable_summaries ?? [];
+    const version  = existing.length + 1;
+    const newEntry = { version, createdAt: new Date().toISOString(), content: summaryContent };
+
+    if (!proj.context) proj.context = {};
+    proj.context.deliverable_summaries = [...existing, newEntry];
+    arr[idx] = proj;
+    saveProjects(arr);
+
+    res.json({ version, content: summaryContent, total: proj.context.deliverable_summaries.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message || 'Summarize failed' });
+  }
+});
+
+
+// ---------------------------------------------------------------------------
 // Wiki Knowledge Base — paths & in-memory index
 // ---------------------------------------------------------------------------
 const WIKI_KB_DIR  = path.join(RAG_ROOT, 'wiki_kb');
@@ -1657,14 +1776,32 @@ app.get('/api/user-projects/:id/wiki-files', (req, res) => {
 });
 
 // GET /api/user-projects/:id/wiki-page/:slug — content of one wiki page
+// Falls back to raw/narrative/**/<slug>.md if no wiki page exists yet.
 app.get('/api/user-projects/:id/wiki-page/:slug', (req, res) => {
   try {
-    const filePath = path.join(USER_PROJECTS_DIR, req.params.id, 'wiki', `${req.params.slug}.md`);
-    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Page not found' });
-    let raw = fs.readFileSync(filePath, 'utf-8');
-    // Strip frontmatter before returning
-    raw = raw.replace(/^---\n[\s\S]*?\n---\n*/, '');
-    res.json({ slug: req.params.slug, content: raw });
+    const slug    = req.params.slug;
+    const projDir = path.join(USER_PROJECTS_DIR, req.params.id);
+
+    // 1. Try compiled wiki page
+    const wikiPath = path.join(projDir, 'wiki', `${slug}.md`);
+    if (fs.existsSync(wikiPath)) {
+      let raw = fs.readFileSync(wikiPath, 'utf-8').replace(/^---\n[\s\S]*?\n---\n*/, '');
+      return res.json({ slug, content: raw, source: 'wiki' });
+    }
+
+    // 2. Fall back to raw narrative (ingest output) — search subdirs
+    const rawNarDir = path.join(projDir, 'raw', 'narrative');
+    if (fs.existsSync(rawNarDir)) {
+      for (const sub of fs.readdirSync(rawNarDir)) {
+        const candidate = path.join(rawNarDir, sub, `${slug}.md`);
+        if (fs.existsSync(candidate)) {
+          let raw = fs.readFileSync(candidate, 'utf-8').replace(/^---\n[\s\S]*?\n---\n*/, '');
+          return res.json({ slug, content: raw, source: 'raw' });
+        }
+      }
+    }
+
+    return res.status(404).json({ error: 'Page not found' });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
