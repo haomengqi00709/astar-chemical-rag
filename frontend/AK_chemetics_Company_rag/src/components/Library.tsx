@@ -697,54 +697,64 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
         /* ── Files tab: left list + right viewer ─────────────────────────── */
         <div className="flex flex-1 overflow-hidden">
           {/* Left: file list */}
-          <div className={`overflow-y-auto shrink-0 border-r border-slate-100 ${selectedFile ? 'w-72' : 'flex-1'}`}>
-            {wikiFiles.length === 0 ? (
-              <div className="px-6 py-8 flex flex-col items-center justify-center text-center">
-                {isReady
-                  ? <p className="text-sm text-slate-400 italic">No wiki pages found. The knowledge base may still be processing.</p>
-                  : <p className="text-sm text-slate-400 italic">Build the knowledge base first to view files.</p>
-                }
+          {/* Left list: prefer wiki pages if available, fall back to source files */}
+          {(() => {
+            const listItems = wikiFiles.length > 0
+              ? wikiFiles
+              : files.map((f: any) => ({ slug: f.name.replace(/\.[^.]+$/, ''), name: f.name, title: f.name, isSource: true, size: f.size }));
+            const hasContent = wikiFiles.length > 0;
+            return (
+              <div className={`overflow-y-auto shrink-0 border-r border-slate-100 ${selectedFile ? 'w-72' : 'flex-1'}`}>
+                {listItems.length === 0 ? (
+                  <p className="px-6 py-8 text-sm text-slate-400 italic text-center">No files found.</p>
+                ) : (
+                  <div className="divide-y divide-slate-50 py-2">
+                    {listItems.map((f: any) => (
+                      <button
+                        key={f.slug}
+                        onClick={() => hasContent ? loadFileContent(f) : setSelectedFile(f)}
+                        className={`w-full text-left flex items-start gap-3 px-5 py-3 transition-colors ${
+                          selectedFile?.slug === f.slug
+                            ? 'bg-slate-900 text-white'
+                            : 'hover:bg-slate-50 text-slate-700'
+                        }`}
+                      >
+                        <FileText className={`w-4 h-4 mt-0.5 shrink-0 ${selectedFile?.slug === f.slug ? 'text-white' : 'text-slate-400'}`} />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold font-mono truncate">{f.name}</p>
+                          {f.size && <p className="text-[10px] mt-0.5 opacity-50 font-mono">{f.size < 1024*1024 ? `${(f.size/1024).toFixed(0)} KB` : `${(f.size/(1024*1024)).toFixed(1)} MB`}</p>}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="divide-y divide-slate-50 py-2">
-                {wikiFiles.map(f => (
-                  <button
-                    key={f.slug}
-                    onClick={() => loadFileContent(f)}
-                    className={`w-full text-left flex items-start gap-3 px-5 py-3 transition-colors ${
-                      selectedFile?.slug === f.slug
-                        ? 'bg-slate-900 text-white'
-                        : 'hover:bg-slate-50 text-slate-700'
-                    }`}
-                  >
-                    <FileText className={`w-4 h-4 mt-0.5 shrink-0 ${selectedFile?.slug === f.slug ? 'text-white' : 'text-slate-400'}`} />
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold font-mono truncate">{f.slug}</p>
-                      <p className="text-[11px] truncate mt-0.5 opacity-70">{f.title !== f.slug ? f.title : ''}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+            );
+          })()}
           {/* Right: content viewer */}
           {selectedFile && (
             <div className="flex-1 overflow-hidden flex flex-col">
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 shrink-0">
                 <div>
-                  <p className="text-sm font-bold font-mono text-slate-900">{selectedFile.slug}</p>
-                  {selectedFile.title !== selectedFile.slug && (
+                  <p className="text-sm font-bold font-mono text-slate-900">{selectedFile.name}</p>
+                  {selectedFile.title !== selectedFile.name && (
                     <p className="text-xs text-slate-400 mt-0.5">{selectedFile.title}</p>
                   )}
                 </div>
-                <button onClick={() => setSelectedFile(null)} className="text-slate-400 hover:text-slate-700 transition-colors">
+                <button onClick={() => { setSelectedFile(null); setFileContent(''); }} className="text-slate-400 hover:text-slate-700 transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto">
                 {fileLoading
                   ? <div className="flex items-center justify-center h-full"><Loader2 className="w-5 h-5 animate-spin text-slate-400" /></div>
-                  : <pre className="p-5 text-xs font-mono text-slate-700 leading-relaxed whitespace-pre-wrap">{fileContent}</pre>
+                  : fileContent
+                  ? <pre className="p-5 text-xs font-mono text-slate-700 leading-relaxed whitespace-pre-wrap">{fileContent}</pre>
+                  : <div className="flex flex-col items-center justify-center h-full text-center px-8 gap-3">
+                      <FileText className="w-10 h-10 text-slate-200" />
+                      <p className="text-sm text-slate-400">This file has been processed into the knowledge base.</p>
+                      <p className="text-xs text-slate-300">Use the Chat tab to query its contents.</p>
+                    </div>
                 }
               </div>
             </div>
