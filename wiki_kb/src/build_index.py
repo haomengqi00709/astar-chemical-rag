@@ -189,24 +189,31 @@ def build_index():
     ]
 
     sections_written = 0
-    missing_disciplines = []
 
-    for disc in DISCIPLINE_ORDER:
-        section = build_discipline_section(disc, pages, sql_tables, corpus_map)
-        if section:
-            lines.append(section)
+    # Only use discipline structure if at least one page has a discipline field
+    has_discipline_info = any(
+        'discipline' in p and str(p['discipline']).isdigit()
+        for p in pages.values()
+    )
+
+    if has_discipline_info:
+        for disc in DISCIPLINE_ORDER:
+            section = build_discipline_section(disc, pages, sql_tables, corpus_map)
+            if section:
+                lines.append(section)
+                sections_written += 1
+    else:
+        # Flat listing — no discipline structure
+        lines.append('\n## Pages')
+        for page in sorted(pages.values(), key=lambda p: p.get('title', p['slug'])):
+            lines.append(f'- [[{page["slug"]}]] — {page.get("title", page["slug"])}')
             sections_written += 1
-        else:
-            disc_name = DISCIPLINE_NAMES.get(disc, f'Discipline {disc}')
-            missing_disciplines.append(f'{disc} {disc_name}')
-
-    # Missing disciplines note
-    if missing_disciplines:
-        lines.append('\n---')
-        lines.append('\n## Missing Disciplines')
-        lines.append('_No files uploaded for these disciplines:_')
-        for d in missing_disciplines:
-            lines.append(f'- {d}')
+        if sql_tables:
+            lines.append('\n## SQL Tables')
+            for doc_id, info in sorted(sql_tables.items()):
+                cols_preview = ', '.join(info['columns'][:4])
+                lines.append(f'- `{doc_id}` ({info["row_count"]} rows) — cols: {cols_preview}')
+            sections_written += 1
 
     # Cross-references section
     xrefs = corpus_map.get('cross_references', [])
@@ -225,8 +232,7 @@ def build_index():
     index_path.write_text(index_content, encoding='utf-8')
 
     print(f'Index written → {index_path}')
-    print(f'  {sections_written} discipline sections')
-    print(f'  {len(missing_disciplines)} disciplines missing: {", ".join(missing_disciplines)}')
+    print(f'  {sections_written} sections written')
 
     return index_path
 

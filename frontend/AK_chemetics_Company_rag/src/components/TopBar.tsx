@@ -13,6 +13,7 @@ const ROLE_LABELS: Record<string, string> = {
   pm:         'Project Manager',
   process:    'Process Engineer',
   mechanical: 'Mechanical Engineer',
+  owner:      'Knowledge Base Owner',
 };
 
 export const TopBar: React.FC<TopBarProps> = ({ title, subtitle, user, onSignOut }) => {
@@ -41,12 +42,13 @@ export const TopBar: React.FC<TopBarProps> = ({ title, subtitle, user, onSignOut
           <Bell className="w-5 h-5 text-slate-400 cursor-pointer hover:text-slate-900 transition-colors" />
 
           <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="h-8 w-8 rounded-full object-cover border border-slate-200"
-              referrerPolicy="no-referrer"
-            />
+            {user.avatar ? (
+              <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full object-cover border border-slate-200" referrerPolicy="no-referrer" />
+            ) : (
+              <div className="h-8 w-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold border border-slate-200">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div className="hidden md:block">
               <p className="text-sm font-bold text-slate-900 leading-none">{user.name}</p>
               <p className="text-[10px] text-slate-400 font-mono mt-0.5">{ROLE_LABELS[user.role]}</p>

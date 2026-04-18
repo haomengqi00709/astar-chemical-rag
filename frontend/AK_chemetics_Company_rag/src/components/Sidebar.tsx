@@ -10,6 +10,7 @@ import {
   Briefcase,
   FlaskConical,
   Wrench,
+  Building2,
 } from 'lucide-react';
 import { Page, User } from '../types';
 
@@ -17,27 +18,31 @@ interface SidebarProps {
   currentPage: Page;
   onPageChange: (page: Page) => void;
   user: User;
+  companyName?: string;
 }
 
 const ROLE_ICONS = {
   pm:         Briefcase,
   process:    FlaskConical,
   mechanical: Wrench,
+  owner:      Building2,
 };
 
 const ROLE_COLORS = {
   pm:         'bg-blue-600',
   process:    'bg-emerald-600',
   mechanical: 'bg-orange-500',
+  owner:      'bg-emerald-600',
 };
 
 const ROLE_LABELS = {
   pm:         'Project Manager',
   process:    'Process Engineer',
   mechanical: 'Mechanical Engineer',
+  owner:      'Knowledge Base Owner',
 };
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange, user }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange, user, companyName }) => {
   const RoleIcon = ROLE_ICONS[user.role];
 
   const navItems = [
@@ -57,7 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange, use
               <Shield className="text-white w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-extrabold uppercase tracking-widest text-slate-900 leading-none">A Star Chemical</h2>
+              <h2 className="text-lg font-extrabold uppercase tracking-widest text-slate-900 leading-none">{companyName || 'A Star Chemical'}</h2>
               <p className="text-[10px] text-slate-500 font-mono tracking-tighter">Engineering Platform</p>
             </div>
           </div>

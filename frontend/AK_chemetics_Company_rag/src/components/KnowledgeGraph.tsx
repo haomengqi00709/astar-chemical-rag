@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Loader2, X, RefreshCw, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { Loader2, X, RefreshCw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from 'lucide-react';
 
 // ─── Constants ─────────────────────────────────────────────────────────────
 
 const DISC_COLORS: Record<number, string> = {
-  0:  '#3b82f6',  // blue      — Administration
-  1:  '#10b981',  // emerald   — Process Technology
-  4:  '#f59e0b',  // amber     — Equipment
-  5:  '#8b5cf6',  // purple    — Piping & Layout
-  8:  '#14b8a6',  // teal      — Instrumentation
-  9:  '#eab308',  // yellow    — Electrical
+  0:  '#3b82f6',
+  1:  '#10b981',
+  4:  '#f59e0b',
+  5:  '#8b5cf6',
+  8:  '#14b8a6',
+  9:  '#eab308',
 };
 
 const DISC_NAMES: Record<number, string> = {
@@ -20,6 +20,12 @@ const DISC_NAMES: Record<number, string> = {
   8: 'Instrumentation & Control',
   9: 'Electrical',
 };
+
+const SOURCE_PALETTE = [
+  '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6',
+  '#14b8a6', '#ef4444', '#f97316', '#ec4899',
+  '#06b6d4', '#84cc16', '#a855f7', '#0ea5e9',
+];
 
 function discColor(disc: number): string {
   return DISC_COLORS[disc] ?? '#94a3b8';
@@ -37,6 +43,7 @@ interface GNode {
   discipline: number;
   doc_type: string;
   source_folder: string;
+  source_doc: string;
   degree: number;
   // simulation state (mutated in-place by tick)
   x: number; y: number;
@@ -50,9 +57,11 @@ interface GEdge { source: string; target: string; }
 interface KGProps {
   /** Override the graph API URL. Defaults to /api/wiki/graph */
   graphUrl?: string;
+  /** Force source-document coloring instead of auto-detecting from discipline field */
+  forceColorMode?: 'source';
 }
 
-export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
+export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl, forceColorMode }) => {
   // UI state
   const [disc, setDisc]               = useState<number | 'all'>('all');
   const [loading, setLoading]         = useState(false);
@@ -60,6 +69,7 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
   const [meta, setMeta]               = useState<any>(null);
   const [selectedNode, setSelectedNode] = useState<GNode | null>(null);
   const [neighbors, setNeighbors]     = useState<GNode[]>([]);
+  const [expanded, setExpanded]       = useState(false);
 
   // Canvas ref
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -69,6 +79,12 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
   const simEdges  = useRef<GEdge[]>([]);
   const nodeIdx   = useRef<Map<string, GNode>>(new Map());
   const alphaRef  = useRef(1.0);
+
+  // Color mode: 'discipline' for AK Chemetics docs, 'source' for user uploads
+  const colorModeRef     = useRef<'discipline' | 'source'>('discipline');
+  const sourceColorMapRef = useRef<Map<string, string>>(new Map());
+  const [colorMode, setColorMode] = useState<'discipline' | 'source'>('discipline');
+  const [sourceColorMap, setSourceColorMap] = useState<Map<string, string>>(new Map());
 
   // Transform ref (pan + zoom)
   const txRef = useRef({ tx: 0, ty: 0, scale: 1 });
@@ -125,13 +141,27 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
       alphaRef.current = 1.0;
       txRef.current    = { tx: 0, ty: 0, scale: 1 };
 
+      // Detect whether to use discipline or source_doc coloring
+      const hasDisc = nodes.some(n => n.discipline >= 0);
+      if (!forceColorMode && hasDisc) {
+        colorModeRef.current = 'discipline';
+        setColorMode('discipline');
+      } else {
+        colorModeRef.current = 'source';
+        setColorMode('source');
+        const sources = [...new Set(nodes.map(n => n.source_doc).filter(Boolean))];
+        const map = new Map(sources.map((s, i) => [s, SOURCE_PALETTE[i % SOURCE_PALETTE.length]]));
+        sourceColorMapRef.current = map;
+        setSourceColorMap(new Map(map));
+      }
+
       setMeta(data.meta);
     } catch (e: any) {
       setError(e.message);
     } finally {
       setLoading(false);
     }
-  }, [disc]);
+  }, [disc, forceColorMode]);
 
   useEffect(() => { fetchGraph(); }, [fetchGraph]);
 
@@ -273,7 +303,9 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
 
     // ── Draw nodes ────────────────────────────────────────────────────────
     for (const nd of nodes) {
-      const color  = discColor(nd.discipline);
+      const color  = colorModeRef.current === 'source'
+        ? (sourceColorMapRef.current.get(nd.source_doc) ?? '#94a3b8')
+        : discColor(nd.discipline);
       const r      = nodeRadius(nd.degree);
       const isHov  = hovered?.id === nd.id;
       const isSel  = sel?.id === nd.id;
@@ -465,23 +497,33 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
   // ── Render ──────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col h-full" style={{ background: '#0f172a' }}>
+    <div
+      className="flex flex-col"
+      style={{
+        background: '#0f172a',
+        ...(expanded
+          ? { position: 'absolute', inset: 0, zIndex: 20 }
+          : { height: '100%' }),
+      }}
+    >
 
       {/* Toolbar */}
       <div className="flex items-center gap-3 px-4 py-2.5 shrink-0" style={{ background: '#1e293b', borderBottom: '1px solid rgba(71,85,105,0.4)' }}>
         <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">Knowledge Graph</span>
 
-        <select
-          value={disc === 'all' ? 'all' : String(disc)}
-          onChange={e => setDisc(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
-          className="text-xs rounded-lg px-3 py-1.5 outline-none"
-          style={{ background: '#0f172a', border: '1px solid #334155', color: '#cbd5e1' }}
-        >
-          <option value="all">All Disciplines</option>
-          {Object.entries(DISC_NAMES).map(([id, name]) => (
-            <option key={id} value={id}>{name}</option>
-          ))}
-        </select>
+        {colorMode === 'discipline' && (
+          <select
+            value={disc === 'all' ? 'all' : String(disc)}
+            onChange={e => setDisc(e.target.value === 'all' ? 'all' : parseInt(e.target.value))}
+            className="text-xs rounded-lg px-3 py-1.5 outline-none"
+            style={{ background: '#0f172a', border: '1px solid #334155', color: '#cbd5e1' }}
+          >
+            <option value="all">All Disciplines</option>
+            {Object.entries(DISC_NAMES).map(([id, name]) => (
+              <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
+        )}
 
         {meta && (
           <span className="text-[10px] font-mono text-slate-500">
@@ -497,8 +539,8 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
           <button onClick={() => zoom(0.83)} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors" title="Zoom out">
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
-          <button onClick={resetView} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors" title="Reset view">
-            <Maximize2 className="w-3.5 h-3.5" />
+          <button onClick={() => setExpanded(e => !e)} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors" title={expanded ? 'Exit fullscreen' : 'Expand'}>
+            {expanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={fetchGraph}
@@ -557,17 +599,37 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
           {!loading && !error && (
             <div className="absolute bottom-4 left-4 rounded-xl p-3 pointer-events-none"
               style={{ background: 'rgba(30,41,59,0.9)', border: '1px solid rgba(71,85,105,0.4)' }}>
-              <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">Discipline</p>
-              {Object.entries(DISC_NAMES).map(([id, name]) => (
-                <div key={id} className="flex items-center gap-2 mb-1 last:mb-0">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0 block" style={{ background: discColor(parseInt(id)) }} />
-                  <span className="text-[10px] text-slate-400">{name}</span>
-                </div>
-              ))}
-              <div className="flex items-center gap-2 mt-2 pt-2" style={{ borderTop: '1px solid rgba(71,85,105,0.3)' }}>
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 block" />
-                <span className="text-[10px] text-slate-400">Other</span>
-              </div>
+              {colorMode === 'discipline' ? (
+                <>
+                  <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">Discipline</p>
+                  {Object.entries(DISC_NAMES).map(([id, name]) => (
+                    <div key={id} className="flex items-center gap-2 mb-1 last:mb-0">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0 block" style={{ background: discColor(parseInt(id)) }} />
+                      <span className="text-[10px] text-slate-400">{name}</span>
+                    </div>
+                  ))}
+                  <div className="flex items-center gap-2 mt-2 pt-2" style={{ borderTop: '1px solid rgba(71,85,105,0.3)' }}>
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 block" />
+                    <span className="text-[10px] text-slate-400">Other</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mb-2">Source</p>
+                  {[...sourceColorMap.entries()].map(([src, color]) => (
+                    <div key={src} className="flex items-center gap-2 mb-1 last:mb-0">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0 block" style={{ background: color }} />
+                      <span className="text-[10px] text-slate-400 max-w-[140px] truncate" title={src}>{src}</span>
+                    </div>
+                  ))}
+                  {sourceColorMap.size === 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0 block" />
+                      <span className="text-[10px] text-slate-400">Unknown</span>
+                    </div>
+                  )}
+                </>
+              )}
               <p className="text-[9px] text-slate-600 mt-2 font-mono">Node size = # of links</p>
             </div>
           )}
@@ -583,10 +645,18 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl }) => {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap mb-2">
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: discColor(selectedNode.discipline) + '25', color: discColor(selectedNode.discipline) }}>
-                      {DISC_NAMES[selectedNode.discipline] ?? `Disc ${selectedNode.discipline}`}
-                    </span>
+                    {colorMode === 'discipline' ? (
+                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                        style={{ background: discColor(selectedNode.discipline) + '25', color: discColor(selectedNode.discipline) }}>
+                        {DISC_NAMES[selectedNode.discipline] ?? `Disc ${selectedNode.discipline}`}
+                      </span>
+                    ) : (
+                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full truncate max-w-[180px]"
+                        style={{ background: (sourceColorMap.get(selectedNode.source_doc) ?? '#94a3b8') + '25', color: sourceColorMap.get(selectedNode.source_doc) ?? '#94a3b8' }}
+                        title={selectedNode.source_doc}>
+                        {selectedNode.source_doc || 'Unknown'}
+                      </span>
+                    )}
                     {selectedNode.doc_type && (
                       <span className="text-[9px] font-mono px-1.5 py-0.5 rounded text-slate-400"
                         style={{ background: 'rgba(71,85,105,0.4)' }}>

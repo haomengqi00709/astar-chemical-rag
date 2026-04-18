@@ -1,5 +1,5 @@
 export type Page = 'dashboard' | 'query' | 'skills' | 'library';
-export type Role = 'pm' | 'process' | 'mechanical';
+export type Role = 'pm' | 'process' | 'mechanical' | 'owner';
 
 export interface User {
   id: string;

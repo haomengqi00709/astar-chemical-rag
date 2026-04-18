@@ -323,8 +323,8 @@ def _step_label(fn_name: str, fn_args: dict) -> str:
         return template
 
 
-def _generate_with_retry(client, contents, tool_config, max_retries=1, stream=False):
-    """Call generate_content with one automatic retry on rate-limit (429) errors."""
+def _generate_with_retry(client, contents, tool_config, max_retries=3, stream=False):
+    """Call generate_content with automatic retries on rate-limit (429) errors."""
     for attempt in range(max_retries + 1):
         try:
             return client.models.generate_content(
@@ -341,7 +341,8 @@ def _generate_with_retry(client, contents, tool_config, max_retries=1, stream=Fa
             if attempt == max_retries:
                 raise
             m = re.search(r'retryDelay.*?(\d+)s', str(e))
-            delay = min(int(m.group(1)), 15) if m else 10
+            # Use the API-suggested delay (up to 120s); don't cap at 15s or it will fail again
+            delay = min(int(m.group(1)) + 2, 120) if m else 30
             if stream:
                 print(json.dumps({
                     'type': 'step', 'tool': '_retry',
@@ -353,7 +354,8 @@ def _generate_with_retry(client, contents, tool_config, max_retries=1, stream=Fa
             if '429' in err_str or 'resource_exhausted' in err_str or 'quota' in err_str:
                 if attempt == max_retries:
                     raise
-                delay = 10
+                m = re.search(r'retryDelay.*?(\d+)s', err_str)
+                delay = min(int(m.group(1)) + 2, 120) if m else 30
                 if stream:
                     print(json.dumps({
                         'type': 'step', 'tool': '_retry',

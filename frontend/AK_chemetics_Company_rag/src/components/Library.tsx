@@ -601,7 +601,15 @@ const CompletedProjectView: React.FC<{
 
 // ─── User Project view (status + chatbot) ────────────────────────────────────
 
-const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (id: string) => void; onRefresh: () => void }> = ({ project, onBack, onDelete, onRefresh }) => {
+type ChatMessage = { role: 'user' | 'assistant' | 'error'; content: string };
+const UserProjectView: React.FC<{
+  project: any;
+  onBack: () => void;
+  onDelete: (id: string) => void;
+  onRefresh: () => void;
+  initialMessages?: ChatMessage[];
+  onMessagesChange?: (msgs: ChatMessage[]) => void;
+}> = ({ project, onBack, onDelete, onRefresh, initialMessages, onMessagesChange }) => {
   const [status, setStatus] = useState<any>({ status: project.status });
   const [files, setFiles] = useState<any[]>(project.files || []);
   const [tab, setTab] = useState<'chat' | 'files' | 'graph'>('chat');
@@ -609,11 +617,11 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
   const [selectedFile,  setSelectedFile]  = useState<{ slug: string; name: string; title: string } | null>(null);
   const [fileContent,   setFileContent]   = useState<string>('');
   const [fileLoading,   setFileLoading]   = useState(false);
-  const [wikiFiles,     setWikiFiles]     = useState<{ slug: string; name: string; title: string }[]>([]);
+  const [wikiFiles,     setWikiFiles]     = useState<{ slug: string; name: string; title: string; source_doc?: string }[]>([]);
   const [expandedSources, setExpandedSources] = useState<Set<string>>(
     () => new Set((project.files || []).map((f: any) => f.name))
   );
-  const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'error'; content: string }[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => initialMessages ?? []);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
@@ -646,6 +654,11 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
       return () => clearInterval(pollRef.current);
     }
   }, [project.id, isProcessing]);
+
+  // Sync messages back to parent cache whenever they change
+  useEffect(() => {
+    onMessagesChange?.(messages);
+  }, [messages]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -875,23 +888,23 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
         <div className="flex flex-1 overflow-hidden">
           {/* Left: hierarchical file list — source files with nested wiki pages */}
           {(() => {
-            const extractDocId = (filename: string) =>
-              (filename.match(/^(\d+-[A-Z]+-[\d-]+)/)?.[1] ?? filename.replace(/\.[^.]+$/, ''))
-                .replace(/-+$/, '');
-            const norm = (s: string) => s.toLowerCase().replace(/[-_]/g, '_');
+            const stripExt = (s: string) => s.replace(/\.[^.]+$/, '');
+            const norm = (s: string) => s.toLowerCase().replace(/[\s\-_]+/g, ' ').trim();
 
-            // Group wiki pages under their source file by doc_id prefix match
+            // Group wiki pages under their source file using source_doc field
             const groups = files.map((sf: any) => ({
               sf,
-              docId: norm(extractDocId(sf.name)),
-              pages: [] as { slug: string; name: string; title: string }[],
+              sfNorm: norm(stripExt(sf.name)),
+              pages: [] as { slug: string; name: string; title: string; source_doc?: string }[],
             }));
             const assigned = new Set<string>();
             for (const grp of groups) {
-              grp.pages = wikiFiles.filter(w => norm(w.slug).includes(grp.docId));
+              grp.pages = wikiFiles.filter(w =>
+                w.source_doc ? norm(w.source_doc) === grp.sfNorm : false
+              );
               grp.pages.forEach(p => assigned.add(p.slug));
             }
-            // Unassigned wiki pages → append to last group
+            // Unassigned wiki pages → append to last group (fallback)
             const unassigned = wikiFiles.filter(w => !assigned.has(w.slug));
             if (groups.length > 0) groups[groups.length - 1].pages.push(...unassigned);
 
@@ -1055,7 +1068,7 @@ const UserProjectView: React.FC<{ project: any; onBack: () => void; onDelete: (i
 
 // ─── Main Library component ──────────────────────────────────────────────────
 
-export const Library: React.FC = () => {
+export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolean; companyName?: string }> = ({ defaultUserProjectId, isAdmin = false, companyName }) => {
   const [data,              setData]              = useState<LibraryData | null>(null);
   const [loading,           setLoading]           = useState(true);
   const [selectedDisc,      setSelectedDisc]      = useState<number | 'all'>('all');
@@ -1086,11 +1099,30 @@ export const Library: React.FC = () => {
   const [selectedUserProject, setSelectedUserProject] = useState<any | null>(null);
   const [creatingProject,     setCreatingProject]     = useState(false);
 
+  // Persistent chat history cache: projectId → messages[]
+  const chatHistoryCache = useRef<Map<string, { role: 'user' | 'assistant' | 'error'; content: string }[]>>(new Map());
+
+  // Admin: standard upload state
+  const [uploadingStandard,   setUploadingStandard]   = useState(false);
+  const [standardProject,     setStandardProject]     = useState<any | null>(null);
+  const stdFileRef = useRef<HTMLInputElement>(null);
+
   const refreshUserProjects = useCallback(() => {
-    fetch('/api/user-projects').then(r => r.json()).then(setUserProjects).catch(() => {});
-  }, []);
+    if (isAdmin) return; // admin mode: only track projects created this session
+    fetch('/api/user-projects').then(r => r.json()).then(projects => {
+      setUserProjects(projects);
+      if (defaultUserProjectId && !selectedUserProject) {
+        const found = projects.find((p: any) => p.id === defaultUserProjectId);
+        if (found) setSelectedUserProject(found);
+      }
+    }).catch(() => {});
+  }, [defaultUserProjectId, isAdmin]);
 
   useEffect(() => {
+    if (isAdmin) {
+      setLoading(false);
+      return;
+    }
     fetch('/api/library')
       .then(r => r.json())
       .then(d => setData(d))
@@ -1103,7 +1135,33 @@ export const Library: React.FC = () => {
       .catch(() => {});
 
     refreshUserProjects();
-  }, [refreshUserProjects]);
+  }, [refreshUserProjects, isAdmin]);
+
+  // Admin: upload files to company standard
+  const handleUploadStandard = async (fl: FileList | null) => {
+    if (!fl || fl.length === 0) return;
+    setUploadingStandard(true);
+    try {
+      const fd = new FormData();
+      fd.append('name', `__standard__${companyName || ''}`);
+      Array.from(fl).forEach(f => fd.append('files', f));
+      if (standardProject) {
+        // Add to existing standard project
+        const res = await fetch(`/api/user-projects/${standardProject.id}/files`, { method: 'POST', body: fd });
+        const d = await res.json();
+        setStandardProject((p: any) => ({ ...p, files: d.files }));
+        await fetch(`/api/user-projects/${standardProject.id}/rebuild`, { method: 'POST' });
+      } else {
+        // Create new standard project
+        const res = await fetch('/api/user-projects', { method: 'POST', body: fd });
+        const d = await res.json();
+        setStandardProject(d);
+        setSelectedUserProject(d);
+      }
+      refreshUserProjects();
+    } catch {}
+    finally { setUploadingStandard(false); }
+  };
 
   // Standard library view
   const allDocs: Doc[] = data
@@ -1196,10 +1254,54 @@ export const Library: React.FC = () => {
               ? <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
               : <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
           </button>
+          {/* Admin: upload files to standard */}
+          {isAdmin && standardOpen && (
+            <div className="px-5 py-3 border-b border-outline-variant/10">
+              {!standardProject ? (
+                <button
+                  onClick={() => stdFileRef.current?.click()}
+                  disabled={uploadingStandard}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-slate-300 text-slate-500 text-xs font-medium hover:border-primary-container hover:text-primary-container transition-colors disabled:opacity-50"
+                >
+                  {uploadingStandard ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                  Upload Company Standards
+                </button>
+              ) : (
+                <button
+                  onClick={() => stdFileRef.current?.click()}
+                  disabled={uploadingStandard}
+                  className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-100 text-slate-500 text-xs font-medium hover:bg-slate-200 transition-colors disabled:opacity-50"
+                >
+                  {uploadingStandard ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+                  Add More Files
+                </button>
+              )}
+              <input ref={stdFileRef} type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" className="hidden" onChange={e => handleUploadStandard(e.target.files)} />
+            </div>
+          )}
 
           {standardOpen && (
             <nav className="py-1">
-              {/* Query */}
+              {/* Admin: show Files nav when standard project exists */}
+              {isAdmin && standardProject && (
+                <button
+                  onClick={() => { setSelectedUserProject(standardProject); setSelectedProject(null); setCreatingProject(false); }}
+                  className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
+                    selectedUserProject?.id === standardProject.id
+                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span className="text-xs">All Documents</span>
+                  <span className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">
+                    {standardProject.files?.length ?? 0}
+                  </span>
+                </button>
+              )}
+
+              {/* Query — hidden in admin mode until standard is built */}
+              {!isAdmin && (
               <button
                 onClick={() => { setActiveView('query'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
                 className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
@@ -1211,8 +1313,10 @@ export const Library: React.FC = () => {
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span className="text-xs">Query</span>
               </button>
+              )}
 
-              {/* Knowledge Graph */}
+              {/* Knowledge Graph — hidden in admin mode until standard is built */}
+              {!isAdmin && (
               <button
                 onClick={() => { setActiveView('graph'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
                 className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
@@ -1224,74 +1328,75 @@ export const Library: React.FC = () => {
                 <Network className="w-3.5 h-3.5" />
                 <span className="text-xs">Knowledge Graph</span>
               </button>
+              )}
 
-              {/* All Documents dropdown */}
-              <button
-                onClick={() => { setDocsOpen(o => !o); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
-                className={`w-full flex items-center justify-between px-5 py-2.5 text-sm transition-colors ${
-                  !selectedProject && !selectedUserProject && !creatingProject && activeView === 'docs'
-                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <FileText className="w-3.5 h-3.5" />
-                  <span className="text-xs">All Documents</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  {data && (
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">
-                      {data.total_docs}
-                    </span>
-                  )}
-                  {docsOpen
-                    ? <ChevronDown className="w-3 h-3 text-slate-400" />
-                    : <ChevronRight className="w-3 h-3 text-slate-400" />}
-                </div>
-              </button>
-
-              {/* Discipline list (nested under All Documents) */}
-              {docsOpen && (
-                <div className="ml-4 border-l-2 border-slate-100">
+              {/* All Documents dropdown — hidden in admin mode */}
+              {!isAdmin && (
+                <>
                   <button
-                    onClick={() => { setSelectedDisc('all'); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
-                    className={`w-full flex items-center justify-between pl-4 pr-5 py-2 text-sm transition-colors ${
-                      activeView === 'docs' && !selectedProject && selectedDisc === 'all'
-                        ? 'text-primary-container font-bold'
+                    onClick={() => { setDocsOpen(o => !o); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
+                    className={`w-full flex items-center justify-between px-5 py-2.5 text-sm transition-colors ${
+                      !selectedProject && !selectedUserProject && !creatingProject && activeView === 'docs'
+                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
                         : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                     }`}
                   >
-                    <span className="text-xs">All</span>
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-3.5 h-3.5" />
+                      <span className="text-xs">All Documents</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      {data && (
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">
+                          {data.total_docs}
+                        </span>
+                      )}
+                      {docsOpen
+                        ? <ChevronDown className="w-3 h-3 text-slate-400" />
+                        : <ChevronRight className="w-3 h-3 text-slate-400" />}
+                    </div>
                   </button>
-                  {ALL_DISCIPLINES.map(disc => {
-                    const hasData = presentIds.has(disc.id);
-                    const count   = discCount[disc.id] ?? 0;
-                    const active  = activeView === 'docs' && !selectedProject && selectedDisc === disc.id;
-                    return (
+                  {docsOpen && (
+                    <div className="ml-4 border-l-2 border-slate-100">
                       <button
-                        key={disc.id}
-                        onClick={() => { if (hasData) { setSelectedDisc(disc.id); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); } }}
-                        className={`w-full flex items-center justify-between pl-4 pr-5 py-1.5 text-sm transition-colors ${
-                          !hasData
-                            ? 'text-slate-300 cursor-default'
-                            : active
+                        onClick={() => { setSelectedDisc('all'); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
+                        className={`w-full flex items-center justify-between pl-4 pr-5 py-2 text-sm transition-colors ${
+                          activeView === 'docs' && !selectedProject && selectedDisc === 'all'
                             ? 'text-primary-container font-bold'
                             : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                         }`}
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className={`text-[10px] font-mono font-bold shrink-0 ${active ? 'text-primary-container' : hasData ? 'text-slate-400' : 'text-slate-200'}`}>
-                            {disc.id}
-                          </span>
-                          <span className="truncate text-xs">{disc.name}</span>
-                        </div>
-                        {hasData
-                          ? <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded shrink-0 ml-1 ${active ? 'bg-primary-container/10 text-primary-container' : 'bg-slate-100 text-slate-400'}`}>{count}</span>
-                          : <span className="text-[10px] text-slate-200 shrink-0 ml-1">—</span>}
+                        <span className="text-xs">All</span>
                       </button>
-                    );
-                  })}
-                </div>
+                      {ALL_DISCIPLINES.map(disc => {
+                        const hasData = presentIds.has(disc.id);
+                        const count   = discCount[disc.id] ?? 0;
+                        const active  = activeView === 'docs' && !selectedProject && selectedDisc === disc.id;
+                        return (
+                          <button
+                            key={disc.id}
+                            onClick={() => { if (hasData) { setSelectedDisc(disc.id); setActiveView('docs'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); } }}
+                            className={`w-full flex items-center justify-between pl-4 pr-5 py-1.5 text-sm transition-colors ${
+                              !hasData ? 'text-slate-300 cursor-default'
+                              : active ? 'text-primary-container font-bold'
+                              : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className={`text-[10px] font-mono font-bold shrink-0 ${active ? 'text-primary-container' : hasData ? 'text-slate-400' : 'text-slate-200'}`}>
+                                {disc.id}
+                              </span>
+                              <span className="truncate text-xs">{disc.name}</span>
+                            </div>
+                            {hasData
+                              ? <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded shrink-0 ml-1 ${active ? 'bg-primary-container/10 text-primary-container' : 'bg-slate-100 text-slate-400'}`}>{count}</span>
+                              : <span className="text-[10px] text-slate-200 shrink-0 ml-1">—</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
               )}
             </nav>
           )}
@@ -1316,18 +1421,20 @@ export const Library: React.FC = () => {
 
           {refProjectsOpen && (
             <nav className="py-2 border-t border-outline-variant/10">
-              {/* + New Project */}
-              <button
-                onClick={() => { setCreatingProject(true); setSelectedProject(null); setSelectedUserProject(null); }}
-                className={`w-full flex items-center gap-2 px-5 py-2 text-xs transition-colors ${
-                  creatingProject
-                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>New Project</span>
-              </button>
+              {/* + New Project — admin only */}
+              {isAdmin && (
+                <button
+                  onClick={() => { setCreatingProject(true); setSelectedProject(null); setSelectedUserProject(null); }}
+                  className={`w-full flex items-center gap-2 px-5 py-2 text-xs transition-colors ${
+                    creatingProject
+                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Reference Project</span>
+                </button>
+              )}
 
               {/* User projects (exclude isFromProject — those show under completedProjects) */}
               {userProjects.filter(p => !p.isFromProject).map(proj => {
@@ -1400,7 +1507,7 @@ export const Library: React.FC = () => {
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden relative">
 
         {creatingProject ? (
           <CreateProjectView
@@ -1408,7 +1515,11 @@ export const Library: React.FC = () => {
             onCreated={(proj) => {
               setCreatingProject(false);
               setSelectedUserProject(proj);
-              refreshUserProjects();
+              if (isAdmin) {
+                setUserProjects(prev => [...prev, proj]);
+              } else {
+                refreshUserProjects();
+              }
             }}
           />
         ) : selectedUserProject ? (
@@ -1419,9 +1530,26 @@ export const Library: React.FC = () => {
             onDelete={async (id) => {
               await fetch(`/api/user-projects/${id}`, { method: 'DELETE' });
               setSelectedUserProject(null);
-              refreshUserProjects();
+              if (!isAdmin) refreshUserProjects();
             }}
-            onRefresh={refreshUserProjects}
+            onRefresh={() => {
+              if (isAdmin) {
+                // Admin: fetch status for this specific project and update userProjects list
+                fetch(`/api/user-projects/${selectedUserProject.id}/status`)
+                  .then(r => r.json())
+                  .then(s => {
+                    setUserProjects(prev => prev.map(p =>
+                      p.id === selectedUserProject.id ? { ...p, status: s.status } : p
+                    ));
+                    setSelectedUserProject((prev: any) => prev ? { ...prev, status: s.status } : prev);
+                  })
+                  .catch(() => {});
+              } else {
+                refreshUserProjects();
+              }
+            }}
+            initialMessages={chatHistoryCache.current.get(selectedUserProject.id)}
+            onMessagesChange={(msgs) => chatHistoryCache.current.set(selectedUserProject.id, msgs)}
           />
         ) : selectedProject ? (
           /* ── Completed agent project view ── */
@@ -1440,6 +1568,8 @@ export const Library: React.FC = () => {
                     refreshUserProjects();
                   }}
                   onRefresh={refreshUserProjects}
+                  initialMessages={chatHistoryCache.current.get(up.id)}
+                  onMessagesChange={(msgs) => chatHistoryCache.current.set(up.id, msgs)}
                 />
               );
             }
@@ -1455,7 +1585,7 @@ export const Library: React.FC = () => {
         ) : activeView === 'graph' ? (
           /* ── Knowledge Graph view ── */
           <div className="flex-1 overflow-hidden">
-            <KnowledgeGraph />
+            <KnowledgeGraph forceColorMode="source" />
           </div>
         ) : activeView === 'query' ? (
           /* ── Chatbot query view ── */

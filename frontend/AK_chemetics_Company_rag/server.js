@@ -1355,9 +1355,10 @@ app.post('/api/projects/:id/summarize-deliverables', async (req, res) => {
 // ---------------------------------------------------------------------------
 // Wiki Knowledge Base — paths & in-memory index
 // ---------------------------------------------------------------------------
-const WIKI_KB_DIR  = path.join(RAG_ROOT, 'wiki_kb');
-const WIKI_DIR     = path.join(WIKI_KB_DIR, 'wiki');
-const WIKI_ASK     = path.join(WIKI_KB_DIR, 'src', 'ask.py');
+const WIKI_KB_DIR       = path.join(RAG_ROOT, 'wiki_kb');
+const WIKI_DIR          = path.join(WIKI_KB_DIR, 'wiki');
+const WIKI_ASK          = path.join(WIKI_KB_DIR, 'src', 'ask.py');
+const WIKI_ASK_GENERIC  = path.join(WIKI_KB_DIR, 'src', 'ask_generic.py');
 
 let _wikiIndex = null;  // cached on first request
 
@@ -1525,7 +1526,11 @@ app.post('/api/wiki/query', (req, res) => {
   proc.on('close', code => {
     if (code !== 0) {
       console.error('[wiki ask stderr]', stderr.slice(-500));
-      return res.status(500).json({ error: 'Wiki query failed', detail: stderr.slice(-500) });
+      const isQuota = stderr.includes('RESOURCE_EXHAUSTED') || stderr.includes('quota') || stderr.includes('429');
+      const friendlyError = isQuota
+        ? 'Gemini API quota exceeded — please wait a moment and try again.'
+        : 'Wiki query failed';
+      return res.status(500).json({ error: friendlyError, detail: stderr.slice(-500) });
     }
     // Parse JSON lines — find the answer event
     let answer = '';
@@ -1565,17 +1570,18 @@ function buildWikiGraph() {
     try { raw = fs.readFileSync(path.join(WIKI_DIR, file), 'utf-8'); } catch { continue; }
 
     // Parse frontmatter
-    let meta = { slug, title: slug.replace(/_/g, ' '), discipline: -1, doc_type: '', source_folder: '' };
+    let meta = { slug, title: slug.replace(/_/g, ' '), discipline: -1, doc_type: '', source_folder: '', source_doc: '' };
     const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/);
     if (fmMatch) {
       for (const line of fmMatch[1].split('\n')) {
         const kv = line.match(/^(\w+):\s*"?(.+?)"?\s*$/);
         if (kv) {
           const [, k, v] = kv;
-          if (k === 'title')        meta.title = v;
-          else if (k === 'discipline')   meta.discipline = parseInt(v) || -1;
-          else if (k === 'doc_type')     meta.doc_type = v;
+          if (k === 'title')              meta.title = v;
+          else if (k === 'discipline')    meta.discipline = parseInt(v) || -1;
+          else if (k === 'doc_type')      meta.doc_type = v;
           else if (k === 'source_folder') meta.source_folder = v;
+          else if (k === 'source_doc')    meta.source_doc = v;
         }
       }
     }
@@ -1622,7 +1628,7 @@ app.get('/api/wiki/graph', (req, res) => {
     let nodes = [...filtered.values()]
       .sort((a, b) => (degree.get(b.slug) || 0) - (degree.get(a.slug) || 0))
       .slice(0, limit)
-      .map(n => ({ id: n.slug, title: n.title, discipline: n.discipline, doc_type: n.doc_type, source_folder: n.source_folder, degree: degree.get(n.slug) || 0 }));
+      .map(n => ({ id: n.slug, title: n.title, discipline: n.discipline, doc_type: n.doc_type, source_folder: n.source_folder, source_doc: n.source_doc || '', degree: degree.get(n.slug) || 0 }));
 
     const nodeIds = new Set(nodes.map(n => n.id));
 
@@ -1768,12 +1774,15 @@ app.get('/api/user-projects/:id/wiki-files', (req, res) => {
       .map(f => {
         const slug = f.replace(/\.md$/, '');
         let title = slug;
+        let source_doc = '';
         try {
           const raw = fs.readFileSync(path.join(wikiDir, f), 'utf-8');
-          const m = raw.match(/^title:\s*"?(.+?)"?\s*$/m);
-          if (m) title = m[1];
+          const mt = raw.match(/^title:\s*"?(.+?)"?\s*$/m);
+          if (mt) title = mt[1];
+          const ms = raw.match(/^source_doc:\s*"?(.+?)"?\s*$/m);
+          if (ms) source_doc = ms[1];
         } catch {}
-        return { slug, title, name: f };
+        return { slug, title, name: f, source_doc };
       });
     res.json({ files });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -1825,17 +1834,18 @@ app.get('/api/user-projects/:id/graph', (req, res) => {
       let raw;
       try { raw = fs.readFileSync(path.join(wikiDir, file), 'utf-8'); } catch { continue; }
 
-      let meta = { slug, title: slug.replace(/_/g, ' '), discipline: -1, doc_type: '', source_folder: '' };
+      let meta = { slug, title: slug.replace(/_/g, ' '), discipline: -1, doc_type: '', source_folder: '', source_doc: '' };
       const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/);
       if (fmMatch) {
         for (const line of fmMatch[1].split('\n')) {
           const kv = line.match(/^(\w+):\s*"?(.+?)"?\s*$/);
           if (kv) {
             const [, k, v] = kv;
-            if (k === 'title')         meta.title = v;
+            if (k === 'title')              meta.title = v;
             else if (k === 'discipline')    meta.discipline = parseInt(v) || -1;
             else if (k === 'doc_type')      meta.doc_type = v;
             else if (k === 'source_folder') meta.source_folder = v;
+            else if (k === 'source_doc')    meta.source_doc = v;
           }
         }
       }
@@ -1858,7 +1868,7 @@ app.get('/api/user-projects/:id/graph', (req, res) => {
     let nodes = [...nodeMap.values()]
       .sort((a, b) => (degree.get(b.slug) || 0) - (degree.get(a.slug) || 0))
       .slice(0, limit)
-      .map(n => ({ id: n.slug, title: n.title, discipline: n.discipline, doc_type: n.doc_type, source_folder: n.source_folder, degree: degree.get(n.slug) || 0 }));
+      .map(n => ({ id: n.slug, title: n.title, discipline: n.discipline, doc_type: n.doc_type, source_folder: n.source_folder, source_doc: n.source_doc || '', degree: degree.get(n.slug) || 0 }));
 
     const nodeIds = new Set(nodes.map(n => n.id));
     const edgeSet = new Set();
@@ -1883,7 +1893,7 @@ app.post('/api/user-projects/:id/query', (req, res) => {
   const projDir = path.join(USER_PROJECTS_DIR, req.params.id);
   if (!fs.existsSync(projDir)) return res.status(404).json({ error: 'Project not found' });
 
-  const proc = spawn(PYTHON, [WIKI_ASK, '--json-stream', question.trim()], {
+  const proc = spawn(PYTHON, [WIKI_ASK_GENERIC, '--json-stream', question.trim()], {
     cwd: path.join(RAG_ROOT, 'wiki_kb'),
     env: { ...process.env, WIKI_KB_ROOT: projDir },
   });

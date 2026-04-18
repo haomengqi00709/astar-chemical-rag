@@ -44,3 +44,7 @@ Thumbs.db
 
 # Drive downloads (source documents — too large for git)
 drive-download-*/
+
+# PM Agent runtime data (generated, too large for git)
+work_agents/Daniel - Project Manager /projects_store.json
+work_agents/Daniel - Project Manager /deliverables/*.docx
