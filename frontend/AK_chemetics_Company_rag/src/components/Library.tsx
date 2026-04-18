@@ -1421,20 +1421,18 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
 
           {refProjectsOpen && (
             <nav className="py-2 border-t border-outline-variant/10">
-              {/* + New Project — admin only */}
-              {isAdmin && (
-                <button
-                  onClick={() => { setCreatingProject(true); setSelectedProject(null); setSelectedUserProject(null); }}
-                  className={`w-full flex items-center gap-2 px-5 py-2 text-xs transition-colors ${
-                    creatingProject
-                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Reference Project</span>
-                </button>
-              )}
+              {/* + New Project */}
+              <button
+                onClick={() => { setCreatingProject(true); setSelectedProject(null); setSelectedUserProject(null); }}
+                className={`w-full flex items-center gap-2 px-5 py-2 text-xs transition-colors ${
+                  creatingProject
+                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Reference Project</span>
+              </button>
 
               {/* User projects (exclude isFromProject — those show under completedProjects) */}
               {userProjects.filter(p => !p.isFromProject).map(proj => {
@@ -1585,7 +1583,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
         ) : activeView === 'graph' ? (
           /* ── Knowledge Graph view ── */
           <div className="flex-1 overflow-hidden">
-            <KnowledgeGraph forceColorMode="source" />
+            <KnowledgeGraph />
           </div>
         ) : activeView === 'query' ? (
           /* ── Chatbot query view ── */
