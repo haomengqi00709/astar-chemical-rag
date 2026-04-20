@@ -1426,6 +1426,19 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
 
           {refProjectsOpen && (
             <nav className="py-2 border-t border-outline-variant/10">
+              {!isAdmin && (
+                <button
+                  onClick={() => { setCreatingProject(true); setSelectedProject(null); setSelectedUserProject(null); }}
+                  className={`w-full flex items-center gap-2 px-5 py-2 text-xs transition-colors ${
+                    creatingProject
+                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Reference Project</span>
+                </button>
+              )}
               {completedProjects.map(proj => {
                 const ps       = proj.context?.project_summary;
                 const active   = selectedProject?.id === proj.id;
