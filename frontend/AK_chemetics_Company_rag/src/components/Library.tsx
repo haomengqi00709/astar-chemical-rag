@@ -302,7 +302,7 @@ const ProjectRefView: React.FC<{ project: any }> = ({ project }) => {
 
 // ─── Create Project view ─────────────────────────────────────────────────────
 
-const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: () => void }> = ({ onCreated, onCancel }) => {
+const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: () => void; sessionId?: string }> = ({ onCreated, onCancel, sessionId }) => {
   const [name, setName] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -330,7 +330,9 @@ const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: ()
       const fd = new FormData();
       fd.append('name', name.trim());
       files.forEach(f => fd.append('files', f));
-      const res = await fetch('/api/user-projects', { method: 'POST', body: fd });
+      const headers: Record<string, string> = {};
+      if (sessionId) headers['X-Session-ID'] = sessionId;
+      const res = await fetch('/api/user-projects', { method: 'POST', body: fd, headers });
       if (!res.ok) throw new Error('Upload failed');
       const proj = await res.json();
       onCreated(proj);
@@ -431,7 +433,7 @@ const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: ()
 const CompletedProjectView: React.FC<{
   project: any;
   onBack: () => void;
-  onWikiBuilt: () => void;
+  onWikiBuilt: (projectId: string) => void;
 }> = ({ project, onBack, onWikiBuilt }) => {
   const [tab, setTab] = useState<'files' | 'graph'>('files');
   const [fullProj, setFullProj] = useState<any>(null);
@@ -459,7 +461,7 @@ const CompletedProjectView: React.FC<{
       const r = await fetch(`/api/projects/${project.id}/build-reference`, { method: 'POST' });
       if (!r.ok) throw new Error('Failed');
       setWikiStatus('done');
-      setTimeout(onWikiBuilt, 600);
+      setTimeout(() => onWikiBuilt(project.id), 600);
     } catch { setWikiStatus('error'); }
   };
 
@@ -888,15 +890,20 @@ const UserProjectView: React.FC<{
         <div className="flex flex-1 overflow-hidden">
           {/* Left: hierarchical file list — source files with nested wiki pages */}
           {(() => {
-            const stripExt = (s: string) => s.replace(/\.[^.]+$/, '');
             const norm = (s: string) => s.toLowerCase().replace(/[\s\-_]+/g, ' ').trim();
+            // Mirror ingest.py detect_doc_id: extract the short doc ID from the filename
+            // e.g. "1-PRC-0003-R3 PID Development.pdf" → "1-PRC-0003"
+            // Falls back to full stem for files without the N-XXX-NNN pattern
+            const extractDocId = (filename: string) => {
+              const m = filename.match(/^(\d+-[A-Z]+-[\d-]+)/);
+              if (m) return m[1].replace(/-+$/, '');
+              return filename.replace(/\.[^.]+$/, '');
+            };
 
             // Group wiki pages under their source file
-            // Match by source_doc if present, fall back to slug (handles projects
-            // where wiki pages were copied directly and have no source_doc in frontmatter)
             const groups = files.map((sf: any) => ({
               sf,
-              sfNorm: norm(stripExt(sf.name)),
+              sfNorm: norm(extractDocId(sf.name)),
               pages: [] as { slug: string; name: string; title: string; source_doc?: string }[],
             }));
             const assigned = new Set<string>();
@@ -1104,6 +1111,14 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
   const [selectedUserProject, setSelectedUserProject] = useState<any | null>(null);
   const [creatingProject,     setCreatingProject]     = useState(false);
 
+  // Per-browser session token — isolates each user's projects without auth
+  const sessionId = React.useMemo(() => {
+    const key = 'ak_session_id';
+    let id = localStorage.getItem(key);
+    if (!id) { id = crypto.randomUUID(); localStorage.setItem(key, id); }
+    return id;
+  }, []);
+
   // Persistent chat history cache: projectId → messages[]
   const chatHistoryCache = useRef<Map<string, { role: 'user' | 'assistant' | 'error'; content: string }[]>>(new Map());
 
@@ -1112,16 +1127,15 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
   const [standardProject,     setStandardProject]     = useState<any | null>(null);
   const stdFileRef = useRef<HTMLInputElement>(null);
 
-  const refreshUserProjects = useCallback(() => {
-    if (isAdmin) return; // admin mode: only track projects created this session
-    fetch('/api/user-projects').then(r => r.json()).then(projects => {
-      setUserProjects(projects);
-      if (defaultUserProjectId && !selectedUserProject) {
-        const found = projects.find((p: any) => p.id === defaultUserProjectId);
-        if (found) setSelectedUserProject(found);
-      }
-    }).catch(() => {});
-  }, [defaultUserProjectId, isAdmin]);
+  const refreshSingleProject = useCallback((id: string) => {
+    fetch(`/api/user-projects/${id}/status`)
+      .then(r => r.json())
+      .then(s => {
+        setUserProjects(prev => prev.map(p => p.id === id ? { ...p, status: s.status } : p));
+        setSelectedUserProject((prev: any) => prev?.id === id ? { ...prev, status: s.status } : prev);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (isAdmin) {
@@ -1139,8 +1153,18 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
       .then((ps: any[]) => setCompletedProjects(ps.filter(p => p.status === 'completed')))
       .catch(() => {});
 
-    refreshUserProjects();
-  }, [refreshUserProjects, isAdmin]);
+    // Load only this browser's projects (filtered by session token on server)
+    fetch(`/api/user-projects?session_id=${sessionId}`)
+      .then(r => r.json())
+      .then((projects: any[]) => {
+        setUserProjects(projects);
+        if (defaultUserProjectId) {
+          const found = projects.find(p => p.id === defaultUserProjectId);
+          if (found) setSelectedUserProject(found);
+        }
+      })
+      .catch(() => {});
+  }, [isAdmin, defaultUserProjectId, sessionId]);
 
   // Admin: upload files to company standard
   const handleUploadStandard = async (fl: FileList | null) => {
@@ -1163,7 +1187,6 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
         setStandardProject(d);
         setSelectedUserProject(d);
       }
-      refreshUserProjects();
     } catch {}
     finally { setUploadingStandard(false); }
   };
@@ -1581,15 +1604,12 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
 
         {creatingProject ? (
           <CreateProjectView
+            sessionId={sessionId}
             onCancel={() => setCreatingProject(false)}
             onCreated={(proj) => {
               setCreatingProject(false);
               setSelectedUserProject(proj);
-              if (isAdmin) {
-                setUserProjects(prev => [...prev, proj]);
-              } else {
-                refreshUserProjects();
-              }
+              setUserProjects(prev => [...prev, proj]);
             }}
           />
         ) : selectedUserProject ? (
@@ -1600,24 +1620,9 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
             onDelete={async (id) => {
               await fetch(`/api/user-projects/${id}`, { method: 'DELETE' });
               setSelectedUserProject(null);
-              if (!isAdmin) refreshUserProjects();
+              setUserProjects(prev => prev.filter(p => p.id !== id));
             }}
-            onRefresh={() => {
-              if (isAdmin) {
-                // Admin: fetch status for this specific project and update userProjects list
-                fetch(`/api/user-projects/${selectedUserProject.id}/status`)
-                  .then(r => r.json())
-                  .then(s => {
-                    setUserProjects(prev => prev.map(p =>
-                      p.id === selectedUserProject.id ? { ...p, status: s.status } : p
-                    ));
-                    setSelectedUserProject((prev: any) => prev ? { ...prev, status: s.status } : prev);
-                  })
-                  .catch(() => {});
-              } else {
-                refreshUserProjects();
-              }
-            }}
+            onRefresh={() => refreshSingleProject(selectedUserProject.id)}
             initialMessages={chatHistoryCache.current.get(selectedUserProject.id)}
             onMessagesChange={(msgs) => chatHistoryCache.current.set(selectedUserProject.id, msgs)}
           />
@@ -1635,9 +1640,9 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                   onDelete={async (id) => {
                     await fetch(`/api/user-projects/${id}`, { method: 'DELETE' });
                     setSelectedProject(null);
-                    refreshUserProjects();
+                    setUserProjects(prev => prev.filter(p => p.id !== id));
                   }}
-                  onRefresh={refreshUserProjects}
+                  onRefresh={() => refreshSingleProject(up.id)}
                   initialMessages={chatHistoryCache.current.get(up.id)}
                   onMessagesChange={(msgs) => chatHistoryCache.current.set(up.id, msgs)}
                 />
@@ -1648,7 +1653,12 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                 key={selectedProject.id}
                 project={selectedProject}
                 onBack={() => setSelectedProject(null)}
-                onWikiBuilt={refreshUserProjects}
+                onWikiBuilt={(id: string) => {
+                  fetch(`/api/user-projects/${id}`)
+                    .then(r => r.json())
+                    .then(p => setUserProjects(prev => prev.some(x => x.id === id) ? prev : [...prev, p]))
+                    .catch(() => {});
+                }}
               />
             );
           })()

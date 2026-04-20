@@ -1670,9 +1670,11 @@ function saveUserProjects(arr) {
 
 const upload = multer({ dest: path.join(USER_PROJECTS_DIR, '_uploads') });
 
-// GET /api/user-projects — list all
-app.get('/api/user-projects', (_req, res) => {
-  res.json(loadUserProjects());
+// GET /api/user-projects — list by session
+app.get('/api/user-projects', (req, res) => {
+  const sid = req.query.session_id;
+  const all = loadUserProjects();
+  res.json(sid ? all.filter(p => p.session_id === sid) : all);
 });
 
 // GET /api/user-projects/:id — detail + status
@@ -1721,7 +1723,8 @@ app.post('/api/user-projects', upload.array('files'), (req, res) => {
     return { name: f.originalname, size: f.size };
   });
 
-  const meta = { id, name, files, status: 'processing', created_at: new Date().toISOString() };
+  const sid  = req.headers['x-session-id'] || null;
+  const meta = { id, name, files, status: 'processing', created_at: new Date().toISOString(), session_id: sid };
 
   // Write initial status
   fs.writeFileSync(path.join(projDir, 'status.json'), JSON.stringify({ status: 'processing', stage: 'starting' }));
