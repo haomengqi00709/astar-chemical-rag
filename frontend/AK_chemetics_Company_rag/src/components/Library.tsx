@@ -1464,7 +1464,42 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                   </button>
                 );
               })}
-              {completedProjects.length === 0 && (
+
+              {/* User-uploaded projects — shown in demo mode under Reference Projects */}
+              {!isAdmin && userProjects.filter(p => !p.isFromProject).map(proj => {
+                const active  = selectedUserProject?.id === proj.id;
+                const isReady = proj.status === 'ready';
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => { setSelectedUserProject(active ? null : proj); setSelectedProject(null); setCreatingProject(false); }}
+                    className={`w-full text-left px-5 py-2 transition-colors ${
+                      active
+                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
+                      <p className="text-[11px] truncate leading-snug font-medium">{proj.name}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5 ml-5.5">
+                      {isReady ? (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Ready</span>
+                      ) : proj.status === 'processing' ? (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-600 flex items-center gap-1">
+                          <Loader2 className="w-2.5 h-2.5 animate-spin" /> Building
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600">Failed</span>
+                      )}
+                      <span className="text-[10px] font-mono text-slate-400">{proj.files?.length ?? 0} file{(proj.files?.length ?? 0) !== 1 ? 's' : ''}</span>
+                    </div>
+                  </button>
+                );
+              })}
+
+              {completedProjects.length === 0 && userProjects.filter(p => !p.isFromProject).length === 0 && (
                 <p className="pl-8 pr-4 py-2 text-[11px] text-slate-300 italic">No reference projects yet.</p>
               )}
             </nav>
