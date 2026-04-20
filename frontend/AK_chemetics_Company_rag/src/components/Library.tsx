@@ -1454,8 +1454,8 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
           )}
         </div>
 
-        {/* ── My Projects section — user-uploaded knowledge bases ── */}
-        <div className="border-t border-outline-variant/10">
+        {/* ── My Projects section — only visible in new-kb-app mode (isAdmin) ── */}
+        {isAdmin && <div className="border-t border-outline-variant/10">
           <button
             onClick={() => setMyProjectsOpen(o => !o)}
             className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors"
@@ -1520,7 +1520,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
               })}
             </nav>
           )}
-        </div>
+        </div>}
 
       </aside>
 
