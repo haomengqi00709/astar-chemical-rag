@@ -1078,6 +1078,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
   const [standardOpen,      setStandardOpen]      = useState(true);
   const [docsOpen,          setDocsOpen]          = useState(false);
   const [refProjectsOpen,   setRefProjectsOpen]   = useState(true);
+  const [myProjectsOpen,    setMyProjectsOpen]    = useState(true);
 
   // view mode: 'query' (chatbot) | 'docs' (document grid) | 'graph' (knowledge graph)
   const [activeView,        setActiveView]        = useState<'query' | 'docs' | 'graph'>('query');
@@ -1402,7 +1403,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
           )}
         </div>
 
-        {/* ── Reference Projects section ── */}
+        {/* ── Reference Projects section — agent-completed projects only ── */}
         <div className="border-t border-outline-variant/10">
           <button
             onClick={() => setRefProjectsOpen(o => !o)}
@@ -1410,8 +1411,8 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
           >
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Reference Projects</p>
-              {(completedProjects.length + userProjects.filter(p => !p.isFromProject).length) > 0 && (
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{completedProjects.length + userProjects.filter(p => !p.isFromProject).length} project{(completedProjects.length + userProjects.filter(p => !p.isFromProject).length) !== 1 ? 's' : ''}</p>
+              {completedProjects.length > 0 && (
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{completedProjects.length} project{completedProjects.length !== 1 ? 's' : ''}</p>
               )}
             </div>
             {refProjectsOpen
@@ -1420,6 +1421,57 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
           </button>
 
           {refProjectsOpen && (
+            <nav className="py-2 border-t border-outline-variant/10">
+              {completedProjects.map(proj => {
+                const ps       = proj.context?.project_summary;
+                const active   = selectedProject?.id === proj.id;
+                const docCount = (proj.context?.document_register ?? []).length;
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => { setSelectedProject(active ? null : proj); setSelectedUserProject(null); setCreatingProject(false); }}
+                    className={`w-full text-left px-5 py-2 transition-colors ${
+                      active
+                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
+                      <p className="text-[11px] truncate leading-snug font-medium">{ps?.project_title ?? proj.id}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5 ml-5.5">
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Completed</span>
+                      <span className="text-[10px] font-mono text-slate-400">{docCount} doc{docCount !== 1 ? 's' : ''}</span>
+                    </div>
+                  </button>
+                );
+              })}
+              {completedProjects.length === 0 && (
+                <p className="pl-8 pr-4 py-2 text-[11px] text-slate-300 italic">No reference projects yet.</p>
+              )}
+            </nav>
+          )}
+        </div>
+
+        {/* ── My Projects section — user-uploaded knowledge bases ── */}
+        <div className="border-t border-outline-variant/10">
+          <button
+            onClick={() => setMyProjectsOpen(o => !o)}
+            className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors"
+          >
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">My Projects</p>
+              {userProjects.filter(p => !p.isFromProject).length > 0 && (
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{userProjects.filter(p => !p.isFromProject).length} project{userProjects.filter(p => !p.isFromProject).length !== 1 ? 's' : ''}</p>
+              )}
+            </div>
+            {myProjectsOpen
+              ? <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              : <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />}
+          </button>
+
+          {myProjectsOpen && (
             <nav className="py-2 border-t border-outline-variant/10">
               {/* + New Project */}
               <button
@@ -1431,12 +1483,11 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                 }`}
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Reference Project</span>
+                <span>New Project</span>
               </button>
 
-              {/* User projects (exclude isFromProject — those show under completedProjects) */}
               {userProjects.filter(p => !p.isFromProject).map(proj => {
-                const active = selectedUserProject?.id === proj.id;
+                const active  = selectedUserProject?.id === proj.id;
                 const isReady = proj.status === 'ready';
                 return (
                   <button
@@ -1467,37 +1518,6 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                   </button>
                 );
               })}
-
-              {/* Completed agent projects — same level as user projects */}
-              {completedProjects.map(proj => {
-                const ps     = proj.context?.project_summary;
-                const active = selectedProject?.id === proj.id;
-                const docCount = (proj.context?.document_register ?? []).length;
-                return (
-                  <button
-                    key={proj.id}
-                    onClick={() => { setSelectedProject(active ? null : proj); setSelectedUserProject(null); setCreatingProject(false); }}
-                    className={`w-full text-left px-5 py-2 transition-colors ${
-                      active
-                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
-                      <p className="text-[11px] truncate leading-snug font-medium">{ps?.project_title ?? proj.id}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-0.5 ml-5.5">
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Completed</span>
-                      <span className="text-[10px] font-mono text-slate-400">{docCount} doc{docCount !== 1 ? 's' : ''}</span>
-                    </div>
-                  </button>
-                );
-              })}
-
-              {completedProjects.length === 0 && userProjects.length === 0 && (
-                <p className="pl-8 pr-4 py-2 text-[11px] text-slate-300 italic">No projects yet.</p>
-              )}
             </nav>
           )}
         </div>

@@ -80,6 +80,11 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl, forceColorMode }) 
   const nodeIdx   = useRef<Map<string, GNode>>(new Map());
   const alphaRef  = useRef(1.0);
 
+  // Full unfiltered dataset (source filter operates on this)
+  const allNodesRef = useRef<GNode[]>([]);
+  const allEdgesRef = useRef<GEdge[]>([]);
+  const [sourceFilter, setSourceFilter] = useState<string>('all');
+
   // Color mode: 'discipline' for AK Chemetics docs, 'source' for user uploads
   const colorModeRef     = useRef<'discipline' | 'source'>('discipline');
   const sourceColorMapRef = useRef<Map<string, string>>(new Map());
@@ -135,11 +140,14 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl, forceColorMode }) 
         vx: 0, vy: 0,
       }));
 
+      allNodesRef.current = nodes;
+      allEdgesRef.current = data.edges;
       simNodes.current = nodes;
       simEdges.current = data.edges;
       nodeIdx.current  = new Map(nodes.map(n => [n.id, n]));
       alphaRef.current = 1.0;
       txRef.current    = { tx: 0, ty: 0, scale: 1 };
+      setSourceFilter('all');
 
       // Detect whether to use discipline or source_doc coloring
       const hasDisc = nodes.some(n => n.discipline >= 0);
@@ -164,6 +172,35 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl, forceColorMode }) 
   }, [disc, forceColorMode]);
 
   useEffect(() => { fetchGraph(); }, [fetchGraph]);
+
+  // ── Source filter — client-side, no refetch ─────────────────────────────
+
+  const applySourceFilter = useCallback((filter: string) => {
+    const all = allNodesRef.current;
+    if (!all.length) return;
+    const canvas = canvasRef.current;
+    const W = canvas?.offsetWidth || 900;
+    const H = canvas?.offsetHeight || 600;
+    const visible = filter === 'all' ? all : all.filter(n => n.source_doc === filter);
+    const visibleIds = new Set(visible.map(n => n.id));
+    const n = visible.length;
+    const laid = visible.map((nd, i) => ({
+      ...nd,
+      x: W / 2 + Math.cos((2 * Math.PI * i) / n) * (Math.min(W, H) * 0.28) + (Math.random() - 0.5) * 30,
+      y: H / 2 + Math.sin((2 * Math.PI * i) / n) * (Math.min(W, H) * 0.28) + (Math.random() - 0.5) * 30,
+      vx: 0, vy: 0,
+    }));
+    simNodes.current = laid;
+    simEdges.current = allEdgesRef.current.filter(e => visibleIds.has(e.source) && visibleIds.has(e.target));
+    nodeIdx.current  = new Map(laid.map(n => [n.id, n]));
+    alphaRef.current = 1.0;
+    setSelectedNode(null);
+    selRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    if (colorMode === 'source') applySourceFilter(sourceFilter);
+  }, [sourceFilter, colorMode, applySourceFilter]);
 
   // ── Simulation tick ────────────────────────────────────────────────────
 
@@ -521,6 +558,20 @@ export const KnowledgeGraph: React.FC<KGProps> = ({ graphUrl, forceColorMode }) 
             <option value="all">All Disciplines</option>
             {Object.entries(DISC_NAMES).map(([id, name]) => (
               <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
+        )}
+
+        {colorMode === 'source' && sourceColorMap.size > 0 && (
+          <select
+            value={sourceFilter}
+            onChange={e => setSourceFilter(e.target.value)}
+            className="text-xs rounded-lg px-3 py-1.5 outline-none"
+            style={{ background: '#0f172a', border: '1px solid #334155', color: '#cbd5e1' }}
+          >
+            <option value="all">All Sources</option>
+            {[...sourceColorMap.keys()].map(src => (
+              <option key={src} value={src}>{src}</option>
             ))}
           </select>
         )}
