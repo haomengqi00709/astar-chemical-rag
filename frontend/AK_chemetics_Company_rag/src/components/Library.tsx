@@ -891,7 +891,9 @@ const UserProjectView: React.FC<{
             const stripExt = (s: string) => s.replace(/\.[^.]+$/, '');
             const norm = (s: string) => s.toLowerCase().replace(/[\s\-_]+/g, ' ').trim();
 
-            // Group wiki pages under their source file using source_doc field
+            // Group wiki pages under their source file
+            // Match by source_doc if present, fall back to slug (handles projects
+            // where wiki pages were copied directly and have no source_doc in frontmatter)
             const groups = files.map((sf: any) => ({
               sf,
               sfNorm: norm(stripExt(sf.name)),
@@ -900,11 +902,13 @@ const UserProjectView: React.FC<{
             const assigned = new Set<string>();
             for (const grp of groups) {
               grp.pages = wikiFiles.filter(w =>
-                w.source_doc ? norm(w.source_doc) === grp.sfNorm : false
+                w.source_doc
+                  ? norm(w.source_doc) === grp.sfNorm
+                  : norm(w.slug) === grp.sfNorm
               );
               grp.pages.forEach(p => assigned.add(p.slug));
             }
-            // Unassigned wiki pages → append to last group (fallback)
+            // Truly unassigned wiki pages → append to last group (fallback)
             const unassigned = wikiFiles.filter(w => !assigned.has(w.slug));
             if (groups.length > 0) groups[groups.length - 1].pages.push(...unassigned);
 
