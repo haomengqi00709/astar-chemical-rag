@@ -18,6 +18,7 @@ interface CompanyContextValue {
   company: Company | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
+  setup: (companyName: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
 }
@@ -53,13 +54,25 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
     setToken(t); setUser(u); setCompany(c);
   };
 
+  const setup = async (companyName: string, email: string, password: string) => {
+    const r = await fetch('/api/app/setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ company_name: companyName, admin_email: email, admin_password: password }),
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.error || 'Setup failed'); }
+    const { token: t, user: u, company: c } = await r.json();
+    localStorage.setItem('ak_app_token', t);
+    setToken(t); setUser(u); setCompany(c);
+  };
+
   const logout = () => {
     localStorage.removeItem('ak_app_token');
     setToken(null); setUser(null); setCompany(null);
   };
 
   return (
-    <CompanyContext.Provider value={{ user, company, token, login, logout, loading }}>
+    <CompanyContext.Provider value={{ user, company, token, login, setup, logout, loading }}>
       {children}
     </CompanyContext.Provider>
   );

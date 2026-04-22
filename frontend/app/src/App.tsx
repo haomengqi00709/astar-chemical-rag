@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CompanyProvider, useCompany } from './context/CompanyContext';
 import Login from './pages/Login';
+import Setup from './pages/Setup';
 import AppShell from './pages/AppShell';
 
 function Guard() {
@@ -15,6 +16,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginGuard />} />
+          <Route path="/setup" element={<LoginGuard setup />} />
           <Route path="/*"    element={<Guard />} />
         </Routes>
       </BrowserRouter>
@@ -22,8 +24,9 @@ export default function App() {
   );
 }
 
-function LoginGuard() {
+function LoginGuard({ setup: isSetup }: { setup?: boolean } = {}) {
   const { user, loading } = useCompany();
   if (loading) return null;
-  return user ? <Navigate to="/" replace /> : <Login />;
+  if (user) return <Navigate to="/" replace />;
+  return isSetup ? <Setup /> : <Login />;
 }

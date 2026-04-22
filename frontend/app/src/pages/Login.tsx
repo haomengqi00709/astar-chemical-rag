@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCompany } from '../context/CompanyContext';
 
 export default function Login() {
@@ -56,6 +56,10 @@ export default function Login() {
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
+        <p className="text-xs text-slate-400 text-center mt-4">
+          New here?{' '}
+          <Link to="/setup" className="text-slate-700 font-medium hover:underline">Set up your company</Link>
+        </p>
       </div>
     </div>
   );
