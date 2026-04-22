@@ -20,6 +20,11 @@ node_modules/
 /package-lock.json
 frontend/AK_chemetics_Company_rag/node_modules/
 frontend/AK_chemetics_Company_rag/dist/
+frontend/app/node_modules/
+frontend/app/dist/
+
+# App runtime data
+app_db.json
 
 # Parsed data caches
 llm_review_queue.json

@@ -3,10 +3,11 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { randomBytes } from 'crypto';
+import { randomBytes, createHash } from 'crypto';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import multer from 'multer';
+import jwt from 'jsonwebtoken';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -2036,6 +2037,90 @@ app.delete('/api/user-projects/:id', (req, res) => {
 app.use('/files/pm-deliverables',           express.static(path.join(PM_DIR,      'deliverables')));
 app.use('/files/process-deliverables',      express.static(path.join(PROCESS_DIR, 'deliverables')));
 app.use('/files/mechanical-deliverables',   express.static(path.join(MECH_DIR,    'deliverables')));
+
+// ---------------------------------------------------------------------------
+// Multi-tenant App — /api/app/*
+// ---------------------------------------------------------------------------
+
+const APP_DB_PATH  = path.join(RAG_ROOT, 'app_db.json');
+const JWT_SECRET   = process.env.JWT_SECRET || 'dev_secret_change_in_prod';
+
+function loadAppDb() {
+  if (!fs.existsSync(APP_DB_PATH)) return { companies: [], users: [] };
+  try { return JSON.parse(fs.readFileSync(APP_DB_PATH, 'utf-8')); } catch { return { companies: [], users: [] }; }
+}
+function saveAppDb(db) { fs.writeFileSync(APP_DB_PATH, JSON.stringify(db, null, 2)); }
+
+function hashPassword(p) { return createHash('sha256').update(p + JWT_SECRET).digest('hex'); }
+
+function requireAppAuth(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header?.startsWith('Bearer ')) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    req.appUser = jwt.verify(header.slice(7), JWT_SECRET);
+    next();
+  } catch { res.status(401).json({ error: 'Invalid token' }); }
+}
+
+// POST /api/app/auth/login
+app.post('/api/app/auth/login', (req, res) => {
+  const { email, password } = req.body;
+  const db = loadAppDb();
+  const user = db.users.find(u => u.email === email && u.password_hash === hashPassword(password));
+  if (!user) return res.status(401).json({ error: 'Invalid email or password' });
+  const company = db.companies.find(c => c.id === user.company_id);
+  const token = jwt.sign({ id: user.id, email: user.email, role: user.role, company_id: user.company_id }, JWT_SECRET, { expiresIn: '30d' });
+  res.json({ token, user: { id: user.id, email: user.email, role: user.role, company_id: user.company_id }, company });
+});
+
+// GET /api/app/auth/me
+app.get('/api/app/auth/me', requireAppAuth, (req, res) => {
+  const db = loadAppDb();
+  const user = db.users.find(u => u.id === req.appUser.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const company = db.companies.find(c => c.id === user.company_id);
+  res.json({ user: { id: user.id, email: user.email, role: user.role, company_id: user.company_id }, company });
+});
+
+// POST /api/app/admin/companies — create company + admin user (protected by ADMIN_SECRET)
+app.post('/api/app/admin/companies', (req, res) => {
+  const secret = req.headers['x-admin-secret'];
+  if (secret !== (process.env.ADMIN_SECRET || 'admin_setup')) return res.status(403).json({ error: 'Forbidden' });
+  const { company_name, admin_email, admin_password } = req.body;
+  if (!company_name || !admin_email || !admin_password) return res.status(400).json({ error: 'Missing fields' });
+  const db = loadAppDb();
+  const company = { id: 'co_' + randomBytes(6).toString('hex'), name: company_name, slug: company_name.toLowerCase().replace(/\s+/g, '-') };
+  const user = { id: 'usr_' + randomBytes(6).toString('hex'), email: admin_email, password_hash: hashPassword(admin_password), role: 'admin', company_id: company.id };
+  db.companies.push(company); db.users.push(user);
+  saveAppDb(db);
+  res.json({ company, user: { id: user.id, email: user.email, role: user.role } });
+});
+
+// POST /api/app/admin/users — invite a user to a company
+app.post('/api/app/admin/users', requireAppAuth, (req, res) => {
+  if (req.appUser.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+  const { email, password, role = 'viewer' } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+  const db = loadAppDb();
+  if (db.users.find(u => u.email === email)) return res.status(409).json({ error: 'Email already exists' });
+  const user = { id: 'usr_' + randomBytes(6).toString('hex'), email, password_hash: hashPassword(password), role, company_id: req.appUser.company_id };
+  db.users.push(user); saveAppDb(db);
+  res.json({ user: { id: user.id, email: user.email, role } });
+});
+
+// GET /api/app/companies/:id/users
+app.get('/api/app/companies/:id/users', requireAppAuth, (req, res) => {
+  if (req.appUser.company_id !== req.params.id) return res.status(403).json({ error: 'Forbidden' });
+  const db = loadAppDb();
+  res.json(db.users.filter(u => u.company_id === req.params.id).map(u => ({ id: u.id, email: u.email, role: u.role })));
+});
+
+// Serve new app build at /app/*
+const APP_DIST = path.join(__dirname, '../app/dist');
+if (fs.existsSync(APP_DIST)) {
+  app.use('/app', express.static(APP_DIST));
+  app.get('/app/*', (_req, res) => res.sendFile(path.join(APP_DIST, 'index.html')));
+}
 
 // Serve the Vite production build for all non-API routes
 const DIST = path.join(__dirname, 'dist');
