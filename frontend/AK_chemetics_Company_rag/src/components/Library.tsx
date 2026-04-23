@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const apiFetch = async (path: string, opts: RequestInit = {}): Promise<any> => {
-  const res = await fetch('/api' + path, opts);
+  const headers: Record<string, string> = { ...(opts.headers as Record<string, string> || {}) };
+  if (opts.body && !(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+  const res = await fetch('/api' + path, { ...opts, headers });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error((err as any).error || `HTTP ${res.status}`);
