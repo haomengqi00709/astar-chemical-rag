@@ -39,7 +39,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-load_dotenv()
+load_dotenv(override=True)
 
 AGENT_DIR       = Path(__file__).parent
 WORK_AGENTS     = AGENT_DIR.parent

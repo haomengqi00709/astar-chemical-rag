@@ -11,6 +11,7 @@ import type { Page } from '../types';
 export default function AppShell() {
   const { user, company, logout } = useCompany();
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
+  const [libraryRefreshKey, setLibraryRefreshKey] = useState(0);
 
   if (!user || !company) return null;
 
@@ -33,12 +34,12 @@ export default function AppShell() {
       <main className="flex-1 ml-64 flex flex-col min-h-0">
         <TopBar title={getPageTitle()} user={appUser} onSignOut={logout} />
         <div className="flex-1 min-h-0 overflow-auto" style={{ display: currentPage === 'library' ? 'none' : 'flex', flexDirection: 'column' }}>
-          {currentPage === 'dashboard' && <Dashboard user={appUser} isAdmin={isAdmin} />}
+          {currentPage === 'dashboard' && <Dashboard user={appUser} isAdmin={isAdmin} onGoToLibrary={() => { setCurrentPage('library'); setLibraryRefreshKey(k => k + 1); }} />}
           {currentPage === 'query'     && <Query />}
           {currentPage === 'skills'    && <SkillsCatalog />}
         </div>
         <div className="flex-1 min-h-0 overflow-hidden" style={{ display: currentPage === 'library' ? 'flex' : 'none', flexDirection: 'column' }}>
-          <Library isAdmin={isAdmin} companyName={company.name} />
+          <Library isAdmin={isAdmin} companyName={company.name} refreshSignal={libraryRefreshKey} />
         </div>
       </main>
     </div>

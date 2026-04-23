@@ -35,7 +35,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-load_dotenv()
+load_dotenv(override=True)
 
 AGENT_DIR        = Path(__file__).parent                    # Aria - Process Engineer/
 WORK_AGENTS      = AGENT_DIR.parent                         # work_agents/

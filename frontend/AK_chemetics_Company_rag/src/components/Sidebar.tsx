@@ -11,6 +11,8 @@ import {
   FlaskConical,
   Wrench,
   Building2,
+  ShieldCheck,
+  Eye,
 } from 'lucide-react';
 import { Page, User } from '../types';
 
@@ -26,6 +28,8 @@ const ROLE_ICONS = {
   process:    FlaskConical,
   mechanical: Wrench,
   owner:      Building2,
+  admin:      ShieldCheck,
+  viewer:     Eye,
 };
 
 const ROLE_COLORS = {
@@ -33,6 +37,8 @@ const ROLE_COLORS = {
   process:    'bg-emerald-600',
   mechanical: 'bg-orange-500',
   owner:      'bg-emerald-600',
+  admin:      'bg-slate-800',
+  viewer:     'bg-slate-400',
 };
 
 const ROLE_LABELS = {
@@ -40,6 +46,8 @@ const ROLE_LABELS = {
   process:    'Process Engineer',
   mechanical: 'Mechanical Engineer',
   owner:      'Knowledge Base Owner',
+  admin:      'Admin',
+  viewer:     'Viewer',
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange, user, companyName }) => {

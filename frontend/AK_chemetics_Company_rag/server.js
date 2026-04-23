@@ -450,7 +450,8 @@ function runPmAgentSSE(res, args) {
 
   proc.on('close', code => {
     if (code !== 0) {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: 'PM agent failed' })}\n\n`);
+      const detail = stderrBuf.trim().slice(-1000) || '(no stderr)';
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `PM agent failed (exit ${code}): ${detail}` })}\n\n`);
       res.end();
       return;
     }
@@ -1718,10 +1719,12 @@ app.post('/api/user-projects', upload.array('files'), (req, res) => {
   fs.mkdirSync(path.join(projDir, 'wiki'), { recursive: true });
   fs.mkdirSync(path.join(projDir, 'db'), { recursive: true });
 
-  const files = (req.files || []).map(f => {
+  let folderNames = [];
+  try { folderNames = JSON.parse(req.body.folder_names || '[]'); } catch {}
+  const files = (req.files || []).map((f, i) => {
     const dest = path.join(sourceDir, f.originalname);
     fs.renameSync(f.path, dest);
-    return { name: f.originalname, size: f.size };
+    return { name: f.originalname, size: f.size, folder: folderNames[i] || null };
   });
 
   const sid  = req.headers['x-session-id'] || null;
@@ -1766,6 +1769,21 @@ app.post('/api/user-projects', upload.array('files'), (req, res) => {
   });
 
   res.json(meta);
+});
+
+// GET /api/user-projects/:id/manifest — ingested file list with track info
+app.get('/api/user-projects/:id/manifest', (req, res) => {
+  const manifestPath = path.join(USER_PROJECTS_DIR, req.params.id, 'manifest.json');
+  if (!fs.existsSync(manifestPath)) return res.json({ files: [] });
+  try {
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+    const files = manifest.map(m => ({
+      doc_id:      m.doc_id,
+      source_file: path.basename(m.source_file || ''),
+      track:       m.track,
+    }));
+    res.json({ files });
+  } catch { res.json({ files: [] }); }
 });
 
 // GET /api/user-projects/:id/wiki-files — list of wiki pages with metadata
@@ -1935,22 +1953,123 @@ app.post('/api/user-projects/:id/files', upload.array('files'), (req, res) => {
   const sourceDir = path.join(projDir, 'source');
   if (!fs.existsSync(sourceDir)) return res.status(404).json({ error: 'Project not found' });
 
-  const added = (req.files || []).map(f => {
+  let folderNames = [];
+  try { folderNames = JSON.parse(req.body.folder_names || '[]'); } catch {}
+  const added = (req.files || []).map((f, i) => {
     const dest = path.join(sourceDir, f.originalname);
     fs.renameSync(f.path, dest);
-    return { name: f.originalname, size: f.size };
+    return { name: f.originalname, size: f.size, folder: folderNames[i] || null };
   });
 
-  // Update meta file list
+  // Update meta file list — add new files, update folder for existing ones
   const all = loadUserProjects();
   const proj = all.find(p => p.id === id);
   if (proj) {
-    const existing = new Set((proj.files || []).map(f => f.name));
-    added.forEach(f => { if (!existing.has(f.name)) proj.files.push(f); });
+    const existingMap = new Map((proj.files || []).map(f => [f.name, f]));
+    added.forEach(f => {
+      if (existingMap.has(f.name)) {
+        if (f.folder !== null) existingMap.get(f.name).folder = f.folder;
+      } else {
+        proj.files.push(f);
+        existingMap.set(f.name, f);
+      }
+    });
     saveUserProjects(all);
   }
 
   res.json({ files: proj?.files || added });
+});
+
+// PATCH /api/user-projects/:id/files/:filename — update file folder assignment
+app.patch('/api/user-projects/:id/files/:filename', (req, res) => {
+  const { id, filename } = req.params;
+  const { folder } = req.body;
+  const all = loadUserProjects();
+  const proj = all.find(p => p.id === id);
+  if (!proj) return res.status(404).json({ error: 'Project not found' });
+  const file = (proj.files || []).find(f => f.name === decodeURIComponent(filename));
+  if (!file) return res.status(404).json({ error: 'File not found' });
+  file.folder = folder || null;
+  saveUserProjects(all);
+  res.json({ file });
+});
+
+// POST /api/user-projects/:id/folders — create a named folder (persists empty folders)
+app.post('/api/user-projects/:id/folders', (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  if (!name?.trim()) return res.status(400).json({ error: 'Name required' });
+  const all = loadUserProjects();
+  const proj = all.find(p => p.id === id);
+  if (!proj) return res.status(404).json({ error: 'Project not found' });
+  if (!proj.folders) proj.folders = [];
+  const folderName = name.trim();
+  if (!proj.folders.includes(folderName)) { proj.folders.push(folderName); saveUserProjects(all); }
+  res.json({ folders: proj.folders });
+});
+
+// GET /api/user-projects/:id/source/:filename — serve raw file (PDF preview)
+app.get('/api/user-projects/:id/source/:filename', (req, res) => {
+  const filePath = path.join(USER_PROJECTS_DIR, req.params.id, 'source', decodeURIComponent(req.params.filename));
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Not found' });
+  res.sendFile(filePath);
+});
+
+// GET /api/user-projects/:id/preview/:filename — extract content for preview
+app.get('/api/user-projects/:id/preview/:filename', (req, res) => {
+  const filename = decodeURIComponent(req.params.filename);
+  const filePath = path.join(USER_PROJECTS_DIR, req.params.id, 'source', filename);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Not found' });
+  const ext = path.extname(filename).toLowerCase();
+  if (ext === '.pdf') return res.json({ type: 'pdf' });
+
+  const script = `
+import sys, json
+f = ${JSON.stringify(filePath)}
+ext = ${JSON.stringify(ext)}
+try:
+    if ext == '.docx':
+        import docx
+        doc = docx.Document(f)
+        paras = [p.text for p in doc.paragraphs if p.text.strip()]
+        print(json.dumps({'type': 'docx', 'paragraphs': paras[:300]}))
+    elif ext == '.doc':
+        print(json.dumps({'type': 'doc_legacy'}))
+    elif ext == '.xlsx':
+        import openpyxl
+        wb = openpyxl.load_workbook(f, read_only=True, data_only=True)
+        sheets = []
+        for name in wb.sheetnames[:3]:
+            ws = wb[name]
+            rows = []
+            for i, row in enumerate(ws.iter_rows(values_only=True)):
+                if i >= 100: break
+                rows.append([str(c) if c is not None else '' for c in row])
+            if rows: sheets.append({'name': name, 'rows': rows})
+        print(json.dumps({'type': 'xlsx', 'sheets': sheets}))
+    elif ext == '.xls':
+        import xlrd
+        wb = xlrd.open_workbook(f)
+        sheets = []
+        for si in range(min(3, wb.nsheets)):
+            ws = wb.sheet_by_index(si)
+            rows = []
+            for ri in range(min(100, ws.nrows)):
+                rows.append([str(ws.cell_value(ri, ci)) for ci in range(ws.ncols)])
+            if rows: sheets.append({'name': ws.name, 'rows': rows})
+        print(json.dumps({'type': 'xlsx', 'sheets': sheets}))
+    else:
+        print(json.dumps({'type': 'unknown'}))
+except Exception as e:
+    print(json.dumps({'error': str(e)}))
+`;
+  const proc = spawn(PYTHON, ['-c', script]);
+  let out = '';
+  proc.stdout.on('data', d => { out += d; });
+  proc.on('close', () => {
+    try { res.json(JSON.parse(out.trim())); }
+    catch { res.status(500).json({ error: 'Parse error', raw: out.slice(0, 200) }); }
+  });
 });
 
 // DELETE /api/user-projects/:id/files/:filename — remove a file
@@ -2082,18 +2201,18 @@ app.get('/api/app/auth/me', requireAppAuth, (req, res) => {
   res.json({ user: { id: user.id, email: user.email, role: user.role, company_id: user.company_id }, company });
 });
 
-// POST /api/app/admin/companies — create company + admin user (protected by ADMIN_SECRET)
-app.post('/api/app/admin/companies', (req, res) => {
-  const secret = req.headers['x-admin-secret'];
-  if (secret !== (process.env.ADMIN_SECRET || 'admin_setup')) return res.status(403).json({ error: 'Forbidden' });
+// POST /api/app/setup — create company + admin user (open, for first-time onboarding UI)
+app.post('/api/app/setup', (req, res) => {
   const { company_name, admin_email, admin_password } = req.body;
   if (!company_name || !admin_email || !admin_password) return res.status(400).json({ error: 'Missing fields' });
   const db = loadAppDb();
+  if (db.users.find(u => u.email === admin_email)) return res.status(409).json({ error: 'Email already registered' });
   const company = { id: 'co_' + randomBytes(6).toString('hex'), name: company_name, slug: company_name.toLowerCase().replace(/\s+/g, '-') };
   const user = { id: 'usr_' + randomBytes(6).toString('hex'), email: admin_email, password_hash: hashPassword(admin_password), role: 'admin', company_id: company.id };
   db.companies.push(company); db.users.push(user);
   saveAppDb(db);
-  res.json({ company, user: { id: user.id, email: user.email, role: user.role } });
+  const token = jwt.sign({ id: user.id, email: user.email, role: user.role, company_id: company.id }, JWT_SECRET, { expiresIn: '30d' });
+  res.json({ token, user: { id: user.id, email: user.email, role: user.role, company_id: company.id }, company });
 });
 
 // POST /api/app/admin/users — invite a user to a company

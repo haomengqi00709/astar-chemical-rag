@@ -51,7 +51,7 @@ def run_corpus():
     import os, json
     from google import genai
     from dotenv import load_dotenv
-    load_dotenv()
+    load_dotenv(override=True)
 
     api_key = os.environ.get('GOOGLE_API_KEY')
     if not api_key:

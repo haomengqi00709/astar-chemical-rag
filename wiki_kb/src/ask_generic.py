@@ -21,7 +21,7 @@ from google import genai
 from google.genai import types
 from google.api_core import exceptions as google_exceptions
 
-load_dotenv()
+load_dotenv(override=True)
 
 # ---------------------------------------------------------------------------
 # Config

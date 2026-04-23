@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+
+const apiFetch = async (path: string, opts: RequestInit = {}): Promise<any> => {
+  const res = await fetch('/api' + path, opts);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any).error || `HTTP ${res.status}`);
+  }
+  return res.json();
+};
 import {
   Search, Filter, PlayCircle, FileText, Table2, Settings, Package, Layers,
   ChevronDown, ChevronRight, Briefcase, FlaskConical, Wrench, ArrowLeft, X,
-  BookOpen, Send, Loader2, MessageSquare, Plus, Upload, Trash2, FolderOpen, Network,
+  BookOpen, Send, Loader2, MessageSquare, Plus, Upload, Trash2, FolderOpen, Network, Eye,
 } from 'lucide-react';
 import { KnowledgeGraph } from './KnowledgeGraph';
 import { ProjectGraph } from './ProjectGraph';
@@ -332,9 +341,7 @@ const CreateProjectView: React.FC<{ onCreated: (proj: any) => void; onCancel: ()
       files.forEach(f => fd.append('files', f));
       const headers: Record<string, string> = {};
       if (sessionId) headers['X-Session-ID'] = sessionId;
-      const res = await fetch('/api/user-projects', { method: 'POST', body: fd, headers });
-      if (!res.ok) throw new Error('Upload failed');
-      const proj = await res.json();
+      const proj = await apiFetch('/user-projects', { method: 'POST', body: fd, headers });
       onCreated(proj);
     } catch (e: any) { setError(e.message || 'Failed to create project'); }
     finally { setUploading(false); }
@@ -449,8 +456,7 @@ const CompletedProjectView: React.FC<{
   const docStatus = project.docStatus ?? {};
 
   useEffect(() => {
-    fetch(`/api/projects/${project.id}`)
-      .then(r => r.json())
+    apiFetch(`/projects/${project.id}`)
       .then(d => setFullProj(d))
       .catch(() => {});
   }, [project.id]);
@@ -458,8 +464,7 @@ const CompletedProjectView: React.FC<{
   const handleRunWiki = async () => {
     setWikiStatus('building');
     try {
-      const r = await fetch(`/api/projects/${project.id}/build-reference`, { method: 'POST' });
-      if (!r.ok) throw new Error('Failed');
+      await apiFetch(`/projects/${project.id}/build-reference`, { method: 'POST' });
       setWikiStatus('done');
       setTimeout(() => onWikiBuilt(project.id), 600);
     } catch { setWikiStatus('error'); }
@@ -611,15 +616,18 @@ const UserProjectView: React.FC<{
   onRefresh: () => void;
   initialMessages?: ChatMessage[];
   onMessagesChange?: (msgs: ChatMessage[]) => void;
-}> = ({ project, onBack, onDelete, onRefresh, initialMessages, onMessagesChange }) => {
+  initialTab?: 'chat' | 'files' | 'graph';
+  isStandard?: boolean;
+}> = ({ project, onBack, onDelete, onRefresh, initialMessages, onMessagesChange, initialTab, isStandard }) => {
   const [status, setStatus] = useState<any>({ status: project.status });
   const [files, setFiles] = useState<any[]>(project.files || []);
-  const [tab, setTab] = useState<'chat' | 'files' | 'graph'>('chat');
+  const [tab, setTab] = useState<'chat' | 'files' | 'graph'>(initialTab ?? 'chat');
   // Files tab state
   const [selectedFile,  setSelectedFile]  = useState<{ slug: string; name: string; title: string } | null>(null);
   const [fileContent,   setFileContent]   = useState<string>('');
   const [fileLoading,   setFileLoading]   = useState(false);
   const [wikiFiles,     setWikiFiles]     = useState<{ slug: string; name: string; title: string; source_doc?: string }[]>([]);
+  const [manifestFiles, setManifestFiles] = useState<{ doc_id: string; source_file: string; track: string }[]>([]);
   const [expandedSources, setExpandedSources] = useState<Set<string>>(
     () => new Set((project.files || []).map((f: any) => f.name))
   );
@@ -631,8 +639,8 @@ const UserProjectView: React.FC<{
   const [dirty, setDirty] = useState(false);   // files changed since last build
   const [rebuilding, setRebuilding] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const thinkingTimer = useRef<ReturnType<typeof setInterval>>();
-  const pollRef = useRef<ReturnType<typeof setInterval>>();
+  const thinkingTimer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+  const pollRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isReady = status.status === 'ready';
@@ -641,7 +649,7 @@ const UserProjectView: React.FC<{
   useEffect(() => {
     if (isProcessing) {
       const poll = () => {
-        fetch(`/api/user-projects/${project.id}/status`).then(r => r.json()).then(s => {
+        apiFetch(`/user-projects/${project.id}/status`).then(s => {
           setStatus(s);
           if (s.status !== 'processing') {
             clearInterval(pollRef.current);
@@ -666,23 +674,21 @@ const UserProjectView: React.FC<{
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, chatLoading, thinkingStep]);
 
-  // Load wiki file list when Files tab is first opened
+  // Load wiki files + manifest: immediately for standard projects, on Files tab open for others
   useEffect(() => {
-    if (tab !== 'files' || wikiFiles.length > 0) return;
-    fetch(`/api/user-projects/${project.id}/wiki-files`)
-      .then(r => r.json())
-      .then(d => setWikiFiles(d.files ?? []))
-      .catch(() => {});
-  }, [tab, project.id, wikiFiles.length]);
+    if (!isStandard && tab !== 'files') return;
+    if (wikiFiles.length === 0)
+      apiFetch(`/user-projects/${project.id}/wiki-files`).then(d => setWikiFiles(d.files ?? [])).catch(() => {});
+    if (manifestFiles.length === 0)
+      apiFetch(`/user-projects/${project.id}/manifest`).then(d => setManifestFiles(d.files ?? [])).catch(() => {});
+  }, [tab, project.id, wikiFiles.length, manifestFiles.length, isStandard]);
 
   const loadFileContent = async (file: { slug: string; name: string; title: string }) => {
     setSelectedFile(file);
     setFileContent('');
     setFileLoading(true);
     try {
-      const r = await fetch(`/api/user-projects/${project.id}/wiki-page/${encodeURIComponent(file.slug)}`);
-      if (!r.ok) { setFileContent(''); return; }   // 404 → show placeholder, not error text
-      const d = await r.json();
+      const d = await apiFetch(`/user-projects/${project.id}/wiki-page/${encodeURIComponent(file.slug)}`);
       setFileContent(d.content ?? '');
     } catch { setFileContent(''); }                 // network error → same placeholder
     finally { setFileLoading(false); }
@@ -701,11 +707,9 @@ const UserProjectView: React.FC<{
     thinkingTimer.current = setInterval(() => { idx = Math.min(idx + 1, THINKING.length - 1); setThinkingStep(THINKING[idx]); }, 4000);
 
     try {
-      const res = await fetch(`/api/user-projects/${project.id}/query`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: q }),
+      const d = await apiFetch(`/user-projects/${project.id}/query`, {
+        method: 'POST', body: JSON.stringify({ question: q }),
       });
-      const d = await res.json();
-      if (!res.ok) throw new Error(d.error || 'Query failed');
       setMessages(prev => [...prev, { role: 'assistant', content: d.answer }]);
     } catch (e: any) {
       setMessages(prev => [...prev, { role: 'error', content: e.message || 'Query failed' }]);
@@ -724,8 +728,7 @@ const UserProjectView: React.FC<{
     try {
       const fd = new FormData();
       valid.forEach(f => fd.append('files', f));
-      const res = await fetch(`/api/user-projects/${project.id}/files`, { method: 'POST', body: fd });
-      const d = await res.json();
+      const d = await apiFetch(`/user-projects/${project.id}/files`, { method: 'POST', body: fd });
       setFiles(d.files || []);
       setDirty(true);
       onRefresh();
@@ -733,10 +736,25 @@ const UserProjectView: React.FC<{
     finally { setUploading(false); }
   };
 
+  const handleAddFilesWithFolders = async (fd: FormData) => {
+    setUploading(true);
+    try {
+      const d = await apiFetch(`/user-projects/${project.id}/files`, { method: 'POST', body: fd });
+      setFiles(d.files || []);
+      // Sync allFolders from server response
+      const newFolders = [...new Set((d.files || []).map((f: any) => f.folder).filter(Boolean))] as string[];
+      setAllFolders(prev => [...new Set([...prev, ...newFolders])].sort());
+      setDirty(true);
+      onRefresh();
+    } catch {}
+    finally { setUploading(false); }
+  };
+
+  const folderInputRef = useRef<HTMLInputElement>(null);
+
   const handleRemoveFile = async (filename: string) => {
     try {
-      const res = await fetch(`/api/user-projects/${project.id}/files/${encodeURIComponent(filename)}`, { method: 'DELETE' });
-      const d = await res.json();
+      const d = await apiFetch(`/user-projects/${project.id}/files/${encodeURIComponent(filename)}`, { method: 'DELETE' });
       setFiles(d.files || []);
       setDirty(true);
       onRefresh();
@@ -747,7 +765,7 @@ const UserProjectView: React.FC<{
     if (files.length === 0) return;
     setRebuilding(true);
     try {
-      await fetch(`/api/user-projects/${project.id}/rebuild`, { method: 'POST' });
+      await apiFetch(`/user-projects/${project.id}/rebuild`, { method: 'POST' });
       setStatus({ status: 'processing', stage: 'starting' });
       setMessages([]);
     } catch { setRebuilding(false); }
@@ -755,7 +773,73 @@ const UserProjectView: React.FC<{
 
   const formatSize = (bytes: number) => bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(0)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 
-  // ── File management panel (shown as a collapsible section) ──
+  // ── Processed-file tracking (shared by FilePanel and StandardFileManager) ──
+  const norm = (s: string) => s.toLowerCase().replace(/[\s\-_]+/g, ' ').trim();
+  const extractDocId = (filename: string) => {
+    const m = filename.match(/^(\d+-[A-Z]+-[\d-]+)/);
+    if (m) return m[1].replace(/-+$/, '');
+    return filename.replace(/\.[^.]+$/, '');
+  };
+  // A file is processed if it appears in the manifest (ingested as Track A or B)
+  const manifestFileNames = new Set(manifestFiles.map(m => m.source_file));
+  const processedFileNames = new Set<string>(
+    files.filter((f: any) => manifestFileNames.has(f.name)).map((f: any) => f.name)
+  );
+  const hasUnprocessed = files.length > 0 && manifestFiles.length > 0 && files.some((f: any) => !processedFileNames.has(f.name));
+
+  // ── Standard file manager state ──
+  const [allFolders, setAllFolders] = React.useState<string[]>(() => {
+    const fromMeta = project.folders || [];
+    const fromFiles = [...new Set((project.files || []).map((f: any) => f.folder).filter(Boolean))];
+    return [...new Set([...fromMeta, ...fromFiles])].sort();
+  });
+  const [collapsedFolders, setCollapsedFolders] = React.useState<Set<string>>(new Set());
+  const [draggingFile,     setDraggingFile]     = React.useState<string | null>(null);
+  const [dragTarget,       setDragTarget]       = React.useState<string | null>(undefined as any);
+  const [newFolderName,    setNewFolderName]    = React.useState('');
+  const [creatingFolder,   setCreatingFolder]   = React.useState(false);
+  const newFolderRef = useRef<HTMLInputElement>(null);
+  const [previewFile,      setPreviewFile]      = React.useState<string | null>(null);
+  const [previewData,      setPreviewData]      = React.useState<any>(null);
+  const [previewLoading,   setPreviewLoading]   = React.useState(false);
+  const [previewWidth,     setPreviewWidth]     = React.useState(520); // px
+  const splitContainerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+
+  const openPreview = async (filename: string) => {
+    if (previewFile === filename) { setPreviewFile(null); setPreviewData(null); return; }
+    setPreviewFile(filename);
+    setPreviewData(null);
+    setPreviewLoading(true);
+    try {
+      const d = await apiFetch(`/user-projects/${project.id}/preview/${encodeURIComponent(filename)}`);
+      setPreviewData(d);
+    } catch { setPreviewData({ error: 'Failed to load preview' }); }
+    finally { setPreviewLoading(false); }
+  };
+
+  const toggleFolder = (name: string) => setCollapsedFolders(prev => {
+    const next = new Set(prev); next.has(name) ? next.delete(name) : next.add(name); return next;
+  });
+
+  const moveFile = async (filename: string, folder: string | null) => {
+    setFiles((prev: any[]) => prev.map(f => f.name === filename ? { ...f, folder } : f));
+    try {
+      await apiFetch(`/user-projects/${project.id}/files/${encodeURIComponent(filename)}`, {
+        method: 'PATCH', body: JSON.stringify({ folder }),
+      });
+    } catch {}
+  };
+
+  const createFolder = async () => {
+    const name = newFolderName.trim();
+    if (!name || allFolders.includes(name)) { setCreatingFolder(false); setNewFolderName(''); return; }
+    setAllFolders(prev => [...prev, name].sort());
+    setCreatingFolder(false); setNewFolderName('');
+    try { await apiFetch(`/user-projects/${project.id}/folders`, { method: 'POST', body: JSON.stringify({ name }) }); } catch {}
+  };
+
+  // ── Simple flat FilePanel for non-standard projects ──
   const FilePanel = () => (
     <div className="border-b border-slate-100 shrink-0">
       <div className="px-6 py-4">
@@ -765,21 +849,15 @@ const UserProjectView: React.FC<{
             <span className="text-[10px] font-mono px-1.5 py-0.5 bg-slate-100 rounded text-slate-500">{files.length}</span>
           </div>
           <div className="flex items-center gap-2">
-            {dirty && !isProcessing && (
-              <button
-                onClick={handleRebuild}
-                disabled={rebuilding || files.length === 0}
-                className="px-3 py-1.5 bg-slate-900 text-white rounded-lg font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-800 transition-colors disabled:opacity-50"
-              >
+            {(dirty || hasUnprocessed) && !isProcessing && (
+              <button onClick={handleRebuild} disabled={rebuilding || files.length === 0}
+                className="px-3 py-1.5 bg-slate-900 text-white rounded-lg font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-800 transition-colors disabled:opacity-50">
                 {rebuilding ? <Loader2 className="w-3 h-3 animate-spin" /> : <PlayCircle className="w-3 h-3" />}
                 Rebuild
               </button>
             )}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading || isProcessing}
-              className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-200 transition-colors disabled:opacity-50"
-            >
+            <button onClick={() => fileInputRef.current?.click()} disabled={uploading || isProcessing}
+              className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-200 transition-colors disabled:opacity-50">
               {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
               Add Files
             </button>
@@ -801,13 +879,285 @@ const UserProjectView: React.FC<{
               )}
             </div>
           ))}
-          {files.length === 0 && (
-            <p className="text-[11px] text-slate-400 italic py-2">No files. Add files and rebuild to create the knowledge base.</p>
-          )}
+          {files.length === 0 && <p className="text-[11px] text-slate-400 italic py-2">No files yet.</p>}
         </div>
       </div>
     </div>
   );
+
+  // ── Standard file manager (folder tree + drag-drop) ──
+  const StandardFileManager = () => {
+    const grouped: Record<string, any[]> = { '': [] };
+    allFolders.forEach(f => { grouped[f] = []; });
+    files.forEach((f: any) => {
+      const key = f.folder && allFolders.includes(f.folder) ? f.folder : '';
+      grouped[key].push(f);
+    });
+
+    const FileRow = ({ f, inFolder }: { f: any; inFolder: string | null }) => (
+      <div
+        draggable
+        onDragStart={e => { e.dataTransfer.effectAllowed = 'move'; setDraggingFile(f.name); }}
+        onDragEnd={() => { setDraggingFile(null); setDragTarget(undefined as any); }}
+        className={`flex items-center justify-between rounded-lg px-3 py-2 group cursor-grab transition-colors ${
+          draggingFile === f.name ? 'opacity-40' : previewFile === f.name ? 'bg-blue-50 ring-1 ring-blue-200' : 'bg-slate-50 hover:bg-slate-100'
+        }`}
+      >
+        <div className="flex items-center gap-2 min-w-0">
+          <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span className="text-[11px] text-slate-700 truncate">{f.name}</span>
+          {f.size && <span className="text-[10px] text-slate-400 font-mono shrink-0">{formatSize(f.size)}</span>}
+          {manifestFiles.length > 0 && (
+            processedFileNames.has(f.name)
+              ? <span title="Processed" className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+              : <span title="Not yet processed" className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+          )}
+        </div>
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onClick={e => { e.stopPropagation(); openPreview(f.name); }}
+            className={`text-[10px] font-medium px-2 py-0.5 rounded transition-colors ${previewFile === f.name ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600'}`}>
+            Preview
+          </button>
+          {inFolder && (
+            <button onClick={() => moveFile(f.name, null)}
+              className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors">
+              Ungroup
+            </button>
+          )}
+          {!isProcessing && (
+            <button onClick={() => handleRemoveFile(f.name)}
+              className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500 hover:bg-red-100 hover:text-red-600 transition-colors">
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+    );
+
+    const FolderDropZone = ({ folderName }: { folderName: string | null }) => {
+      const key = folderName ?? '__root__';
+      const isOver = dragTarget === key;
+      return (
+        <div
+          onDragOver={e => { e.preventDefault(); setDragTarget(key); }}
+          onDragLeave={() => setDragTarget(undefined as any)}
+          onDrop={e => {
+            e.preventDefault();
+            if (draggingFile) moveFile(draggingFile, folderName);
+            setDragTarget(undefined as any);
+          }}
+          className={`transition-colors rounded-lg ${isOver ? 'bg-blue-50 ring-1 ring-blue-300' : ''}`}
+        >
+          {folderName === null ? (
+            <div className="space-y-1">
+              {grouped[''].map((f: any, i: number) => <FileRow key={i} f={f} inFolder={null} />)}
+              {isOver && grouped[''].length === 0 && (
+                <div className="h-10 flex items-center justify-center text-[11px] text-blue-400">Drop here for root</div>
+              )}
+            </div>
+          ) : (
+            <div className="ml-5 space-y-1 mt-1 min-h-[8px]">
+              {grouped[folderName]?.map((f: any, i: number) => <FileRow key={i} f={f} inFolder={folderName} />)}
+              {isOver && (
+                <div className="h-8 flex items-center justify-center text-[11px] text-blue-400 rounded border border-dashed border-blue-200">
+                  Drop into {folderName}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const PreviewPanel = () => {
+      if (!previewFile) return null;
+      return (
+        <div style={{ width: previewWidth }} className="border-l border-slate-100 flex flex-col overflow-hidden shrink-0 min-w-[240px] max-w-[80%]">
+          <div className="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between shrink-0">
+            <p className="text-[11px] font-semibold text-slate-700 truncate flex-1 mr-2">{previewFile}</p>
+            <button onClick={() => { setPreviewFile(null); setPreviewData(null); }} className="text-slate-300 hover:text-slate-600 transition-colors shrink-0">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-auto">
+            {previewLoading && (
+              <div className="flex items-center justify-center h-full text-slate-400 text-xs gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" /> Loading preview…
+              </div>
+            )}
+            {!previewLoading && previewData?.error && (
+              <div className="p-4 text-xs text-red-500">{previewData.error}</div>
+            )}
+            {!previewLoading && previewData?.type === 'pdf' && (
+              <iframe
+                src={`/api/user-projects/${project.id}/source/${encodeURIComponent(previewFile)}`}
+                className="w-full h-full border-0"
+                title={previewFile}
+              />
+            )}
+            {!previewLoading && previewData?.type === 'docx' && (
+              <div className="px-6 py-4 space-y-2">
+                {(previewData.paragraphs as string[]).map((p, i) => (
+                  <p key={i} className="text-[12px] text-slate-700 leading-relaxed">{p}</p>
+                ))}
+                {previewData.paragraphs.length === 0 && <p className="text-xs text-slate-400 italic">No text content found.</p>}
+              </div>
+            )}
+            {!previewLoading && previewData?.type === 'xlsx' && (
+              <div className="overflow-auto p-4 space-y-6">
+                {(previewData.sheets as { name: string; rows: string[][] }[]).map((sheet, si) => (
+                  <div key={si}>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">{sheet.name}</p>
+                    <table className="text-[11px] border-collapse w-full">
+                      <tbody>
+                        {sheet.rows.map((row, ri) => (
+                          <tr key={ri} className={ri === 0 ? 'bg-slate-100 font-semibold' : 'border-b border-slate-50 hover:bg-slate-50'}>
+                            {row.map((cell, ci) => (
+                              <td key={ci} className="px-2 py-1 text-slate-700 border border-slate-100 max-w-[160px] truncate">{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
+              </div>
+            )}
+            {!previewLoading && (previewData?.type === 'unknown' || previewData?.type === 'doc_legacy') && (
+              <div className="flex flex-col items-center justify-center h-full gap-2 text-center px-6">
+                <FileText className="w-8 h-8 text-slate-200" />
+                <p className="text-xs text-slate-400">
+                  {previewData?.type === 'doc_legacy'
+                    ? 'Legacy .doc format — preview not supported. The file is indexed and searchable via Chat.'
+                    : 'Preview not available for this file type.'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const onDividerMouseDown = (e: React.MouseEvent) => {
+      e.preventDefault();
+      isDragging.current = true;
+      const startX = e.clientX;
+      const startW = previewWidth;
+      const onMove = (ev: MouseEvent) => {
+        if (!isDragging.current) return;
+        const delta = startX - ev.clientX; // drag left = wider preview
+        const containerW = splitContainerRef.current?.offsetWidth ?? 900;
+        const next = Math.min(Math.max(startW + delta, 240), containerW * 0.8);
+        setPreviewWidth(next);
+      };
+      const onUp = () => { isDragging.current = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    };
+
+    return (
+      <div ref={splitContainerRef} className="flex-1 flex overflow-hidden">
+      <div className={`flex flex-col overflow-hidden ${previewFile ? '' : 'flex-1'}`} style={previewFile ? { flex: '1 1 0', minWidth: 0 } : {}}>
+        {/* Toolbar */}
+        <div className="px-6 py-3 border-b border-slate-100 flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <p className="text-xs font-bold text-slate-700 shrink-0">Source Files</p>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 bg-slate-100 rounded text-slate-500">{files.length}</span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            {(dirty || hasUnprocessed) && !isProcessing && (
+              <button onClick={handleRebuild} disabled={rebuilding || files.length === 0}
+                className="px-3 py-1.5 bg-slate-900 text-white rounded-lg font-bold text-[11px] flex items-center gap-1.5 hover:bg-slate-800 transition-colors disabled:opacity-50">
+                {rebuilding ? <Loader2 className="w-3 h-3 animate-spin" /> : <PlayCircle className="w-3 h-3" />}
+                Rebuild
+              </button>
+            )}
+            <button onClick={() => { setCreatingFolder(true); setTimeout(() => newFolderRef.current?.focus(), 50); }}
+              className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg font-bold text-[11px] flex items-center gap-1 hover:bg-slate-200 transition-colors">
+              <FolderOpen className="w-3 h-3" /> New Folder
+            </button>
+            <button onClick={() => fileInputRef.current?.click()} disabled={uploading || isProcessing}
+              className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg font-bold text-[11px] flex items-center gap-1 hover:bg-slate-200 transition-colors disabled:opacity-50">
+              {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+              Upload Files
+            </button>
+            <button onClick={() => folderInputRef.current?.click()} disabled={uploading || isProcessing}
+              className="px-2.5 py-1.5 bg-slate-100 text-slate-600 rounded-lg font-bold text-[11px] flex items-center gap-1 hover:bg-slate-200 transition-colors disabled:opacity-50">
+              <FolderOpen className="w-3 h-3" /> Upload Folder
+            </button>
+            <input ref={fileInputRef} type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" className="hidden"
+              onChange={e => handleAddFiles(e.target.files)} />
+            <input ref={folderInputRef} type="file" multiple className="hidden"
+              {...{ webkitdirectory: '', directory: '' } as any}
+              onChange={async e => {
+                const fl = e.target.files;
+                if (!fl || fl.length === 0) return;
+                const fileArr = Array.from(fl);
+                const folderNames = fileArr.map(f => {
+                  const rel = (f as any).webkitRelativePath as string || '';
+                  const parts = rel.split('/');
+                  return parts.length > 1 ? parts[0] : null;
+                });
+                // Ensure new folder names are registered
+                const newFolders = [...new Set(folderNames.filter(Boolean) as string[])];
+                setAllFolders(prev => [...new Set([...prev, ...newFolders])].sort());
+                const fd = new FormData();
+                fd.append('folder_names', JSON.stringify(folderNames));
+                fileArr.forEach(f => fd.append('files', f));
+                setDraggingFile(null);
+                await handleAddFilesWithFolders(fd);
+                e.target.value = '';
+              }} />
+          </div>
+        </div>
+
+        {/* File tree */}
+        <div className="flex-1 overflow-y-auto px-6 py-4">
+          {files.length === 0 && allFolders.length === 0 ? (
+            <p className="text-[11px] text-slate-400 italic py-2">No files yet. Upload files or a folder to get started.</p>
+          ) : (
+            <div className="space-y-2">
+              {/* Folders */}
+              {allFolders.map(folder => {
+                const isCollapsed = collapsedFolders.has(folder);
+                return (
+                  <div key={folder}>
+                    <button
+                      onClick={() => toggleFolder(folder)}
+                      className="w-full flex items-center gap-1.5 py-1.5 text-left hover:bg-slate-50 rounded-lg px-2 transition-colors"
+                    >
+                      {isCollapsed ? <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" /> : <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />}
+                      <FolderOpen className="w-4 h-4 text-amber-500 shrink-0" />
+                      <span className="text-[12px] font-semibold text-slate-700 truncate flex-1">{folder}</span>
+                      <span className="text-[10px] font-mono text-slate-400 shrink-0">{grouped[folder]?.length ?? 0}</span>
+                    </button>
+                    {!isCollapsed && <FolderDropZone folderName={folder} />}
+                  </div>
+                );
+              })}
+              {/* Root files */}
+              {(grouped[''].length > 0 || draggingFile) && (
+                <div>
+                  {allFolders.length > 0 && (
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">Ungrouped</p>
+                  )}
+                  <FolderDropZone folderName={null} />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      {previewFile && (
+        <div
+          onMouseDown={onDividerMouseDown}
+          className="w-1 shrink-0 cursor-col-resize hover:bg-blue-300 bg-slate-100 transition-colors active:bg-blue-400"
+        />
+      )}
+      <PreviewPanel />
+      </div>
+    );
+  };
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-white">
@@ -848,8 +1198,7 @@ const UserProjectView: React.FC<{
           <button
             onClick={async () => {
               try {
-                const r = await fetch(`/api/user-projects/${project.id}/log`);
-                const d = await r.json();
+                const d = await apiFetch(`/user-projects/${project.id}/log`);
                 if (d.log) { setMessages(prev => [...prev, { role: 'error', content: '--- Pipeline Log ---\n' + d.log }]); }
               } catch {}
             }}
@@ -860,8 +1209,8 @@ const UserProjectView: React.FC<{
         </div>
       )}
 
-      {/* File panel — always visible */}
-      <FilePanel />
+      {/* File panel — only for non-standard projects */}
+      {!isStandard && <FilePanel />}
 
       {/* Tab bar */}
       {files.length > 0 && (
@@ -881,10 +1230,28 @@ const UserProjectView: React.FC<{
         </div>
       )}
 
-      {tab === 'graph' && files.length > 0 ? (
+      {tab === 'graph' && (files.length > 0 || isStandard) ? (
         <div className="flex-1 overflow-hidden">
           <KnowledgeGraph graphUrl={`/api/user-projects/${project.id}/graph`} />
         </div>
+      ) : tab === 'files' && isStandard ? (
+        <>
+          {creatingFolder && (
+            <div className="px-6 py-2 border-b border-slate-100 flex items-center gap-2 shrink-0 bg-white">
+              <FolderOpen className="w-4 h-4 text-amber-500 shrink-0" />
+              <input
+                ref={newFolderRef}
+                value={newFolderName}
+                onChange={e => setNewFolderName(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') createFolder(); if (e.key === 'Escape') { setCreatingFolder(false); setNewFolderName(''); } }}
+                onBlur={createFolder}
+                placeholder="Folder name…"
+                className="flex-1 text-xs border border-blue-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400"
+              />
+            </div>
+          )}
+          <StandardFileManager />
+        </>
       ) : tab === 'files' && files.length > 0 ? (
         /* ── Files tab: left list + right viewer ─────────────────────────── */
         <div className="flex flex-1 overflow-hidden">
@@ -1079,7 +1446,8 @@ const UserProjectView: React.FC<{
 
 // ─── Main Library component ──────────────────────────────────────────────────
 
-export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolean; companyName?: string }> = ({ defaultUserProjectId, isAdmin = false, companyName }) => {
+export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolean; companyName?: string; refreshSignal?: number }> = ({ defaultUserProjectId, isAdmin = false, companyName, refreshSignal }) => {
+  // Session ID from localStorage (no auth needed — each browser session gets its own scope)
   const [data,              setData]              = useState<LibraryData | null>(null);
   const [loading,           setLoading]           = useState(true);
   const [selectedDisc,      setSelectedDisc]      = useState<number | 'all'>('all');
@@ -1100,7 +1468,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
   const [chatLoading, setChatLoading] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const thinkingTimer = useRef<ReturnType<typeof setInterval>>();
+  const thinkingTimer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   // reference projects
   const [completedProjects, setCompletedProjects] = useState<any[]>([]);
@@ -1111,7 +1479,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
   const [selectedUserProject, setSelectedUserProject] = useState<any | null>(null);
   const [creatingProject,     setCreatingProject]     = useState(false);
 
-  // Per-browser session token — isolates each user's projects without auth
+  // Company ID is the stable session scope — all projects belong to this company
   const sessionId = React.useMemo(() => {
     const key = 'ak_session_id';
     let id = localStorage.getItem(key);
@@ -1125,11 +1493,14 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
   // Admin: standard upload state
   const [uploadingStandard,   setUploadingStandard]   = useState(false);
   const [standardProject,     setStandardProject]     = useState<any | null>(null);
-  const stdFileRef = useRef<HTMLInputElement>(null);
+  const [standardInitialTab,  setStandardInitialTab]  = useState<'chat' | 'files' | 'graph'>('chat');
+  const [standardVersion,     setStandardVersion]     = useState(0);
+  const [showingStdFiles,     setShowingStdFiles]     = useState(false);
+  const stdFileRef   = useRef<HTMLInputElement>(null);
+  const stdFolderRef = useRef<HTMLInputElement>(null);
 
   const refreshSingleProject = useCallback((id: string) => {
-    fetch(`/api/user-projects/${id}/status`)
-      .then(r => r.json())
+    apiFetch(`/user-projects/${id}/status`)
       .then(s => {
         setUserProjects(prev => prev.map(p => p.id === id ? { ...p, status: s.status } : p));
         setSelectedUserProject((prev: any) => prev?.id === id ? { ...prev, status: s.status } : prev);
@@ -1138,54 +1509,80 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
   }, []);
 
   useEffect(() => {
-    if (isAdmin) {
+    apiFetch('/projects').then((ps: any[]) => setCompletedProjects(ps.filter(p => p.status === 'completed'))).catch(() => {});
+    if (!isAdmin) {
+      apiFetch('/library').then(d => setData(d)).catch(() => {}).finally(() => setLoading(false));
+    } else {
       setLoading(false);
-      return;
     }
-    fetch('/api/library')
-      .then(r => r.json())
-      .then(d => setData(d))
-      .catch(() => {})
-      .finally(() => setLoading(false));
 
-    fetch('/api/projects')
-      .then(r => r.json())
-      .then((ps: any[]) => setCompletedProjects(ps.filter(p => p.status === 'completed')))
-      .catch(() => {});
-
-    // Load only this browser's projects (filtered by session token on server)
-    fetch(`/api/user-projects?session_id=${sessionId}`)
-      .then(r => r.json())
-      .then((projects: any[]) => {
-        setUserProjects(projects);
-        if (defaultUserProjectId) {
-          const found = projects.find(p => p.id === defaultUserProjectId);
-          if (found) setSelectedUserProject(found);
-        }
-      })
-      .catch(() => {});
+    if (sessionId) {
+      apiFetch(`/user-projects?session_id=${sessionId}`)
+        .then((projects: any[]) => {
+          setUserProjects(projects);
+          // Restore the standard project (most recent ready one, or most recent overall)
+          const stdProjects = projects.filter(p => p.name?.startsWith('__standard__'));
+          const std = stdProjects.find(p => p.status === 'ready') ?? stdProjects[stdProjects.length - 1] ?? null;
+          if (std) setStandardProject(std);
+          if (defaultUserProjectId) {
+            const found = projects.find(p => p.id === defaultUserProjectId);
+            if (found) setSelectedUserProject(found);
+          }
+        })
+        .catch(() => {});
+    }
   }, [isAdmin, defaultUserProjectId, sessionId]);
 
+  // Re-fetch completed projects when refreshSignal changes (e.g. after mark complete in Dashboard)
+  useEffect(() => {
+    if (refreshSignal == null || refreshSignal === 0) return;
+    apiFetch('/projects').then((ps: any[]) => setCompletedProjects(ps.filter(p => p.status === 'completed'))).catch(() => {});
+  }, [refreshSignal]);
+
+  // Poll processing projects until they finish
+  useEffect(() => {
+    const processing = userProjects.filter(p => p.status === 'processing');
+    if (processing.length === 0) return;
+    const timer = setInterval(() => {
+      processing.forEach(p => refreshSingleProject(p.id));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [userProjects, refreshSingleProject]);
+
   // Admin: upload files to company standard
-  const handleUploadStandard = async (fl: FileList | null) => {
+  // mode=null → plain files, mode='folder' → webkitdirectory (relative paths used as folder names)
+  const handleUploadStandard = async (fl: FileList | null, mode: 'folder' | null) => {
     if (!fl || fl.length === 0) return;
     setUploadingStandard(true);
+    const sidHeaders: Record<string, string> = sessionId ? { 'X-Session-ID': sessionId } : {};
     try {
+      const fileArr = Array.from(fl);
+      // Extract top-level folder name from webkitRelativePath, e.g. "PipingSpecs/file.pdf" → "PipingSpecs"
+      const folderNames = fileArr.map(f => {
+        if (mode === 'folder') {
+          const rel = (f as any).webkitRelativePath as string || '';
+          const parts = rel.split('/');
+          return parts.length > 1 ? parts[0] : null;
+        }
+        return null;
+      });
       const fd = new FormData();
       fd.append('name', `__standard__${companyName || ''}`);
-      Array.from(fl).forEach(f => fd.append('files', f));
+      fd.append('folder_names', JSON.stringify(folderNames));
+      fileArr.forEach(f => fd.append('files', f));
       if (standardProject) {
-        // Add to existing standard project
-        const res = await fetch(`/api/user-projects/${standardProject.id}/files`, { method: 'POST', body: fd });
-        const d = await res.json();
-        setStandardProject((p: any) => ({ ...p, files: d.files }));
-        await fetch(`/api/user-projects/${standardProject.id}/rebuild`, { method: 'POST' });
+        const d = await apiFetch(`/user-projects/${standardProject.id}/files`, { method: 'POST', body: fd, headers: sidHeaders });
+        const updated = { ...standardProject, files: d.files };
+        setStandardProject(updated);
+        // Also sync selectedUserProject so UserProjectView reinitializes with new files
+        setSelectedUserProject((prev: any) => prev?.id === standardProject.id ? updated : prev);
+        setStandardVersion(v => v + 1);
+        await apiFetch(`/user-projects/${standardProject.id}/rebuild`, { method: 'POST' });
       } else {
-        // Create new standard project
-        const res = await fetch('/api/user-projects', { method: 'POST', body: fd });
-        const d = await res.json();
+        const d = await apiFetch('/user-projects', { method: 'POST', body: fd, headers: sidHeaders });
         setStandardProject(d);
         setSelectedUserProject(d);
+        setStandardInitialTab('files');
       }
     } catch {}
     finally { setUploadingStandard(false); }
@@ -1246,13 +1643,10 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
     startThinking();
 
     try {
-      const res = await fetch('/api/wiki/query', {
+      const d = await apiFetch('/wiki/query', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: q }),
       });
-      const d = await res.json();
-      if (!res.ok) throw new Error(d.error || 'Query failed');
       setMessages(prev => [...prev, { role: 'assistant', content: d.answer }]);
     } catch (e: any) {
       setMessages(prev => [...prev, { role: 'error', content: e.message || 'Query failed' }]);
@@ -1284,58 +1678,52 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
           </button>
           {/* Admin: upload files to standard */}
           {isAdmin && standardOpen && (
-            <div className="px-5 py-3 border-b border-outline-variant/10">
-              {!standardProject ? (
-                <button
-                  onClick={() => stdFileRef.current?.click()}
-                  disabled={uploadingStandard}
-                  className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-slate-300 text-slate-500 text-xs font-medium hover:border-primary-container hover:text-primary-container transition-colors disabled:opacity-50"
-                >
-                  {uploadingStandard ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
-                  Upload Company Standards
-                </button>
-              ) : (
-                <button
-                  onClick={() => stdFileRef.current?.click()}
-                  disabled={uploadingStandard}
-                  className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-100 text-slate-500 text-xs font-medium hover:bg-slate-200 transition-colors disabled:opacity-50"
-                >
-                  {uploadingStandard ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
-                  Add More Files
-                </button>
-              )}
-              <input ref={stdFileRef} type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" className="hidden" onChange={e => handleUploadStandard(e.target.files)} />
+            <div className="px-5 py-3 border-b border-outline-variant/10 flex flex-col gap-1.5">
+              <button
+                onClick={() => stdFileRef.current?.click()}
+                disabled={uploadingStandard}
+                className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-100 text-slate-500 text-xs font-medium hover:bg-slate-200 transition-colors disabled:opacity-50"
+              >
+                {uploadingStandard ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+                {standardProject ? 'Add Files' : 'Upload Files'}
+              </button>
+              <button
+                onClick={() => stdFolderRef.current?.click()}
+                disabled={uploadingStandard}
+                className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-slate-100 text-slate-500 text-xs font-medium hover:bg-slate-200 transition-colors disabled:opacity-50"
+              >
+                <FolderOpen className="w-3 h-3" />
+                Upload Folder
+              </button>
+              <input ref={stdFileRef} type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" className="hidden"
+                onChange={e => handleUploadStandard(e.target.files, null)} />
+              <input ref={stdFolderRef} type="file" multiple className="hidden"
+                {...{ webkitdirectory: '', directory: '' } as any}
+                onChange={e => handleUploadStandard(e.target.files, 'folder')} />
             </div>
           )}
 
           {standardOpen && (
             <nav className="py-1">
-              {/* Admin: show Files nav when standard project exists */}
-              {isAdmin && standardProject && (
-                <button
-                  onClick={() => { setSelectedUserProject(standardProject); setSelectedProject(null); setCreatingProject(false); }}
-                  className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
-                    selectedUserProject?.id === standardProject.id
+              {/* Query */}
+              {(!isAdmin || standardProject) && (
+              <button
+                onClick={() => {
+                  if (isAdmin && standardProject) {
+                    setStandardInitialTab('chat');
+                    setSelectedUserProject(standardProject); setSelectedProject(null); setCreatingProject(false);
+                  } else {
+                    setActiveView('query'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false);
+                  }
+                }}
+                className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
+                  isAdmin
+                    ? selectedUserProject?.id === standardProject?.id && standardInitialTab === 'chat'
                       ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
                       : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span className="text-xs">All Documents</span>
-                  <span className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">
-                    {standardProject.files?.length ?? 0}
-                  </span>
-                </button>
-              )}
-
-              {/* Query — hidden in admin mode until standard is built */}
-              {!isAdmin && (
-              <button
-                onClick={() => { setActiveView('query'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
-                className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
-                  !selectedProject && !selectedUserProject && !creatingProject && activeView === 'query'
-                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                    : !selectedProject && !selectedUserProject && !creatingProject && activeView === 'query'
+                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
                 <MessageSquare className="w-3.5 h-3.5" />
@@ -1343,14 +1731,25 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
               </button>
               )}
 
-              {/* Knowledge Graph — hidden in admin mode until standard is built */}
-              {!isAdmin && (
+              {/* Knowledge Graph */}
+              {(!isAdmin || standardProject) && (
               <button
-                onClick={() => { setActiveView('graph'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false); }}
+                onClick={() => {
+                  if (isAdmin && standardProject) {
+                    setStandardInitialTab('graph');
+                    setSelectedUserProject(standardProject); setSelectedProject(null); setCreatingProject(false);
+                  } else {
+                    setActiveView('graph'); setSelectedProject(null); setSelectedUserProject(null); setCreatingProject(false);
+                  }
+                }}
                 className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
-                  !selectedProject && !selectedUserProject && !creatingProject && activeView === 'graph'
-                    ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                  isAdmin
+                    ? selectedUserProject?.id === standardProject?.id && standardInitialTab === 'graph'
+                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                    : !selectedProject && !selectedUserProject && !creatingProject && activeView === 'graph'
+                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
                 <Network className="w-3.5 h-3.5" />
@@ -1358,7 +1757,27 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
               </button>
               )}
 
-              {/* All Documents dropdown — hidden in admin mode */}
+              {/* All Documents — always visible for admin */}
+              {isAdmin && (
+                <button
+                  onClick={() => { setStandardInitialTab('files'); setShowingStdFiles(true); if (standardProject) setSelectedUserProject(standardProject); setSelectedProject(null); setCreatingProject(false); }}
+                  className={`w-full flex items-center gap-2 px-5 py-2.5 text-sm transition-colors ${
+                    selectedUserProject?.id === standardProject?.id && standardInitialTab === 'files'
+                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span className="text-xs">All Files</span>
+                  {standardProject && (
+                    <span className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">
+                      {standardProject.files?.length ?? 0}
+                    </span>
+                  )}
+                </button>
+              )}
+
+              {/* All Documents dropdown — non-admin */}
               {!isAdmin && (
                 <>
                   <button
@@ -1430,115 +1849,16 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
           )}
         </div>
 
-        {/* ── Reference Projects section — agent-completed projects only ── */}
+        {/* ── My Projects section ── */}
         <div className="border-t border-outline-variant/10">
-          <button
-            onClick={() => setRefProjectsOpen(o => !o)}
-            className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors"
-          >
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Reference Projects</p>
-              {completedProjects.length > 0 && (
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{completedProjects.length} project{completedProjects.length !== 1 ? 's' : ''}</p>
-              )}
-            </div>
-            {refProjectsOpen
-              ? <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              : <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />}
-          </button>
-
-          {refProjectsOpen && (
-            <nav className="py-2 border-t border-outline-variant/10">
-              {!isAdmin && (
-                <button
-                  onClick={() => { setCreatingProject(true); setSelectedProject(null); setSelectedUserProject(null); }}
-                  className={`w-full flex items-center gap-2 px-5 py-2 text-xs transition-colors ${
-                    creatingProject
-                      ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Reference Project</span>
-                </button>
-              )}
-              {completedProjects.map(proj => {
-                const ps       = proj.context?.project_summary;
-                const active   = selectedProject?.id === proj.id;
-                const docCount = (proj.context?.document_register ?? []).length;
-                return (
-                  <button
-                    key={proj.id}
-                    onClick={() => { setSelectedProject(active ? null : proj); setSelectedUserProject(null); setCreatingProject(false); }}
-                    className={`w-full text-left px-5 py-2 transition-colors ${
-                      active
-                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
-                      <p className="text-[11px] truncate leading-snug font-medium">{ps?.project_title ?? proj.id}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-0.5 ml-5.5">
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Completed</span>
-                      <span className="text-[10px] font-mono text-slate-400">{docCount} doc{docCount !== 1 ? 's' : ''}</span>
-                    </div>
-                  </button>
-                );
-              })}
-
-              {/* User-uploaded projects — shown in demo mode under Reference Projects */}
-              {!isAdmin && userProjects.filter(p => !p.isFromProject).map(proj => {
-                const active  = selectedUserProject?.id === proj.id;
-                const isReady = proj.status === 'ready';
-                return (
-                  <button
-                    key={proj.id}
-                    onClick={() => { setSelectedUserProject(active ? null : proj); setSelectedProject(null); setCreatingProject(false); }}
-                    className={`w-full text-left px-5 py-2 transition-colors ${
-                      active
-                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
-                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
-                      <p className="text-[11px] truncate leading-snug font-medium">{proj.name}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-0.5 ml-5.5">
-                      {isReady ? (
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Ready</span>
-                      ) : proj.status === 'processing' ? (
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-600 flex items-center gap-1">
-                          <Loader2 className="w-2.5 h-2.5 animate-spin" /> Building
-                        </span>
-                      ) : (
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600">Failed</span>
-                      )}
-                      <span className="text-[10px] font-mono text-slate-400">{proj.files?.length ?? 0} file{(proj.files?.length ?? 0) !== 1 ? 's' : ''}</span>
-                    </div>
-                  </button>
-                );
-              })}
-
-              {completedProjects.length === 0 && userProjects.filter(p => !p.isFromProject).length === 0 && (
-                <p className="pl-8 pr-4 py-2 text-[11px] text-slate-300 italic">No reference projects yet.</p>
-              )}
-            </nav>
-          )}
-        </div>
-
-        {/* ── My Projects section — only visible in new-kb-app mode (isAdmin) ── */}
-        {isAdmin && <div className="border-t border-outline-variant/10">
           <button
             onClick={() => setMyProjectsOpen(o => !o)}
             className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors"
           >
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">My Projects</p>
-              {userProjects.filter(p => !p.isFromProject).length > 0 && (
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{userProjects.filter(p => !p.isFromProject).length} project{userProjects.filter(p => !p.isFromProject).length !== 1 ? 's' : ''}</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Reference Projects</p>
+              {(userProjects.filter(p => !p.isFromProject && !p.name?.startsWith('__standard__')).length + completedProjects.length) > 0 && (
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5">{userProjects.filter(p => !p.isFromProject && !p.name?.startsWith('__standard__')).length + completedProjects.length} project{(userProjects.filter(p => !p.isFromProject && !p.name?.startsWith('__standard__')).length + completedProjects.length) !== 1 ? 's' : ''}</p>
               )}
             </div>
             {myProjectsOpen
@@ -1561,7 +1881,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                 <span>New Project</span>
               </button>
 
-              {userProjects.filter(p => !p.isFromProject).map(proj => {
+              {userProjects.filter(p => !p.isFromProject && !p.name?.startsWith('__standard__')).map(proj => {
                 const active  = selectedUserProject?.id === proj.id;
                 const isReady = proj.status === 'ready';
                 return (
@@ -1593,16 +1913,53 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                   </button>
                 );
               })}
+
+              {/* Completed agent projects merged into Reference Projects */}
+              {completedProjects.map(proj => {
+                const active = selectedProject?.id === proj.id;
+                const ps = proj.context?.project_summary ?? {};
+                const title = ps.project_title ?? proj.id;
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => { setSelectedProject(active ? null : proj); setSelectedUserProject(null); setCreatingProject(false); }}
+                    className={`w-full text-left px-5 py-2 transition-colors ${
+                      active
+                        ? 'bg-primary-container/10 text-primary-container font-bold border-r-2 border-primary-container'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FolderOpen className="w-3.5 h-3.5 shrink-0" />
+                      <p className="text-[11px] truncate leading-snug font-medium">{title}</p>
+                    </div>
+                    <div className="ml-5.5 mt-0.5">
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Completed</span>
+                    </div>
+                  </button>
+                );
+              })}
             </nav>
           )}
-        </div>}
+        </div>
 
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <main className="flex-1 flex flex-col overflow-hidden relative">
 
-        {creatingProject ? (
+        {isAdmin && showingStdFiles && !standardProject && !creatingProject ? (
+          /* ── Standard empty state — no files uploaded yet ── */
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-8">
+            <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center">
+              <FolderOpen className="w-7 h-7 text-slate-400" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-700">No files yet</p>
+              <p className="text-xs text-slate-400 mt-1">Use "Upload Files" or "Upload Folder" in the sidebar to add company standards.</p>
+            </div>
+          </div>
+        ) : creatingProject ? (
           <CreateProjectView
             sessionId={sessionId}
             onCancel={() => setCreatingProject(false)}
@@ -1614,17 +1971,19 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
           />
         ) : selectedUserProject ? (
           <UserProjectView
-            key={selectedUserProject.id}
+            key={selectedUserProject.id + (selectedUserProject.id === standardProject?.id ? standardInitialTab + standardVersion : '')}
             project={selectedUserProject}
             onBack={() => setSelectedUserProject(null)}
             onDelete={async (id) => {
-              await fetch(`/api/user-projects/${id}`, { method: 'DELETE' });
+              await apiFetch(`/user-projects/${id}`, { method: 'DELETE' });
               setSelectedUserProject(null);
               setUserProjects(prev => prev.filter(p => p.id !== id));
             }}
             onRefresh={() => refreshSingleProject(selectedUserProject.id)}
             initialMessages={chatHistoryCache.current.get(selectedUserProject.id)}
             onMessagesChange={(msgs) => chatHistoryCache.current.set(selectedUserProject.id, msgs)}
+            initialTab={selectedUserProject.id === standardProject?.id ? standardInitialTab : undefined}
+            isStandard={selectedUserProject.id === standardProject?.id}
           />
         ) : selectedProject ? (
           /* ── Completed agent project view ── */
@@ -1638,7 +1997,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                   project={up}
                   onBack={() => setSelectedProject(null)}
                   onDelete={async (id) => {
-                    await fetch(`/api/user-projects/${id}`, { method: 'DELETE' });
+                    await apiFetch(`/user-projects/${id}`, { method: 'DELETE' });
                     setSelectedProject(null);
                     setUserProjects(prev => prev.filter(p => p.id !== id));
                   }}
@@ -1654,8 +2013,7 @@ export const Library: React.FC<{ defaultUserProjectId?: string; isAdmin?: boolea
                 project={selectedProject}
                 onBack={() => setSelectedProject(null)}
                 onWikiBuilt={(id: string) => {
-                  fetch(`/api/user-projects/${id}`)
-                    .then(r => r.json())
+                  apiFetch(`/user-projects/${id}`)
                     .then(p => setUserProjects(prev => prev.some(x => x.id === id) ? prev : [...prev, p]))
                     .catch(() => {});
                 }}

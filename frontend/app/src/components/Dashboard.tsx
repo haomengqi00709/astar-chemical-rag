@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import type { User, AgentStatus, Role } from '../types';
 
-interface DashboardProps { user: User; isAdmin?: boolean; }
+interface DashboardProps { user: User; isAdmin?: boolean; onGoToLibrary?: () => void; }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -2337,7 +2337,7 @@ const ProjectListView: React.FC<{
 
 // ─── Main Dashboard ────────────────────────────────────────────────────────
 
-export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onGoToLibrary }) => {
   const viewAs = user.role;
   const [projects,       setProjects]       = useState<any[]>([]);
   const [selectedId,     setSelectedId]     = useState<string | null>(null);
@@ -2408,6 +2408,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false }) =
     setShowDetail(false);
     setSelectedId(null);
     await fetch(`/api/projects/${selectedId}/complete`, { method: 'PUT' }).catch(console.error);
+    onGoToLibrary?.();
   };
 
   const handleBuildReference = async (): Promise<{ pages: number } | null> => {

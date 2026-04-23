@@ -19,7 +19,7 @@ export const Landing: React.FC<LandingProps> = ({ onDemo, onNew }) => {
           <div className="h-10 w-10 bg-primary-container rounded-lg flex items-center justify-center">
             <Shield className="text-white w-6 h-6" />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 uppercase">A Star Chemical</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Hunters.ai</h1>
         </div>
         <p className="text-slate-500 text-sm font-mono tracking-wide">Engineering Knowledge Platform</p>
       </motion.div>

@@ -18,6 +18,8 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
   const [companyName, setCompanyName] = useState('');
+  const [defaultProjectId, setDefaultProjectId] = useState<string | undefined>();
+  const [libraryRefreshKey, setLibraryRefreshKey] = useState(0);
 
   // ── Landing ──────────────────────────────────────────────────────────────
   if (mode === 'landing') {
@@ -37,6 +39,14 @@ export default function App() {
         onProjectCreated={(_project, name) => {
           setCompanyName(name);
           setMode('new-kb-role');
+        }}
+        onProjectSelected={(proj) => {
+          const name = proj.name.replace(/^__standard__/, '') || proj.name;
+          setCompanyName(name);
+          setDefaultProjectId(proj.id);
+          setUser({ id: 'admin', name: 'Admin', role: 'owner', title: 'IT Administrator', avatar: '', color: '' });
+          setCurrentPage('library');
+          setMode('new-kb-app');
         }}
       />
     );
@@ -64,7 +74,7 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'dashboard': return <Dashboard user={user} isAdmin={isAdmin} />;
+      case 'dashboard': return <Dashboard user={user} isAdmin={isAdmin} onGoToLibrary={() => { setCurrentPage('library'); setLibraryRefreshKey(k => k + 1); }} />;
       case 'query':     return <Query />;
       case 'skills':    return <SkillsCatalog />;
       default:          return <Dashboard user={user} />;
@@ -102,7 +112,7 @@ export default function App() {
         </div>
         {/* Library is always mounted to preserve state across tab switches */}
         <div className="flex-1 min-h-0 overflow-hidden" style={{ display: currentPage === 'library' ? 'flex' : 'none', flexDirection: 'column' }}>
-          <Library isAdmin={isAdmin} companyName={companyName || undefined} />
+          <Library isAdmin={isAdmin} companyName={companyName || undefined} defaultUserProjectId={defaultProjectId} refreshSignal={libraryRefreshKey} />
         </div>
       </main>
     </div>

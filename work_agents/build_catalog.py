@@ -25,7 +25,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-load_dotenv()
+load_dotenv(override=True)
 
 WORK_AGENTS = Path(__file__).parent
 GENERATION_MODEL = 'gemini-2.5-flash'

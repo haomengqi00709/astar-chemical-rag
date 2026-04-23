@@ -27,7 +27,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
 
-load_dotenv()
+load_dotenv(override=True)
 
 sys.path.insert(0, str(Path(__file__).parent))
 from ask import run_query

@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { User, AgentStatus, Role } from '../types';
 
-interface DashboardProps { user: User; isAdmin?: boolean; }
+interface DashboardProps { user: User; isAdmin?: boolean; onGoToLibrary?: () => void; }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -615,7 +615,7 @@ const ProjectDetailView: React.FC<{
   );
 
   // For non-PM roles: replace PM docs with their session slice cards
-  const roleDocOwnerStr: Record<Role, string> = { pm: 'PM', process: 'Process Engineer', mechanical: 'Mechanical Engineer', owner: 'Owner' };
+  const roleDocOwnerStr: Record<Role, string> = { pm: 'PM', process: 'Process Engineer', mechanical: 'Mechanical Engineer', owner: 'Owner', admin: 'Admin', viewer: 'Viewer' };
   // Sessions are now nested sub-items inside PM doc rows — not top-level cards
   const docs = allDocs;
   const flags = project.risk_flags_fired ?? [];
@@ -2337,7 +2337,7 @@ const ProjectListView: React.FC<{
 
 // ─── Main Dashboard ────────────────────────────────────────────────────────
 
-export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onGoToLibrary }) => {
   const viewAs = user.role;
   const [projects,       setProjects]       = useState<any[]>([]);
   const [selectedId,     setSelectedId]     = useState<string | null>(null);
@@ -2408,6 +2408,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false }) =
     setShowDetail(false);
     setSelectedId(null);
     await fetch(`/api/projects/${selectedId}/complete`, { method: 'PUT' }).catch(console.error);
+    onGoToLibrary?.();
   };
 
   const handleBuildReference = async (): Promise<{ pages: number } | null> => {
