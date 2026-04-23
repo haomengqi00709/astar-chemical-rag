@@ -2234,18 +2234,25 @@ app.get('/api/app/companies/:id/users', requireAppAuth, (req, res) => {
   res.json(db.users.filter(u => u.company_id === req.params.id).map(u => ({ id: u.id, email: u.email, role: u.role })));
 });
 
-// Serve new app build at /app/*
 const APP_DIST = path.join(__dirname, '../app/dist');
-if (fs.existsSync(APP_DIST)) {
-  app.use('/app', express.static(APP_DIST));
-  app.get('/app/*', (_req, res) => res.sendFile(path.join(APP_DIST, 'index.html')));
-}
+const DIST     = path.join(__dirname, 'dist');
 
-// Serve the Vite production build for all non-API routes
-const DIST = path.join(__dirname, 'dist');
-if (fs.existsSync(DIST)) {
-  app.use(express.static(DIST));
-  app.get('*', (_req, res) => res.sendFile(path.join(DIST, 'index.html')));
+if (process.env.SERVE_NEW_APP === 'true') {
+  // New multi-tenant app served at root (separate Railway deployment)
+  if (fs.existsSync(APP_DIST)) {
+    app.use(express.static(APP_DIST));
+    app.get('*', (_req, res) => res.sendFile(path.join(APP_DIST, 'index.html')));
+  }
+} else {
+  // Old demo app at root; new app optionally at /app
+  if (fs.existsSync(APP_DIST)) {
+    app.use('/app', express.static(APP_DIST));
+    app.get('/app/*', (_req, res) => res.sendFile(path.join(APP_DIST, 'index.html')));
+  }
+  if (fs.existsSync(DIST)) {
+    app.use(express.static(DIST));
+    app.get('*', (_req, res) => res.sendFile(path.join(DIST, 'index.html')));
+  }
 }
 
 const PORT = process.env.PORT || 3001;
