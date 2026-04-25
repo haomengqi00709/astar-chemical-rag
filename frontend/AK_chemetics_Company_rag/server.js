@@ -169,6 +169,35 @@ function findPumpCalcDocId(docRegister) {
 const app = express();
 app.use(express.json({ limit: '20mb' }));
 
+// TEMPORARY — remove after data export
+const _EXPORT_DB   = path.join(RAG_ROOT, 'app_db.json');
+const _EXPORT_UPROJ = path.join(RAG_ROOT, 'user_projects');
+app.get('/api/__export', (req, res) => {
+  if (req.query.key !== 'export2026') return res.status(403).json({ error: 'forbidden' });
+  const db = fs.existsSync(_EXPORT_DB)
+    ? JSON.parse(fs.readFileSync(_EXPORT_DB, 'utf-8'))
+    : {};
+  const projects = fs.existsSync(_EXPORT_UPROJ)
+    ? fs.readdirSync(_EXPORT_UPROJ)
+    : [];
+  res.json({ app_db: db, user_project_ids: projects });
+});
+
+// TEMPORARY — streams tar.gz of user_projects/ + app_db.json
+app.get('/api/__export-files', (req, res) => {
+  if (req.query.key !== 'export2026') return res.status(403).json({ error: 'forbidden' });
+  res.setHeader('Content-Type', 'application/gzip');
+  res.setHeader('Content-Disposition', 'attachment; filename="export.tar.gz"');
+  const targets = [];
+  if (fs.existsSync(_EXPORT_UPROJ)) targets.push('user_projects');
+  if (fs.existsSync(_EXPORT_DB))    targets.push('app_db.json');
+  if (targets.length === 0) return res.end();
+  const tar = spawn('tar', ['-czf', '-', ...targets], { cwd: RAG_ROOT });
+  tar.stdout.pipe(res);
+  tar.stderr.on('data', d => console.error('[export]', d.toString()));
+  tar.on('error', err => { console.error('[export] tar error:', err); res.end(); });
+});
+
 
 // ---------------------------------------------------------------------------
 // POST /api/query
