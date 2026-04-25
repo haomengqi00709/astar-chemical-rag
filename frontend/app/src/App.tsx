@@ -3,6 +3,8 @@ import { CompanyProvider, useCompany } from './context/CompanyContext';
 import Login from './pages/Login';
 import Setup from './pages/Setup';
 import AppShell from './pages/AppShell';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function Guard() {
   const { user, loading } = useCompany();
@@ -15,9 +17,11 @@ export default function App() {
     <CompanyProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginGuard />} />
-          <Route path="/setup" element={<LoginGuard setup />} />
-          <Route path="/*"    element={<Guard />} />
+          <Route path="/login"            element={<LoginGuard />} />
+          <Route path="/setup"            element={<LoginGuard setup />} />
+          <Route path="/forgot-password"  element={<ForgotPassword />} />
+          <Route path="/reset-password"   element={<ResetPassword />} />
+          <Route path="/*"                element={<Guard />} />
         </Routes>
       </BrowserRouter>
     </CompanyProvider>

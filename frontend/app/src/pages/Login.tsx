@@ -56,10 +56,13 @@ export default function Login() {
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
-        <p className="text-xs text-slate-400 text-center mt-4">
-          New here?{' '}
-          <Link to="/setup" className="text-slate-700 font-medium hover:underline">Set up your company</Link>
-        </p>
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-xs text-slate-400">
+            New here?{' '}
+            <Link to="/setup" className="text-slate-700 font-medium hover:underline">Set up your company</Link>
+          </p>
+          <Link to="/forgot-password" className="text-xs text-slate-400 hover:text-slate-700 hover:underline">Forgot password?</Link>
+        </div>
       </div>
     </div>
   );

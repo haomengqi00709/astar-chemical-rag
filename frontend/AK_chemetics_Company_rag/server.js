@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import { spawn } from 'child_process';
 import fs from 'fs';
@@ -1685,7 +1686,8 @@ app.get('/api/wiki/graph', (req, res) => {
 // ---------------------------------------------------------------------------
 // User Projects — custom Karpathy RAG per project
 // ---------------------------------------------------------------------------
-const USER_PROJECTS_DIR  = path.join(RAG_ROOT, 'user_projects');
+const DATA_DIR = process.env.DATA_DIR || RAG_ROOT;
+const USER_PROJECTS_DIR  = path.join(DATA_DIR, 'user_projects');
 const USER_PROJECTS_META = path.join(USER_PROJECTS_DIR, 'meta.json');
 const ORCHESTRATOR       = path.join(RAG_ROOT, 'wiki_kb', 'src', 'orchestrator.py');
 
@@ -2190,7 +2192,7 @@ app.use('/files/mechanical-deliverables',   express.static(path.join(MECH_DIR,  
 // Multi-tenant App — /api/app/*
 // ---------------------------------------------------------------------------
 
-const APP_DB_PATH  = path.join(RAG_ROOT, 'app_db.json');
+const APP_DB_PATH  = path.join(DATA_DIR, 'app_db.json');
 const JWT_SECRET   = process.env.JWT_SECRET || 'dev_secret_change_in_prod';
 
 function loadAppDb() {
@@ -2209,6 +2211,62 @@ function requireAppAuth(req, res, next) {
     next();
   } catch { res.status(401).json({ error: 'Invalid token' }); }
 }
+
+// POST /api/app/auth/forgot-password
+app.post('/api/app/auth/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email required' });
+  const db = loadAppDb();
+  const user = db.users.find(u => u.email === email);
+  if (!user) return res.json({ ok: true }); // don't reveal if email exists
+  const token = randomBytes(32).toString('hex');
+  const expires_at = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+  if (!db.reset_tokens) db.reset_tokens = [];
+  db.reset_tokens = db.reset_tokens.filter(t => t.user_id !== user.id);
+  db.reset_tokens.push({ token, user_id: user.id, expires_at });
+  saveAppDb(db);
+  const proto = req.headers['x-forwarded-proto'] || req.protocol;
+  const origin = process.env.APP_URL || `${proto}://${req.get('host')}`;
+  const resetUrl = `${origin}/reset-password?token=${token}`;
+  try {
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      const { Resend } = await import('resend');
+      const resend = new Resend(resendKey);
+      await resend.emails.send({
+        from: 'noreply@trustedaiadvisory.ca',
+        to: email,
+        subject: 'Reset your password — Hunters.ai',
+        html: `<p>Hi,</p><p>Click the link below to reset your password. This link expires in 1 hour.</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, you can ignore this email.</p>`,
+      });
+    } else {
+      console.log(`[forgot-password] DEV — reset link for ${email}: ${resetUrl}`);
+    }
+  } catch (err) { console.error('[forgot-password] email error:', err); }
+  res.json({ ok: true });
+});
+
+// POST /api/app/auth/reset-password
+app.post('/api/app/auth/reset-password', (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) return res.status(400).json({ error: 'Missing fields' });
+  if (password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' });
+  const db = loadAppDb();
+  if (!db.reset_tokens) return res.status(400).json({ error: 'Invalid or expired token' });
+  const entry = db.reset_tokens.find(t => t.token === token);
+  if (!entry) return res.status(400).json({ error: 'Invalid or expired token' });
+  if (new Date() > new Date(entry.expires_at)) {
+    db.reset_tokens = db.reset_tokens.filter(t => t.token !== token);
+    saveAppDb(db);
+    return res.status(400).json({ error: 'Token expired' });
+  }
+  const user = db.users.find(u => u.id === entry.user_id);
+  if (!user) return res.status(400).json({ error: 'User not found' });
+  user.password_hash = hashPassword(password);
+  db.reset_tokens = db.reset_tokens.filter(t => t.token !== token);
+  saveAppDb(db);
+  res.json({ ok: true });
+});
 
 // POST /api/app/auth/login
 app.post('/api/app/auth/login', (req, res) => {
