@@ -41,6 +41,13 @@ from google.genai import types
 
 load_dotenv(override=True)
 
+
+def emit_progress(step: int, message: str, status: str = 'running', data: dict = None):
+    payload = {'step': step, 'message': message, 'status': status}
+    if data:
+        payload['data'] = data
+    print(json.dumps(payload), file=sys.stderr, flush=True)
+
 AGENT_DIR       = Path(__file__).parent
 WORK_AGENTS     = AGENT_DIR.parent
 RAG_ROOT        = WORK_AGENTS.parent
@@ -480,13 +487,15 @@ def run_mechanical_agent(context_path: Path, json_mode: bool = False) -> dict | 
         print('\nLoading process output from Process Agent...')
     process_out = load_process_output(context_path)
 
-    if not json_mode:
-        print('Running pump calculations (Pump_Calculation_Template)...')
+    if json_mode: emit_progress(1, 'Running pump calculations...')
+    else: print('Running pump calculations (Pump_Calculation_Template)...')
     calcs = run_pump_calculations(process_out)
+    if json_mode: emit_progress(1, 'Pump Calculations', status='done', data={'tdh': calcs.get('total_dynamic_head_m'), 'motor_kW': calcs.get('required_motor_kW')})
 
-    if not json_mode:
-        print('Querying RAG for material selection...')
+    if json_mode: emit_progress(2, 'Querying material standards from RAG...')
+    else: print('Querying RAG for material selection...')
     materials = get_material_selection(process_out, collection, client)
+    if json_mode: emit_progress(2, 'Material Selection', status='done')
 
     if not json_mode:
         print_thinking(process_out, calcs, materials)
@@ -495,9 +504,10 @@ def run_mechanical_agent(context_path: Path, json_mode: bool = False) -> dict | 
             print('\n  Calculations cancelled. No files written.')
             return None
 
-    if not json_mode:
-        print('\nGenerating pump datasheet...')
+    if json_mode: emit_progress(3, 'Generating pump datasheet...')
+    else: print('\nGenerating pump datasheet...')
     datasheet = generate_pump_datasheet(process_out, calcs, materials, client)
+    if json_mode: emit_progress(3, 'Pump Datasheet', status='done')
 
     if not json_mode:
         print(f'\n{"="*64}')
@@ -520,8 +530,10 @@ def run_mechanical_agent(context_path: Path, json_mode: bool = False) -> dict | 
         'ready_for_bid':     True,
     }
 
+    if json_mode: emit_progress(4, 'Saving deliverables...')
     deliverables = save_mechanical_deliverables(output)
     output['deliverables'] = deliverables
+    if json_mode: emit_progress(4, 'Complete', status='done')
 
     return output
 

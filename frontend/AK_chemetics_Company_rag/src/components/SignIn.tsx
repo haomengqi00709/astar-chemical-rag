@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Briefcase, FlaskConical, Wrench } from 'lucide-react';
+import { Shield, Briefcase, FlaskConical, Wrench, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import { User } from '../types';
 
@@ -44,11 +44,20 @@ const ROLE_DESCRIPTIONS = {
 
 interface SignInProps {
   onSignIn: (user: User) => void;
+  onBack?: () => void;
 }
 
-export const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
+export const SignIn: React.FC<SignInProps> = ({ onSignIn, onBack }) => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-8">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="absolute top-6 left-6 flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 font-medium transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
+      )}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

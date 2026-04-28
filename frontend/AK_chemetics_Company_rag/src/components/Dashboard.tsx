@@ -2,14 +2,48 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import mammoth from 'mammoth';
 import {
-  CheckCircle, Circle, Clock, AlertTriangle, ChevronRight,
+  CheckCircle, CheckCircle2, Circle, Clock, AlertTriangle, ChevronRight,
   ArrowLeft, Upload, Play, Loader2, FlaskConical, Wrench,
   Briefcase, FileText, X, ChevronDown, ChevronUp,
-  Users, MessageCircle, Send, Trash2, Eye, BookmarkPlus, BookCheck,
+  Users, MessageCircle, Send, Trash2, Eye, BookmarkPlus, BookCheck, Bell,
 } from 'lucide-react';
-import { User, AgentStatus, Role } from '../types';
+import { User, AgentStatus, Role, PendingTask } from '../types';
 
-interface DashboardProps { user: User; isAdmin?: boolean; onGoToLibrary?: () => void; }
+interface DashboardProps {
+  user: User;
+  isAdmin?: boolean;
+  onGoToLibrary?: () => void;
+  onPendingTasksChange?: (tasks: PendingTask[]) => void;
+  jumpToProjectId?: string | null;
+  jumpKey?: number;
+}
+
+function computePendingTasks(projects: any[], userRole: Role): PendingTask[] {
+  const tasks: PendingTask[] = [];
+  for (const proj of projects) {
+    if (proj.status === 'completed') continue;
+    const register = proj.context?.document_register ?? [];
+    const docsMap = proj.docs ?? {};
+    const projectName = proj.context?.project_summary?.project_title ?? proj.id;
+    for (const doc of register) {
+      const docState = docsMap[doc.doc_id];
+      if (!docState) continue;
+      const st = docState.status;
+      let isMyTask = false;
+      if (userRole === 'pm') {
+        isMyTask = st === 'under_review';
+      } else if (userRole === 'process') {
+        isMyTask = (doc.assigned_to === 'Process Engineer' && st === 'in_progress') ||
+                   (doc.assigned_to === 'PM' && st === 'under_review');
+      } else if (userRole === 'mechanical') {
+        isMyTask = (doc.assigned_to === 'Mechanical Engineer' && st === 'in_progress') ||
+                   (doc.assigned_to === 'PM' && st === 'under_review');
+      }
+      if (isMyTask) tasks.push({ id: `${proj.id}:${doc.doc_id}`, projectId: proj.id, projectName, docId: doc.doc_id, docTitle: doc.title ?? doc.doc_id });
+    }
+  }
+  return tasks;
+}
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -78,6 +112,31 @@ const DOC_STATUS_CFG: Record<string, { label: string; color: string; bg: string;
   approved:     { label: 'Approved',     color: 'text-emerald-700', bg: 'bg-emerald-100', dot: 'bg-emerald-500' },
 };
 
+function getStatusCfg(status: string, userRole: Role, assignedTo: string) {
+  const base = DOC_STATUS_CFG[status] ?? DOC_STATUS_CFG.pending;
+  if (userRole !== 'process' && userRole !== 'mechanical') return base;
+
+  if (assignedTo === 'PM') {
+    // PM doc being reviewed by engineer
+    const labels: Record<string, string> = {
+      pending:      'Locked',
+      in_progress:  'Awaiting PM',  // PM hasn't sent it yet
+      under_review: 'Need Work',    // PM sent it — engineer must review
+      approved:     'Approved',
+    };
+    return { ...base, label: labels[status] ?? base.label };
+  }
+
+  // Engineer's own doc
+  const labels: Record<string, string> = {
+    pending:      'Locked',
+    in_progress:  'Need Work',   // PM released — engineer must work
+    under_review: 'Submitted',   // Engineer submitted — waiting for PM
+    approved:     'Approved',
+  };
+  return { ...base, label: labels[status] ?? base.label };
+}
+
 // ─── Expandable Doc Row ─────────────────────────────────────────────────────
 
 const DocRow: React.FC<{
@@ -87,19 +146,25 @@ const DocRow: React.FC<{
   canEdit: boolean;
   canApprove: boolean;
   isReleased: boolean;  // false = Gate 1 (scope review), true = Gate 2 (work tracking)
+  userRole: Role;
   generatedContent?: string;
   onViewDocument?: () => void;
   onStatusChange: (status: string) => void;
   onAddComment:   (text: string)   => void;
-  extraContent?: React.ReactNode;  // injected into the expanded panel (e.g. ProcessStepsPanel)
-}> = ({ doc, entry, isMine, canEdit, canApprove, isReleased, generatedContent, onViewDocument, onStatusChange, onAddComment, extraContent }) => {
-  const [expanded,    setExpanded]    = useState(false);
-  const [commentText, setCommentText] = useState('');
-  const [submitting,   setSubmitting]   = useState(false);
+  extraContent?: React.ReactNode;
+  onSendForReview?: () => void;
+  onEngineerApprove?: () => void;
+  onEngineerReject?: (comment: string) => void;
+}> = ({ doc, entry, isMine, canEdit, canApprove, isReleased, userRole, generatedContent, onViewDocument, onStatusChange, onAddComment, extraContent, onSendForReview, onEngineerApprove, onEngineerReject }) => {
+  const [expanded,              setExpanded]              = useState(false);
+  const [commentText,           setCommentText]           = useState('');
+  const [submitting,            setSubmitting]            = useState(false);
+  const [showEngRejectBox,      setShowEngRejectBox]      = useState(false);
+  const [engRejectComment,      setEngRejectComment]      = useState('');
 
   const currentStatus = entry?.status ?? 'pending';
   const comments      = entry?.comments ?? [];
-  const cfg           = DOC_STATUS_CFG[currentStatus] ?? DOC_STATUS_CFG.pending;
+  const cfg           = getStatusCfg(currentStatus, userRole, doc.assigned_to);
 
   const handleComment = async () => {
     if (!commentText.trim()) return;
@@ -321,6 +386,81 @@ const DocRow: React.FC<{
                       })}
                   </div>
                 </div>
+              )}
+
+              {/* PM: Send for Review — appears when doc has content and is in_progress */}
+              {onSendForReview && generatedContent && currentStatus === 'in_progress' && (
+                <div className="flex items-center justify-between pt-1">
+                  <p className="text-xs text-slate-500">Ready to send for engineer review?</p>
+                  <button
+                    onClick={onSendForReview}
+                    className="flex items-center gap-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-colors shrink-0"
+                  >
+                    <Send className="w-3.5 h-3.5" /> Send for Review
+                  </button>
+                </div>
+              )}
+
+              {/* PM: Awaiting engineer review badge */}
+              {onSendForReview && currentStatus === 'under_review' && (
+                <div className="flex items-center gap-2 py-1">
+                  <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+                    <Clock className="w-3.5 h-3.5" /> Awaiting Engineer Review
+                  </span>
+                </div>
+              )}
+
+              {/* PM: Approved by engineer badge */}
+              {onSendForReview && currentStatus === 'approved' && (
+                <div className="flex items-center gap-2 py-1">
+                  <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Approved by Engineer
+                  </span>
+                </div>
+              )}
+
+              {/* Engineer: Approve / Request Changes on PM docs */}
+              {onEngineerApprove && currentStatus === 'under_review' && (
+                <div className="space-y-2 pt-1">
+                  <p className="text-xs text-slate-500">Review this document and approve or request changes.</p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={onEngineerApprove}
+                      className="flex items-center gap-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl transition-colors"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Approve
+                    </button>
+                    <button
+                      onClick={() => setShowEngRejectBox(v => !v)}
+                      className="flex items-center gap-1.5 text-xs font-bold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-4 py-2 rounded-xl transition-colors"
+                    >
+                      Request Changes
+                    </button>
+                  </div>
+                  {showEngRejectBox && (
+                    <div className="flex gap-2">
+                      <input
+                        value={engRejectComment}
+                        onChange={e => setEngRejectComment(e.target.value)}
+                        placeholder="Describe the changes needed…"
+                        className="flex-1 text-xs border border-red-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-red-300"
+                      />
+                      <button
+                        onClick={() => { onEngineerReject?.(engRejectComment); setShowEngRejectBox(false); setEngRejectComment(''); }}
+                        className="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors"
+                      >
+                        Send
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Engineer: approved badge on PM docs */}
+              {onEngineerApprove && currentStatus === 'approved' && (
+                <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> You approved this document
+                </span>
               )}
 
               {comments.length > 0 && (
@@ -564,6 +704,9 @@ const ProjectDetailView: React.FC<{
   processSteps: Record<string, any>;
   onDocStatusChange: (docId: string, status: string) => void;
   onDocComment: (docId: string, text: string) => void;
+  onSubmitDoc: (docId: string) => void;
+  onApproveDoc: (docId: string) => void;
+  onRejectDoc: (docId: string, comment: string) => void;
   sessionsConfig: Record<string, any[]>;
   onViewDocument: (docId: string, session?: any) => void;
   onReleaseSession: (docId: string, sessionId: string, released: boolean) => void;
@@ -573,6 +716,7 @@ const ProjectDetailView: React.FC<{
   stepRunning: number | null;
   stepError: string;
   stepProgress: Record<number, 'running' | 'done'>;
+  mechStepProgress: Record<number, 'running' | 'done'>;
   onPublish: () => void;
   onMarkComplete: () => void;
   onDelete: () => void;
@@ -580,7 +724,7 @@ const ProjectDetailView: React.FC<{
   onViewSummary: (entry: { version: number; content: string; createdAt: string }) => void;
   isCompleted: boolean;
   isInLibrary: boolean;
-}> = ({ project, projectId, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, runningAgent, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, onPublish, onMarkComplete, onDelete, onBuildReference, onViewSummary, isCompleted, isInLibrary }) => {
+}> = ({ project, projectId, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, runningAgent, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onSubmitDoc, onApproveDoc, onRejectDoc, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, mechStepProgress, onPublish, onMarkComplete, onDelete, onBuildReference, onViewSummary, isCompleted, isInLibrary }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [buildRefStatus, setBuildRefStatus] = useState<'idle' | 'building' | 'done' | 'error'>('idle');
   const [buildRefPages,  setBuildRefPages]  = useState(0);
@@ -632,14 +776,24 @@ const ProjectDetailView: React.FC<{
     .some(([k, v]: [string, any]) => k !== '__project' && v.status === 'approved');
   const isUnlocked = isPublished || pmDocsApproved;
 
-  const canRun =
-    isUnlocked &&
-    (userRole === 'mechanical' || userRole === 'pm') &&
-    !status.mechanical.mechanical_output &&
-    status.process.process_output;
+  const processCalDoc = allDocs.find(d => d.assigned_to === 'Process Engineer' && d.doc_id?.includes('CAL'));
+  const processCalStatus = processCalDoc ? docStatusMap[processCalDoc.doc_id]?.status : null;
 
-  const canShowProcessPanel = isUnlocked && (userRole === 'process' || userRole === 'pm') && status.pm.project_context;
-  const canShowPumpPanel    = isUnlocked && (userRole === 'mechanical' || userRole === 'pm') && status.process.process_output;
+  const pumpCalDoc = allDocs.find(d => d.assigned_to === 'Mechanical Engineer' && d.doc_id?.includes('CAL'));
+  const pumpCalStatus = pumpCalDoc ? docStatusMap[pumpCalDoc.doc_id]?.status : null;
+
+  // Process Engineer always sees their own panel when unlocked.
+  // PM only sees it after the engineer submits (under_review or approved).
+  const canShowProcessPanel = isUnlocked && status.pm.project_context && (
+    userRole === 'process' ||
+    (userRole === 'pm' && (processCalStatus === 'under_review' || processCalStatus === 'approved'))
+  );
+  // Mechanical Engineer sees panel only after Process CAL doc is approved by PM.
+  // PM only sees it after the mechanical engineer submits.
+  const canShowPumpPanel = isUnlocked && processCalStatus === 'approved' && (
+    userRole === 'mechanical' ||
+    (userRole === 'pm' && (pumpCalStatus === 'under_review' || pumpCalStatus === 'approved'))
+  );
 
   const roleDocOwner = roleDocOwnerStr;
 
@@ -796,19 +950,35 @@ const ProjectDetailView: React.FC<{
             </div>
           </div>
           <div>
-            {docs.map((doc: any) => (
+            {docs.map((doc: any) => {
+              // For PM docs viewed by engineers: if a session for this role is already
+              // released, treat the doc as under_review regardless of stored status.
+              const rawEntry = docStatusMap[doc.doc_id] ?? null;
+              const entry = (() => {
+                if (doc.assigned_to === 'PM' && userRole !== 'pm' && rawEntry?.status === 'in_progress') {
+                  const sessions = sessionsConfig[doc.doc_id] ?? [];
+                  const mySessionReleased = sessions.some(s => s.owner === userRole && s.released);
+                  if (mySessionReleased) return { ...rawEntry, status: 'under_review' };
+                }
+                return rawEntry;
+              })();
+              return (
               <DocRow
                 key={doc.doc_id}
                 doc={doc}
-                entry={docStatusMap[doc.doc_id] ?? null}
+                entry={entry}
                 isMine={doc.assigned_to === roleDocOwner[userRole]}
                 canEdit={userRole === 'pm' || (isPublished && doc.assigned_to === roleDocOwner[userRole])}
                 canApprove={userRole === 'pm'}
                 isReleased={isPublished}
+                userRole={userRole}
                 generatedContent={deliverables[doc.doc_id]}
                 onViewDocument={deliverables[doc.doc_id] ? () => onViewDocument(doc.doc_id) : undefined}
                 onStatusChange={(s) => onDocStatusChange(doc.doc_id, s)}
                 onAddComment={(t) => onDocComment(doc.doc_id, t)}
+                onSendForReview={undefined}
+                onEngineerApprove={undefined}
+                onEngineerReject={undefined}
                 extraContent={
                   doc.assigned_to === 'PM'
                     ? (
@@ -833,6 +1003,11 @@ const ProjectDetailView: React.FC<{
                         allRunning={runningAgent === 'process'}
                         stepProgress={stepProgress}
                         error={stepError || agentError}
+                        canRun={userRole === 'process'}
+                        docStatus={docStatusMap[doc.doc_id]?.status}
+                        onSubmit={() => onSubmitDoc(doc.doc_id)}
+                        onApprove={() => onApproveDoc(doc.doc_id)}
+                        onReject={(comment) => onRejectDoc(doc.doc_id, comment)}
                       />
                     )
                   : canShowPumpPanel && doc.assigned_to === 'Mechanical Engineer' && doc.doc_id.includes('CAL')
@@ -842,12 +1017,19 @@ const ProjectDetailView: React.FC<{
                         onRun={() => onRunAgent('mechanical')}
                         running={runningAgent === 'mechanical'}
                         error={agentError}
+                        canRun={userRole === 'mechanical'}
+                        docStatus={docStatusMap[doc.doc_id]?.status}
+                        onSubmit={() => onSubmitDoc(doc.doc_id)}
+                        onApprove={() => onApproveDoc(doc.doc_id)}
+                        onReject={(comment) => onRejectDoc(doc.doc_id, comment)}
+                        mechStepProgress={mechStepProgress}
                       />
                     )
                   : undefined
                 }
               />
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -1501,10 +1683,11 @@ const DeliverableModal: React.FC<{
   onClose: () => void;
   onSave: (content: string) => void;
   onMergeToMaster?: (sessionContent: string) => void;  // PM merges session back into master
+  onSubmit?: () => void;  // engineer submits/approves PM doc from within the modal
   readOnly?: boolean;
   session?: any;  // session object (for session mode)
   userRole?: Role;
-}> = ({ doc, initialContent, masterContent, projectId, onClose, onSave, onMergeToMaster, readOnly = false, session, userRole }) => {
+}> = ({ doc, initialContent, masterContent, projectId, onClose, onSave, onMergeToMaster, onSubmit, readOnly = false, session, userRole }) => {
   const calcSheet   = tryParseCalcSheet(initialContent);
   const isCalcSheet = !!calcSheet;
   const notesKey    = calcSheet?._subtype === 'pump_calc' ? 'calculation_notes' : 'calc_summary';
@@ -1661,18 +1844,28 @@ const DeliverableModal: React.FC<{
             {effectiveReadOnly
               ? <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-700">{isCalcSheet ? 'Calc Sheet' : 'Read Only'}</span>
               : (
-                <button
-                  onClick={handleSave}
-                  disabled={saveState === 'saving'}
-                  className={`flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl transition-all ${
-                    saveState === 'saved'
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-60'
-                  }`}
-                >
-                  {saveState === 'saving' && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  {saveState === 'saved' ? '✓ Saved' : 'Save Changes'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleSave}
+                    disabled={saveState === 'saving'}
+                    className={`flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl transition-all ${
+                      saveState === 'saved'
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-60'
+                    }`}
+                  >
+                    {saveState === 'saving' && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                    {saveState === 'saved' ? '✓ Saved' : 'Save Changes'}
+                  </button>
+                  {onSubmit && (
+                    <button
+                      onClick={() => { handleSave(); onSubmit(); onClose(); }}
+                      className="flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-all"
+                    >
+                      <CheckCircle2 className="w-4 h-4" /> Submit
+                    </button>
+                  )}
+                </div>
               )
             }
             <button onClick={onClose} className="text-slate-400 hover:text-slate-700 transition-colors p-1">
@@ -1920,26 +2113,103 @@ const ProcessStepsPanel: React.FC<{
   allRunning: boolean;
   stepProgress: Record<number, 'running' | 'done'>;
   error: string;
-}> = ({ processSteps, onRunStep, onRunAll, stepRunning, allRunning, stepProgress, error }) => {
+  canRun?: boolean;
+  docStatus?: string;
+  onSubmit?: () => void;
+  onApprove?: () => void;
+  onReject?: (comment: string) => void;
+}> = ({ processSteps, onRunStep, onRunAll, stepRunning, allRunning, stepProgress, error, canRun = true, docStatus, onSubmit, onApprove, onReject }) => {
   const anyBusy = allRunning || stepRunning !== null;
+  const allStepsDone = PROCESS_STEP_DEFS.every(d => processSteps[`step${d.num}`]?.status === 'done');
+  const [rejectComment, setRejectComment] = useState('');
+  const [showRejectBox, setShowRejectBox] = useState(false);
 
   return (
     <section className="bg-white rounded-2xl shadow-soft overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <div>
           <p className="font-bold text-slate-900">Process Calculations</p>
-          <p className="text-xs text-slate-400 font-mono">Run steps individually · or click Run All for the full pipeline</p>
+          <p className="text-xs text-slate-400 font-mono">
+            {canRun ? 'Run steps individually · or click Run All for the full pipeline' : 'Completed by Process Engineer — PM review'}
+          </p>
         </div>
-        <button
-          onClick={onRunAll}
-          disabled={anyBusy}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors shrink-0"
-        >
-          {allRunning
-            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Running…</>
-            : <><Play className="w-3.5 h-3.5" /> Run All</>}
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Engineer: Run All button (only when can run and not submitted) */}
+          {canRun && docStatus !== 'under_review' && docStatus !== 'approved' && (
+            <button
+              onClick={onRunAll}
+              disabled={anyBusy}
+              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              {allRunning
+                ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Running…</>
+                : <><Play className="w-3.5 h-3.5" /> Run All</>}
+            </button>
+          )}
+          {/* Engineer: Submit for review (all steps done, in_progress) */}
+          {canRun && allStepsDone && docStatus === 'in_progress' && onSubmit && (
+            <button
+              onClick={onSubmit}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              Submit for Review
+            </button>
+          )}
+          {/* Engineer: status badge when under_review */}
+          {canRun && docStatus === 'under_review' && (
+            <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <Clock className="w-3.5 h-3.5" /> Awaiting PM Review
+            </span>
+          )}
+          {/* Engineer: approved badge */}
+          {canRun && docStatus === 'approved' && (
+            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+            </span>
+          )}
+          {/* PM: Approve button (when under_review) */}
+          {!canRun && docStatus === 'under_review' && onApprove && (
+            <button
+              onClick={onApprove}
+              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approve
+            </button>
+          )}
+          {/* PM: Reject button (when under_review) */}
+          {!canRun && docStatus === 'under_review' && onReject && (
+            <button
+              onClick={() => setShowRejectBox(v => !v)}
+              className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              Reject
+            </button>
+          )}
+          {/* PM: approved badge */}
+          {!canRun && docStatus === 'approved' && (
+            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+            </span>
+          )}
+        </div>
       </div>
+      {/* PM: Reject comment box */}
+      {showRejectBox && !canRun && (
+        <div className="px-6 py-3 bg-red-50 border-b border-red-100 flex gap-2">
+          <input
+            value={rejectComment}
+            onChange={e => setRejectComment(e.target.value)}
+            placeholder="Rejection reason (optional)"
+            className="flex-1 text-sm border border-red-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-red-300"
+          />
+          <button
+            onClick={() => { onReject?.(rejectComment); setShowRejectBox(false); setRejectComment(''); }}
+            className="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-1.5 rounded-lg transition-colors"
+          >
+            Send
+          </button>
+        </div>
+      )}
 
       <div className="divide-y divide-slate-50">
         {PROCESS_STEP_DEFS.map(def => {
@@ -1949,7 +2219,7 @@ const ProcessStepsPanel: React.FC<{
           const allDone_this  = allRunning && stepProgress[def.num] === 'done';
           const prevKey  = `step${def.num - 1}`;
           const prevDone = def.num === 1 || !!processSteps[prevKey];
-          const canRun   = prevDone && !anyBusy;
+          const stepCanRun = canRun && prevDone && !anyBusy;
 
           return (
             <div key={def.num} className={`px-6 py-4 transition-colors ${isThisRunning || allDone_this ? 'bg-emerald-50/60' : ''}`}>
@@ -1969,20 +2239,22 @@ const ProcessStepsPanel: React.FC<{
                     <p className="text-[11px] text-slate-400 font-mono">{def.method}</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => onRunStep(def.num)}
-                  disabled={!canRun}
-                  className={`shrink-0 flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-lg transition-colors ${
-                    isThisRunning ? 'bg-blue-100 text-blue-700' :
-                    isDone        ? 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700' :
-                    canRun        ? 'bg-blue-600 text-white hover:bg-blue-700' :
-                                    'bg-slate-100 text-slate-300 cursor-not-allowed'
-                  }`}
-                >
-                  {isThisRunning ? <><Loader2 className="w-3 h-3 animate-spin" /> Running…</> :
-                   isDone        ? 'Re-run' :
-                                   <><Play className="w-3 h-3" /> Run</>}
-                </button>
+                {canRun && (
+                  <button
+                    onClick={() => onRunStep(def.num)}
+                    disabled={!stepCanRun}
+                    className={`shrink-0 flex items-center gap-1.5 text-[12px] font-bold px-3 py-1.5 rounded-lg transition-colors ${
+                      isThisRunning ? 'bg-blue-100 text-blue-700' :
+                      isDone        ? 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700' :
+                      stepCanRun    ? 'bg-blue-600 text-white hover:bg-blue-700' :
+                                      'bg-slate-100 text-slate-300 cursor-not-allowed'
+                    }`}
+                  >
+                    {isThisRunning ? <><Loader2 className="w-3 h-3 animate-spin" /> Running…</> :
+                     isDone        ? 'Re-run' :
+                                     <><Play className="w-3 h-3" /> Run</>}
+                  </button>
+                )}
               </div>
               {isDone && <StepResultPreview stepNum={def.num} result={stored.result} />}
             </div>
@@ -2000,34 +2272,139 @@ const ProcessStepsPanel: React.FC<{
 
 // ─── Pump Calc Panel ───────────────────────────────────────────────────────
 
+const MECH_STEP_LABELS: Record<number, string> = {
+  1: 'Pump Calculations',
+  2: 'Material Selection (RAG)',
+  3: 'Pump Datasheet',
+  4: 'Saving Deliverables',
+};
+
 const PumpCalcPanel: React.FC<{
   mechanicalOutput: any;
   onRun: () => void;
   running: boolean;
   error: string;
-}> = ({ mechanicalOutput, onRun, running, error }) => {
+  canRun?: boolean;
+  docStatus?: string;
+  onSubmit?: () => void;
+  onApprove?: () => void;
+  onReject?: (comment: string) => void;
+  mechStepProgress?: Record<number, 'running' | 'done'>;
+}> = ({ mechanicalOutput, onRun, running, error, canRun = true, docStatus, onSubmit, onApprove, onReject, mechStepProgress = {} }) => {
   const done  = !!mechanicalOutput?.pump_calculations;
   const calcs = mechanicalOutput?.pump_calculations ?? {};
+  const [rejectComment, setRejectComment] = useState('');
+  const [showRejectBox, setShowRejectBox] = useState(false);
 
   return (
     <section className="bg-white rounded-2xl shadow-soft overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <div>
           <p className="font-bold text-slate-900">Pump Calculations</p>
-          <p className="text-xs text-slate-400 font-mono">Hydraulic sizing · API 610 motor margin · NPSH check</p>
+          <p className="text-xs text-slate-400 font-mono">
+            {canRun ? 'Hydraulic sizing · API 610 motor margin · NPSH check' : 'Completed by Mechanical Engineer — PM review'}
+          </p>
         </div>
-        <button
-          onClick={onRun}
-          disabled={running}
-          className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors shrink-0"
-        >
-          {running
-            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Running…</>
-            : done
-              ? <><Play className="w-3.5 h-3.5" /> Re-run</>
-              : <><Play className="w-3.5 h-3.5" /> Run Calculation</>}
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Engineer: Run button (only when can run and not submitted) */}
+          {canRun && docStatus !== 'under_review' && docStatus !== 'approved' && (
+            <button
+              onClick={onRun}
+              disabled={running}
+              className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              {running
+                ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Running…</>
+                : done
+                  ? <><Play className="w-3.5 h-3.5" /> Re-run</>
+                  : <><Play className="w-3.5 h-3.5" /> Run Calculation</>}
+            </button>
+          )}
+          {/* Engineer: Submit for review (done + in_progress) */}
+          {canRun && done && docStatus === 'in_progress' && onSubmit && (
+            <button
+              onClick={onSubmit}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              Submit for Review
+            </button>
+          )}
+          {/* Engineer: status badges */}
+          {canRun && docStatus === 'under_review' && (
+            <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <Clock className="w-3.5 h-3.5" /> Awaiting PM Review
+            </span>
+          )}
+          {canRun && docStatus === 'approved' && (
+            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+            </span>
+          )}
+          {/* PM: Approve */}
+          {!canRun && docStatus === 'under_review' && onApprove && (
+            <button
+              onClick={onApprove}
+              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approve
+            </button>
+          )}
+          {/* PM: Reject */}
+          {!canRun && docStatus === 'under_review' && onReject && (
+            <button
+              onClick={() => setShowRejectBox(v => !v)}
+              className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+            >
+              Reject
+            </button>
+          )}
+          {/* PM: approved badge */}
+          {!canRun && docStatus === 'approved' && (
+            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+            </span>
+          )}
+        </div>
       </div>
+      {/* PM: Reject comment box */}
+      {showRejectBox && !canRun && (
+        <div className="px-6 py-3 bg-red-50 border-b border-red-100 flex gap-2">
+          <input
+            value={rejectComment}
+            onChange={e => setRejectComment(e.target.value)}
+            placeholder="Rejection reason (optional)"
+            className="flex-1 text-sm border border-red-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-red-300"
+          />
+          <button
+            onClick={() => { onReject?.(rejectComment); setShowRejectBox(false); setRejectComment(''); }}
+            className="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-1.5 rounded-lg transition-colors"
+          >
+            Send
+          </button>
+        </div>
+      )}
+
+      {/* Step progress — shown while running */}
+      {running && (
+        <div className="divide-y divide-slate-50">
+          {Object.entries(MECH_STEP_LABELS).map(([num, label]) => {
+            const n = Number(num);
+            const s = mechStepProgress[n];
+            return (
+              <div key={n} className={`px-6 py-3 flex items-center gap-3 transition-colors ${s === 'running' ? 'bg-orange-50/60' : ''}`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${
+                  s === 'done'    ? 'bg-emerald-100 text-emerald-700' :
+                  s === 'running' ? 'bg-orange-100 text-orange-700' :
+                                    'bg-slate-100 text-slate-400'
+                }`}>
+                  {s === 'done' ? '✓' : s === 'running' ? <Loader2 className="w-3 h-3 animate-spin" /> : n}
+                </div>
+                <span className={`text-sm ${s === 'done' ? 'text-slate-700 font-medium' : s === 'running' ? 'text-orange-700 font-semibold' : 'text-slate-400'}`}>{label}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {done && (
         <div className="px-6 py-4 grid grid-cols-2 gap-x-8 gap-y-1.5 text-xs">
@@ -2248,10 +2625,32 @@ const NewProjectModal: React.FC<{
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 function projectAgentStatus(proj: any): AgentStatus {
+  const docs = proj.docs ?? {};
+  const register = proj.context?.document_register ?? [];
+
+  const calDocId = register.find((d: any) => d.assigned_to === 'Process Engineer' && d.doc_id?.includes('CAL'))?.doc_id;
+  const pumpCalDocId = register.find((d: any) => d.assigned_to === 'Mechanical Engineer' && d.doc_id?.includes('CAL'))?.doc_id;
+
+  const processCalDoc = calDocId ? docs[calDocId] : null;
+  const mechCalDoc = pumpCalDocId ? docs[pumpCalDocId] : null;
+
+  // Also check agentChain for backward compat during migration window
+  const processOutput = processCalDoc?.agentRun?.output ?? proj.agentChain?.processOutput ?? proj.processOutput;
+  const mechanicalOutput = mechCalDoc?.agentRun?.output ?? proj.agentChain?.mechanicalOutput ?? proj.mechanicalOutput;
+
   return {
-    pm:         { project_context: !!proj.context,        handoff_brief:      !!proj.context?.handoff_brief },
-    process:    { process_output:  !!proj.processOutput,  calc_summary:       !!proj.processOutput?.calc_summary },
-    mechanical: { mechanical_output: !!proj.mechanicalOutput, pump_datasheet:  !!proj.mechanicalOutput?.pump_datasheet },
+    pm: {
+      project_context: docs.__project?.status === 'published' || !!proj.context,
+      handoff_brief: !!proj.context?.handoff_brief,
+    },
+    process: {
+      process_output: !!(processCalDoc?.agentRun ?? processOutput),
+      calc_summary: !!(processCalDoc?.agentRun?.steps?.step4 ?? processOutput?.calc_summary),
+    },
+    mechanical: {
+      mechanical_output: !!(mechCalDoc?.agentRun ?? mechanicalOutput),
+      pump_datasheet: !!(mechCalDoc?.agentRun?.output?.pump_datasheet ?? mechanicalOutput?.pump_datasheet),
+    },
   };
 }
 
@@ -2275,7 +2674,7 @@ const ProjectListView: React.FC<{
           project={proj.context}
           status={projectAgentStatus(proj)}
           userRole={viewAs}
-          docStatusMap={proj.docStatus ?? {}}
+          docStatusMap={proj.docs ?? proj.docStatus ?? {}}
           onClick={() => onSelectProject(proj.id)}
         />
       ))}
@@ -2337,31 +2736,59 @@ const ProjectListView: React.FC<{
 
 // ─── Main Dashboard ────────────────────────────────────────────────────────
 
-export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onGoToLibrary }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onGoToLibrary, onPendingTasksChange, jumpToProjectId, jumpKey }) => {
   const viewAs = user.role;
   const [projects,       setProjects]       = useState<any[]>([]);
   const [selectedId,     setSelectedId]     = useState<string | null>(null);
   const [showDetail,     setShowDetail]     = useState(false);
   const [loaded,         setLoaded]         = useState(false);
   const [showNewProject, setShowNewProject] = useState(false);
-  const [runningAgent,   setRunningAgent]   = useState<'process' | 'mechanical' | null>(null);
-  const [agentError,     setAgentError]     = useState('');
-  const [stepRunning,    setStepRunning]    = useState<number | null>(null);
-  const [stepError,      setStepError]      = useState('');
-  const [stepProgress,   setStepProgress]   = useState<Record<number, 'running' | 'done'>>({});
+  const [runningAgent,     setRunningAgent]     = useState<'process' | 'mechanical' | null>(null);
+  const [agentError,       setAgentError]       = useState('');
+  const [stepRunning,      setStepRunning]      = useState<number | null>(null);
+  const [stepError,        setStepError]        = useState('');
+  const [stepProgress,     setStepProgress]     = useState<Record<number, 'running' | 'done'>>({});
+  const [mechStepProgress, setMechStepProgress] = useState<Record<number, 'running' | 'done'>>({});
   const [docModal,       setDocModal]       = useState<{ docId: string; doc: any; readOnly?: boolean; session?: any; _content?: string } | null>(null);
+  const [toasts,         setToasts]         = useState<{ id: string; message: string }[]>([]);
+  const prevTaskCountRef = useRef<number>(-1);
 
   // Derived from selected project
   const selectedProject   = projects.find(p => p.id === selectedId) ?? null;
   const projectContext     = selectedProject?.context ?? null;
-  const processOutput      = selectedProject?.processOutput ?? null;
-  const mechanicalOutput   = selectedProject?.mechanicalOutput ?? null;
-  const docStatusMap       = selectedProject?.docStatus ?? {};
-  // deliverables values may be `true` (placeholder from list endpoint) or a string (full content from detail endpoint)
-  const deliverables = Object.fromEntries(
-    Object.entries(selectedProject?.context?.deliverables ?? {}).filter(([, v]) => typeof v === 'string')
-  ) as Record<string, string>;
-  const processSteps       = (selectedProject?.processSteps ?? {}) as Record<string, any>;
+  const docsMap            = (selectedProject?.docs ?? selectedProject?.docStatus ?? {}) as Record<string, any>;
+  const docStatusMap       = docsMap; // alias — used throughout the UI
+
+  // Derive deliverables from docs[docId].content (new) or context.deliverables (legacy)
+  const deliverables = (() => {
+    const result: Record<string, string> = {};
+    // New format: docs[docId].content
+    for (const [docId, doc] of Object.entries(docsMap)) {
+      if (docId !== '__project' && typeof doc === 'object' && doc !== null) {
+        if (typeof doc.content === 'string' && doc.content.length > 0) {
+          result[docId] = doc.content;
+        }
+      }
+    }
+    // Legacy fallback: context.deliverables (string values only)
+    for (const [docId, content] of Object.entries(selectedProject?.context?.deliverables ?? {})) {
+      if (typeof content === 'string' && !result[docId]) result[docId] = content;
+    }
+    return result;
+  })();
+
+  // Derive processOutput / mechanicalOutput for panels
+  const register = projectContext?.document_register ?? [];
+  const calDocId = register.find((d: any) => d.assigned_to === 'Process Engineer' && d.doc_id?.includes('CAL'))?.doc_id;
+  const pumpCalDocId = register.find((d: any) => d.assigned_to === 'Mechanical Engineer' && d.doc_id?.includes('CAL'))?.doc_id;
+  const processCalDoc = calDocId ? docsMap[calDocId] : null;
+  const mechCalDoc = pumpCalDocId ? docsMap[pumpCalDocId] : null;
+  const processOutput = processCalDoc?.agentRun?.output ?? selectedProject?.agentChain?.processOutput ?? selectedProject?.processOutput ?? null;
+  const mechanicalOutput = mechCalDoc?.agentRun?.output ?? selectedProject?.agentChain?.mechanicalOutput ?? selectedProject?.mechanicalOutput ?? null;
+
+  // Derive processSteps from docs[calDocId].agentRun.steps (new) or top-level processSteps (legacy)
+  const processSteps = (processCalDoc?.agentRun?.steps ?? selectedProject?.processSteps ?? {}) as Record<string, any>;
+
   const sessionsConfig     = (selectedProject?.sessionsConfig ?? {}) as Record<string, any[]>;
   const status: AgentStatus = selectedProject
     ? projectAgentStatus(selectedProject)
@@ -2391,6 +2818,44 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     if (selectedId) fetchProjectDetail(selectedId);
   }, [selectedId]);
 
+  // Jump to a specific project when triggered from TopBar bell
+  useEffect(() => {
+    if (!jumpToProjectId || !jumpKey) return;
+    setSelectedId(jumpToProjectId);
+    setShowDetail(true);
+    fetchProjectDetail(jumpToProjectId);
+  }, [jumpKey]);
+
+  // SSE: real-time sync across tabs
+  useEffect(() => {
+    if (isAdmin) return;
+    const es = new EventSource('/api/events');
+    es.addEventListener('sync', (e: MessageEvent) => {
+      try {
+        const data = JSON.parse(e.data);
+        if (data.projectId) fetchProjectDetail(data.projectId);
+        else fetchAll();
+      } catch {}
+    });
+    return () => es.close();
+  }, [isAdmin]);
+
+  // Pending tasks: compute, propagate, and show toast on new tasks
+  useEffect(() => {
+    const tasks = computePendingTasks(projects, viewAs);
+    onPendingTasksChange?.(tasks);
+    if (prevTaskCountRef.current === -1) { prevTaskCountRef.current = tasks.length; return; }
+    const added = tasks.length - prevTaskCountRef.current;
+    if (added > 0) {
+      const id = Date.now().toString();
+      const latest = tasks[tasks.length - 1];
+      const msg = added === 1 ? `New task: ${latest.docTitle}` : `${added} new tasks`;
+      setToasts(prev => [...prev, { id, message: msg }]);
+      setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);
+    }
+    prevTaskCountRef.current = tasks.length;
+  }, [projects, viewAs]);
+
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   const updateProject = (id: string, patch: (p: any) => any) =>
@@ -2398,7 +2863,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
 
   const handlePublish = async () => {
     if (!selectedId) return;
-    updateProject(selectedId, p => ({ ...p, docStatus: { ...p.docStatus, __project: { status: 'published', publishedAt: new Date().toISOString(), publishedBy: user.name } } }));
+    updateProject(selectedId, p => ({
+      ...p,
+      docs: { ...(p.docs ?? p.docStatus ?? {}), __project: { ...(p.docs?.__project ?? {}), status: 'published', publishedAt: new Date().toISOString(), publishedBy: user.name } },
+    }));
     await fetch(`/api/projects/${selectedId}/publish`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userName: user.name }) }).catch(console.error);
   };
 
@@ -2434,15 +2902,26 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     if (!selectedId) return;
     const current: any[] = sessionsConfig[docId] ?? [];
     const updated = current.map(s => s.id === sessionId ? { ...s, released } : s);
+    // If any session is now released → doc is under_review (engineers can see it); else back to in_progress
+    const anyReleased = updated.some(s => s.released);
+    const newDocStatus = anyReleased ? 'under_review' : 'in_progress';
     updateProject(selectedId, p => ({
       ...p,
       sessionsConfig: { ...(p.sessionsConfig ?? {}), [docId]: updated },
+      docs: { ...(p.docs ?? {}), [docId]: { ...(p.docs?.[docId] ?? {}), status: newDocStatus } },
     }));
-    await fetch(`/api/projects/${selectedId}/sessions-config`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ docId, sessions: updated }),
-    }).catch(console.error);
+    await Promise.all([
+      fetch(`/api/projects/${selectedId}/sessions-config`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ docId, sessions: updated }),
+      }),
+      fetch(`/api/projects/${selectedId}/doc-status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ docId, status: newDocStatus, userName: user.name, userRole: user.role }),
+      }),
+    ]).catch(console.error);
   };
 
   const [suggestingSession, setSuggestingSession] = useState<string | null>(null);
@@ -2498,7 +2977,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     // Update local state
     updateProject(selectedId, p => ({
       ...p,
-      context: { ...p.context, deliverables: { ...(p.context?.deliverables ?? {}), [docId]: newMaster } },
+      docs: { ...(p.docs ?? {}), [docId]: { ...(p.docs?.[docId] ?? {}), content: newMaster } },
     }));
     // Persist to server
     await fetch(`/api/projects/${selectedId}/deliverable`, {
@@ -2513,21 +2992,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     if (!selectedId) return;
     setStepRunning(stepNum); setStepError('');
     try {
-      const res = await fetch(`/api/agents/process/step/${stepNum}`, {
+      const res = await fetch(`/api/projects/${selectedId}/run/process/step/${stepNum}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId: selectedId }),
+        body: JSON.stringify({}),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Step failed');
       updateProject(selectedId, p => {
-        const newSteps = { ...(p.processSteps ?? {}), [`step${stepNum}`]: { status: 'done', result: data.result } };
-        // If step 4 just finished and we have all prior steps, update deliverable locally too
-        const newDeliverables = { ...(p.context?.deliverables ?? {}) };
+        const calId = (p.context?.document_register ?? []).find((d: any) =>
+          d.assigned_to === 'Process Engineer' && d.doc_id?.includes('CAL')
+        )?.doc_id || '1-CAL-XXXX';
+        const existingCalDoc = p.docs?.[calId] ?? { content: '', status: 'in_progress', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
+        const existingSteps = existingCalDoc?.agentRun?.steps ?? {};
+        const newSteps = { ...existingSteps, [`step${stepNum}`]: { status: 'done', result: data.result } };
+        // If step 4 just finished and we have all prior steps, update calc sheet content locally
+        let newCalcContent = existingCalDoc.content;
         if (stepNum === 4 && newSteps.step1 && newSteps.step2 && newSteps.step3) {
-          const calcDocId = (p.context?.document_register ?? []).find((d: any) =>
-            d.assigned_to === 'Process Engineer' && d.doc_id?.includes('CAL')
-          )?.doc_id || '1-CAL-XXXX';
-          newDeliverables[calcDocId] = JSON.stringify({
+          newCalcContent = JSON.stringify({
             _type: 'calc_sheet',
             generated_at: new Date().toISOString(),
             fluid_properties:  newSteps.step1.result,
@@ -2536,7 +3017,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
             calc_summary:      newSteps.step4?.result ?? data.result,
           }, null, 2);
         }
-        return { ...p, processSteps: newSteps, context: { ...p.context, deliverables: newDeliverables } };
+        return {
+          ...p,
+          docs: {
+            ...(p.docs ?? {}),
+            [calId]: {
+              ...existingCalDoc,
+              content: newCalcContent,
+              status: existingCalDoc.status === 'pending' ? 'in_progress' : existingCalDoc.status,
+              agentRun: { ...(existingCalDoc.agentRun ?? {}), steps: newSteps, ranAt: new Date().toISOString() },
+            },
+          },
+        };
       });
     } catch (e: any) { setStepError(e.message); }
     finally { setStepRunning(null); }
@@ -2546,19 +3038,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     if (!selectedId) return;
     updateProject(selectedId, p => ({
       ...p,
-      context: { ...p.context, deliverables: { ...(p.context?.deliverables ?? {}), [docId]: content } },
+      docs: { ...(p.docs ?? {}), [docId]: { ...(p.docs?.[docId] ?? {}), content } },
     }));
   };
 
   const handleDocStatusChange = async (docId: string, newStatus: string) => {
     // Optimistic update first — always works regardless of server state
     const targetId = selectedId;
-    updateProject(targetId ?? '', p => ({ ...p, docStatus: { ...p.docStatus, [docId]: { ...(p.docStatus[docId] ?? { comments: [] }), status: newStatus, lastUpdated: new Date().toISOString() } } }));
+    updateProject(targetId ?? '', p => ({
+      ...p,
+      docs: { ...(p.docs ?? {}), [docId]: { ...(p.docs?.[docId] ?? { comments: [] }), status: newStatus } },
+    }));
     if (!targetId) return;
     try {
       const res = await fetch(`/api/projects/${targetId}/doc-status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ docId, status: newStatus, userName: user.name, userRole: user.role }) });
       const updated = await res.json();
-      if (res.ok) updateProject(targetId, p => ({ ...p, docStatus: { ...p.docStatus, [docId]: updated } }));
+      if (res.ok) updateProject(targetId, p => ({ ...p, docs: { ...(p.docs ?? {}), [docId]: updated } }));
     } catch (e) { console.error('status change failed', e); }
   };
 
@@ -2568,8 +3063,40 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     try {
       const res = await fetch(`/api/projects/${targetId}/comment`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ docId, text, userName: user.name, userRole: user.role }) });
       const updated = await res.json();
-      if (res.ok) updateProject(targetId, p => ({ ...p, docStatus: { ...p.docStatus, [docId]: updated } }));
+      if (res.ok) updateProject(targetId, p => ({ ...p, docs: { ...(p.docs ?? {}), [docId]: updated } }));
     } catch (e) { console.error('comment failed', e); }
+  };
+
+  const handleSubmitDoc = async (docId: string) => {
+    if (!selectedId) return;
+    try {
+      const res = await fetch(`/api/projects/${selectedId}/docs/${docId}/submit`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+      const data = await res.json();
+      if (res.ok) updateProject(selectedId, p => ({ ...p, docs: { ...(p.docs ?? {}), [docId]: data } }));
+      else console.error('submit failed', data.error);
+    } catch (e) { console.error('submit failed', e); }
+  };
+
+  const handleApproveDoc = async (docId: string) => {
+    if (!selectedId) return;
+    try {
+      const res = await fetch(`/api/projects/${selectedId}/docs/${docId}/approve`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+      const data = await res.json();
+      if (!res.ok) { console.error('approve failed', data.error); return; }
+      // Optimistic update for the approved doc, then refetch full project to pick up mechanical unlock
+      updateProject(selectedId, p => ({ ...p, docs: { ...(p.docs ?? {}), [docId]: data } }));
+      fetchProjectDetail(selectedId);
+    } catch (e) { console.error('approve failed', e); }
+  };
+
+  const handleRejectDoc = async (docId: string, comment: string) => {
+    if (!selectedId) return;
+    try {
+      const res = await fetch(`/api/projects/${selectedId}/docs/${docId}/reject`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ comment }) });
+      const data = await res.json();
+      if (res.ok) updateProject(selectedId, p => ({ ...p, docs: { ...(p.docs ?? {}), [docId]: data } }));
+      else console.error('reject failed', data.error);
+    } catch (e) { console.error('reject failed', e); }
   };
 
   const runAgent = async (agentType?: 'process' | 'mechanical') => {
@@ -2579,34 +3106,37 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
 
     if (target === 'process') {
       try {
-        const result = await streamPmAgent('/api/agents/process', { projectId: selectedId }, (step) => {
+        const result = await streamPmAgent(`/api/projects/${selectedId}/run/process`, {}, (step) => {
           setStepProgress(prev => ({ ...prev, [step.step]: step.status as 'running' | 'done' }));
         });
         updateProject(selectedId, p => {
           const calcDocId = (p.context?.document_register ?? []).find((d: any) =>
             d.assigned_to === 'Process Engineer' && d.doc_id?.includes('CAL')
           )?.doc_id || '1-CAL-XXXX';
+          const calcContent = JSON.stringify({
+            _type: 'calc_sheet',
+            generated_at: new Date().toISOString(),
+            fluid_properties:  result.fluid_properties,
+            design_criteria:   result.design_criteria,
+            hydraulic_results: result.hydraulic_results,
+            calc_summary:      result.calc_summary,
+          }, null, 2);
+          const steps = {
+            step1: { status: 'done', result: result.fluid_properties },
+            step2: { status: 'done', result: result.design_criteria },
+            step3: { status: 'done', result: result.hydraulic_results },
+            step4: { status: 'done', result: result.calc_summary },
+          };
           return {
             ...p,
-            processOutput: result,
-            processSteps: {
-              step1: { status: 'done', result: result.fluid_properties },
-              step2: { status: 'done', result: result.design_criteria },
-              step3: { status: 'done', result: result.hydraulic_results },
-              step4: { status: 'done', result: result.calc_summary },
-            },
-            context: {
-              ...p.context,
-              deliverables: {
-                ...(p.context?.deliverables ?? {}),
-                [calcDocId]: JSON.stringify({
-                  _type: 'calc_sheet',
-                  generated_at: new Date().toISOString(),
-                  fluid_properties:  result.fluid_properties,
-                  design_criteria:   result.design_criteria,
-                  hydraulic_results: result.hydraulic_results,
-                  calc_summary:      result.calc_summary,
-                }, null, 2),
+            agentChain: { ...(p.agentChain ?? {}), processOutput: result },
+            docs: {
+              ...(p.docs ?? {}),
+              [calcDocId]: {
+                ...(p.docs?.[calcDocId] ?? { status: 'in_progress', comments: [], submittedAt: null, approvedAt: null }),
+                content: calcContent,
+                status: (p.docs?.[calcDocId]?.status === 'pending' || !p.docs?.[calcDocId]) ? 'in_progress' : p.docs[calcDocId].status,
+                agentRun: { output: result, steps, ranAt: new Date().toISOString() },
               },
             },
           };
@@ -2616,25 +3146,35 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
       return;
     }
 
-    // Mechanical agent (plain JSON response)
+    // Mechanical agent — SSE streaming (same pattern as process)
+    setMechStepProgress({});
     try {
-      const res = await fetch('/api/agents/mechanical', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId: selectedId }) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Agent failed');
+      const data = await streamPmAgent(
+        `/api/projects/${selectedId}/run/mechanical`,
+        {},
+        (step) => {
+          setMechStepProgress(prev => ({ ...prev, [step.step]: step.status as 'running' | 'done' }));
+        }
+      );
       updateProject(selectedId, p => {
-        const calcDocId  = data.pumpCalcDocId || '4-CAL-0001';
-        const calcSheet  = data.pumpCalcSheet;
-        const newDeliverables = calcSheet
-          ? { ...(p.context?.deliverables ?? {}), [calcDocId]: JSON.stringify(calcSheet, null, 2) }
-          : (p.context?.deliverables ?? {});
+        const pumpCalId = data.pumpCalcDocId || '4-CAL-0001';
+        const calcContent = data.pumpCalcSheet ? JSON.stringify(data.pumpCalcSheet, null, 2) : '';
         return {
           ...p,
-          mechanicalOutput: data,
-          context: { ...p.context, deliverables: newDeliverables },
+          agentChain: { ...(p.agentChain ?? {}), mechanicalOutput: data },
+          docs: {
+            ...(p.docs ?? {}),
+            [pumpCalId]: {
+              ...(p.docs?.[pumpCalId] ?? { status: 'in_progress', comments: [], submittedAt: null, approvedAt: null }),
+              content: calcContent,
+              status: (p.docs?.[pumpCalId]?.status === 'pending' || !p.docs?.[pumpCalId]) ? 'in_progress' : p.docs[pumpCalId].status,
+              agentRun: { output: data, steps: null, ranAt: new Date().toISOString() },
+            },
+          },
         };
       });
     } catch (e: any) { setAgentError(e.message); }
-    finally { setRunningAgent(null); }
+    finally { setRunningAgent(null); setMechStepProgress({}); }
   };
 
   if (!loaded) {
@@ -2643,6 +3183,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
 
   return (
     <>
+      {/* Toast notifications */}
+      <AnimatePresence>
+        {toasts.map(t => (
+          <motion.div
+            key={t.id}
+            initial={{ opacity: 0, x: 80 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 80 }}
+            className="fixed bottom-6 right-6 z-[9999] bg-slate-900 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 max-w-xs"
+          >
+            <Bell className="w-4 h-4 text-blue-400 shrink-0" />
+            <span>{t.message}</span>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
       {/* Deliverable document modal */}
       {docModal && selectedId && (
         <DeliverableModal
@@ -2700,6 +3256,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
               ? (sessionContent) => handleMergeToMaster(docModal.docId, docModal.session, sessionContent)
               : undefined
           }
+          onSubmit={
+            docModal.session && user.role !== 'pm' && docModal.doc?.assigned_to === 'PM'
+              ? () => handleApproveDoc(docModal.docId)
+              : undefined
+          }
         />
       )}
 
@@ -2707,17 +3268,31 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
         <NewProjectModal
           onClose={() => setShowNewProject(false)}
           onProjectCreated={(result) => {
+            // Build docs map from document_register
+            const docsInit: Record<string, any> = {
+              __project: { status: 'draft', publishedAt: null, publishedBy: null, comments: [] },
+            };
+            for (const d of (result.document_register ?? [])) {
+              docsInit[d.doc_id] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
+            }
+            // Store deliverable content; only PM-assigned docs start in_progress
+            for (const [docId, content] of Object.entries(result.deliverables ?? {})) {
+              if (docsInit[docId] && typeof content === 'string') {
+                docsInit[docId].content = content;
+                const docMeta = (result.document_register ?? []).find((d: any) => d.doc_id === docId);
+                if (docMeta?.assigned_to === 'PM') docsInit[docId].status = 'in_progress';
+              }
+            }
+            const contextToStore = { ...result };
+            delete contextToStore.deliverables;
             const newProj = {
-              id:              result.id,
-              createdAt:       new Date().toISOString(),
-              status:          'active',
-              context:         result,
-              docStatus:       {
-                __project: { status: 'draft', publishedAt: null, publishedBy: null },
-                ...Object.fromEntries((result.document_register ?? []).map((d: any) => [d.doc_id, { status: 'pending', comments: [], lastUpdated: new Date().toISOString(), updatedBy: null }])),
-              },
-              processOutput:   null,
-              mechanicalOutput: null,
+              id:        result.id,
+              createdAt: new Date().toISOString(),
+              status:    'active',
+              context:   contextToStore,
+              docs:      docsInit,
+              agentChain: { processOutput: null, mechanicalOutput: null },
+              sessionsConfig: {},
             };
             setProjects(prev => [newProj, ...prev]);
             setSelectedId(result.id);
@@ -2747,6 +3322,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
             processSteps={processSteps}
             onDocStatusChange={handleDocStatusChange}
             onDocComment={handleDocComment}
+            onSubmitDoc={handleSubmitDoc}
+            onApproveDoc={handleApproveDoc}
+            onRejectDoc={handleRejectDoc}
             onViewDocument={handleViewDocument}
             onReleaseSession={handleReleaseSession}
             onSuggestSessions={handleSuggestSessions}
@@ -2755,6 +3333,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
             stepRunning={stepRunning}
             stepError={stepError}
             stepProgress={stepProgress}
+            mechStepProgress={mechStepProgress}
             onPublish={handlePublish}
             onMarkComplete={handleMarkComplete}
             onDelete={handleDelete}

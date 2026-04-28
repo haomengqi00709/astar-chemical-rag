@@ -43,6 +43,14 @@ export interface Activity {
   project?: string;
 }
 
+export interface PendingTask {
+  id: string;          // projectId + ':' + docId
+  projectId: string;
+  projectName: string;
+  docId: string;
+  docTitle: string;
+}
+
 export interface AgentStatus {
   pm: { project_context: boolean; handoff_brief: boolean };
   process: { process_output: boolean; calc_summary: boolean };

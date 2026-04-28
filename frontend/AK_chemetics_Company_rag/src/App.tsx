@@ -9,7 +9,7 @@ import { SignIn } from './components/SignIn';
 import { AdminSignIn } from './components/AdminSignIn';
 import { Landing } from './components/Landing';
 import { NewKnowledgeBase } from './components/NewKnowledgeBase';
-import { Page, User } from './types';
+import { Page, User, PendingTask } from './types';
 
 type AppMode = 'landing' | 'demo' | 'new-kb-name' | 'new-kb-role' | 'new-kb-app';
 
@@ -20,6 +20,9 @@ export default function App() {
   const [companyName, setCompanyName] = useState('');
   const [defaultProjectId, setDefaultProjectId] = useState<string | undefined>();
   const [libraryRefreshKey, setLibraryRefreshKey] = useState(0);
+  const [pendingTasks,      setPendingTasks]      = useState<PendingTask[]>([]);
+  const [jumpToProjectId,   setJumpToProjectId]   = useState<string | null>(null);
+  const [jumpKey,           setJumpKey]           = useState(0);
 
   // ── Landing ──────────────────────────────────────────────────────────────
   if (mode === 'landing') {
@@ -64,7 +67,7 @@ export default function App() {
 
   // ── Demo: standard role selection ────────────────────────────────────────
   if (mode === 'demo' && !user) {
-    return <SignIn onSignIn={(u) => { setUser(u); setCurrentPage('dashboard'); }} />;
+    return <SignIn onSignIn={(u) => { setUser(u); setCurrentPage('dashboard'); }} onBack={() => setMode('landing')} />;
   }
 
   if (!user) return null;
@@ -74,10 +77,10 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'dashboard': return <Dashboard user={user} isAdmin={isAdmin} onGoToLibrary={() => { setCurrentPage('library'); setLibraryRefreshKey(k => k + 1); }} />;
+      case 'dashboard': return <Dashboard user={user} isAdmin={isAdmin} onGoToLibrary={() => { setCurrentPage('library'); setLibraryRefreshKey(k => k + 1); }} onPendingTasksChange={setPendingTasks} jumpToProjectId={jumpToProjectId} jumpKey={jumpKey} />;
       case 'query':     return <Query />;
       case 'skills':    return <SkillsCatalog />;
-      default:          return <Dashboard user={user} />;
+      default:          return <Dashboard user={user} jumpToProjectId={jumpToProjectId} jumpKey={jumpKey} />;
     }
   };
 
@@ -93,8 +96,8 @@ export default function App() {
 
   const handleSignOut = () => {
     setUser(null);
-    setCompanyName('');
-    setMode('landing');
+    setCurrentPage('dashboard');
+    // Stay in demo mode (3-agent SignIn screen), not back to landing
   };
 
   return (
@@ -106,7 +109,17 @@ export default function App() {
         companyName={companyName || undefined}
       />
       <main className="flex-1 ml-64 flex flex-col min-h-0">
-        <TopBar title={getPageTitle()} user={user} onSignOut={handleSignOut} />
+        <TopBar
+          title={getPageTitle()}
+          user={user}
+          onSignOut={handleSignOut}
+          tasks={pendingTasks}
+          onTaskClick={(projectId: string) => {
+            setCurrentPage('dashboard');
+            setJumpToProjectId(projectId);
+            setJumpKey(k => k + 1);
+          }}
+        />
         <div className="flex-1 min-h-0 overflow-auto" style={{ display: currentPage === 'library' ? 'none' : 'flex', flexDirection: 'column' }}>
           {renderPage()}
         </div>

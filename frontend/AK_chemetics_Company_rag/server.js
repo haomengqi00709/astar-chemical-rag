@@ -35,7 +35,10 @@ const PROCESS_DIR = path.join(RAG_ROOT, 'work_agents', 'Aria - Process Engineer'
 const MECH_DIR    = path.join(RAG_ROOT, 'work_agents', 'Hunter - Mechnical Engineer');
 
 // ── Project store ─────────────────────────────────────────────────────────
-const PROJECTS_STORE = path.join(PM_DIR, 'projects_store.json');
+// DATA_DIR is set on Railway/Docker; locally falls back to PM_DIR (original location)
+const PROJECTS_STORE = process.env.DATA_DIR
+  ? path.join(process.env.DATA_DIR, 'projects_store.json')
+  : path.join(PM_DIR, 'projects_store.json');
 
 function loadProjects() {
   if (!fs.existsSync(PROJECTS_STORE)) return [];
@@ -43,8 +46,10 @@ function loadProjects() {
     const arr = JSON.parse(fs.readFileSync(PROJECTS_STORE, 'utf-8'));
     // Backfill missing IDs for projects created before this feature
     let changed = false;
-    for (const p of arr) {
-      if (!p.id) { p.id = 'proj_' + randomBytes(4).toString('hex'); changed = true; }
+    for (let i = 0; i < arr.length; i++) {
+      if (!arr[i].id) { arr[i].id = 'proj_' + randomBytes(4).toString('hex'); changed = true; }
+      const migrated = migrateProject(arr[i]);
+      if (migrated !== arr[i]) { arr[i] = migrated; changed = true; }
     }
     if (changed) saveProjects(arr);
     return arr;
@@ -60,6 +65,75 @@ function upsertProject(proj) {
   saveProjects(arr);
   return proj;
 }
+
+function buildDocs(docRegister) {
+  const docs = {
+    __project: { status: 'draft', publishedAt: null, publishedBy: null, comments: [] },
+  };
+  for (const doc of (docRegister ?? [])) {
+    docs[doc.doc_id] = {
+      content: '',
+      status: 'pending',
+      comments: [],
+      agentRun: null,
+      submittedAt: null,
+      approvedAt: null,
+    };
+  }
+  return docs;
+}
+
+function migrateProject(p) {
+  if (p.docs) return p; // already migrated
+  const docs = buildDocs(p.context?.document_register);
+  // Migrate __project status
+  if (p.docStatus?.__project) {
+    docs.__project = { ...docs.__project, ...p.docStatus.__project, comments: [] };
+  }
+  // Migrate deliverable content
+  for (const [docId, content] of Object.entries(p.context?.deliverables ?? {})) {
+    if (docs[docId] && typeof content === 'string' && content.length > 0) {
+      docs[docId].content = content;
+    }
+  }
+  // Migrate docStatus per doc
+  for (const [docId, ds] of Object.entries(p.docStatus ?? {})) {
+    if (docId === '__project') continue;
+    if (docs[docId]) {
+      docs[docId].status = ds.status ?? 'pending';
+      docs[docId].comments = ds.comments ?? [];
+    }
+  }
+  // Migrate processOutput → agentChain + docs[calDocId].agentRun
+  const calDocId = findCalcDocId(p.context?.document_register);
+  const pumpCalDocId = findPumpCalcDocId(p.context?.document_register);
+  const agentChain = {
+    processOutput: p.processOutput ?? null,
+    mechanicalOutput: p.mechanicalOutput ?? null,
+  };
+  if (p.processOutput && docs[calDocId]) {
+    docs[calDocId].agentRun = {
+      output: p.processOutput,
+      steps: p.processSteps ?? null,
+      ranAt: p.processOutput.generated_at ?? new Date().toISOString(),
+    };
+    if (docs[calDocId].status === 'pending') docs[calDocId].status = 'in_progress';
+  }
+  if (p.mechanicalOutput && docs[pumpCalDocId]) {
+    docs[pumpCalDocId].agentRun = {
+      output: p.mechanicalOutput,
+      steps: null,
+      ranAt: p.mechanicalOutput.generated_at ?? new Date().toISOString(),
+    };
+    if (docs[pumpCalDocId].status === 'pending') docs[pumpCalDocId].status = 'in_progress';
+  }
+  const { docStatus: _ds, processOutput: _po, mechanicalOutput: _mo, processSteps: _ps, ...rest } = p;
+  const context = { ...rest.context };
+  delete context.deliverables; // moved to docs
+  return { ...rest, context, docs, agentChain };
+}
+
+// Legacy helper kept for compatibility (no longer used for new projects)
 function buildDocStatus(docRegister) {
   const ds = { __project: { status: 'draft', publishedAt: null, publishedBy: null } };
   for (const doc of (docRegister ?? [])) {
@@ -169,6 +243,37 @@ function findPumpCalcDocId(docRegister) {
 
 const app = express();
 app.use(express.json({ limit: '20mb' }));
+
+// ─── SSE broadcast ────────────────────────────────────────────────────────────
+const sseClients = new Set();
+
+function broadcastSync(type, data = {}) {
+  const payload = JSON.stringify({ type, ...data, ts: Date.now() });
+  for (const client of sseClients) {
+    try { client.write(`event: sync\ndata: ${payload}\n\n`); } catch {}
+  }
+}
+
+app.get('/api/events', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type':      'text/event-stream',
+    'Cache-Control':     'no-cache',
+    'Connection':        'keep-alive',
+    'X-Accel-Buffering': 'no',   // disable nginx buffering on Railway
+  });
+  res.write('event: connected\ndata: {}\n\n');
+  sseClients.add(res);
+
+  // Keep-alive ping every 25s — prevents Railway's 60s idle timeout
+  const keepAlive = setInterval(() => {
+    try { res.write(':ping\n\n'); } catch { clearInterval(keepAlive); }
+  }, 25000);
+
+  req.on('close', () => {
+    sseClients.delete(res);
+    clearInterval(keepAlive);
+  });
+});
 
 // TEMPORARY — remove after data export
 const _EXPORT_DB   = path.join(RAG_ROOT, 'app_db.json');
@@ -489,7 +594,29 @@ function runPmAgentSSE(res, args) {
       const ctx = JSON.parse(stdout);
       const id = 'proj_' + randomBytes(4).toString('hex');
       const sessionsConfig = ctx.sessions_config || {};
-      upsertProject({ id, createdAt: new Date().toISOString(), status: 'active', context: ctx, docStatus: buildDocStatus(ctx.document_register), processOutput: null, mechanicalOutput: null, sessionsConfig, sharing: {} });
+      const docs = buildDocs(ctx.document_register);
+      // Store deliverable content; only PM-assigned docs start in_progress
+      for (const [docId, content] of Object.entries(ctx.deliverables ?? {})) {
+        if (docs[docId] && typeof content === 'string') {
+          docs[docId].content = content;
+          const docMeta = (ctx.document_register ?? []).find(d => d.doc_id === docId);
+          if (docMeta?.assigned_to === 'PM') docs[docId].status = 'in_progress';
+          // Engineer docs stay pending until PM publishes
+        }
+      }
+      const contextToSave = { ...ctx };
+      delete contextToSave.deliverables; // moved to docs
+      const project = {
+        id,
+        createdAt: new Date().toISOString(),
+        status: 'active',
+        context: contextToSave,
+        docs,
+        agentChain: { processOutput: null, mechanicalOutput: null },
+        sessionsConfig,
+        sharing: {},
+      };
+      upsertProject(project);
       fs.writeFileSync(path.join(PM_DIR, 'project_context.json'), JSON.stringify(ctx, null, 2));
       fs.writeFileSync(path.join(PM_DIR, 'handoff_brief.md'), ctx.handoff_brief || '');
       res.write(`event: result\ndata: ${JSON.stringify({ ...ctx, id })}\n\n`);
@@ -538,28 +665,34 @@ app.post('/api/agents/pm-demo', (req, res) => {
 
 
 // ---------------------------------------------------------------------------
-// POST /api/agents/process
+// POST /api/projects/:id/run/process
 // Runs process_agent.py --json with SSE step progress.
 // ---------------------------------------------------------------------------
-app.post('/api/agents/process', (req, res) => {
-  const { projectId } = req.body ?? {};
-  let contextPath = path.join(PM_DIR, 'project_context.json');
+app.post('/api/projects/:id/run/process', (req, res) => {
+  const arr = loadProjects();
+  const proj = arr.find(p => p.id === req.params.id);
+  if (!proj) return res.status(404).json({ error: 'Project not found' });
 
-  if (projectId) {
-    const proj = loadProjects().find(p => p.id === projectId);
-    if (!proj) return res.status(404).json({ error: 'Project not found' });
-    const tmpCtx = path.join(os.tmpdir(), `ctx_${projectId}.json`);
-    fs.writeFileSync(tmpCtx, JSON.stringify(proj.context, null, 2));
-    contextPath = tmpCtx;
+  // Permission check: project must be published
+  if (proj.docs.__project?.status !== 'published') {
+    return res.status(403).json({ error: 'Project must be published before running process calculations' });
   }
 
-  if (!fs.existsSync(contextPath)) {
-    return res.status(400).json({ error: 'project_context.json not found — run PM agent first' });
+  // Find the process CAL doc
+  const calDocId = findCalcDocId(proj.context?.document_register);
+  const calDoc = proj.docs[calDocId];
+
+  // Permission check: doc must not be under_review or approved
+  if (calDoc && (calDoc.status === 'under_review' || calDoc.status === 'approved')) {
+    return res.status(403).json({ error: 'Document is under review or approved — cannot re-run. Ask PM to send it back first.' });
   }
+
+  const tmpCtx = path.join(os.tmpdir(), `ctx_${proj.id}.json`);
+  fs.writeFileSync(tmpCtx, JSON.stringify(proj.context, null, 2));
 
   res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
 
-  const proc = spawn(PYTHON, [PROCESS_AGENT, '--json', '--context', contextPath], { cwd: RAG_ROOT });
+  const proc = spawn(PYTHON, [PROCESS_AGENT, '--json', '--context', tmpCtx], { cwd: RAG_ROOT });
   let stdout = '', stderrBuf = '';
 
   proc.stdout.on('data', chunk => { stdout += chunk; });
@@ -577,48 +710,55 @@ app.post('/api/agents/process', (req, res) => {
   proc.on('close', code => {
     if (stderrBuf.trim()) console.error('[process-agent stderr]', stderrBuf);
     if (code !== 0) {
-      const detail = stderrBuf.trim().slice(-800) || '(no stderr)';
-      res.write(`event: error\ndata: ${JSON.stringify({ error: `Process agent failed (exit ${code}): ${detail}` })}\n\n`);
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `Process agent failed (exit ${code})` })}\n\n`);
       res.end(); return;
     }
     try {
       const result = JSON.parse(stdout);
       fs.writeFileSync(path.join(PROCESS_DIR, 'process_output.json'), JSON.stringify(result, null, 2));
       fs.writeFileSync(path.join(PROCESS_DIR, 'process_calc_summary.md'), result.calc_summary || '');
-      if (projectId) {
-        const arr = loadProjects();
-        const idx = arr.findIndex(p => p.id === projectId);
-        if (idx >= 0) {
-          arr[idx].processOutput = result;
-          arr[idx].processSteps = {
-            step1: { status: 'done', result: result.fluid_properties,  completedAt: new Date().toISOString() },
-            step2: { status: 'done', result: result.design_criteria,   completedAt: new Date().toISOString() },
-            step3: { status: 'done', result: result.hydraulic_results, completedAt: new Date().toISOString() },
-            step4: { status: 'done', result: result.calc_summary,      completedAt: new Date().toISOString() },
-          };
-          if (!arr[idx].context) arr[idx].context = {};
-          if (!arr[idx].context.deliverables) arr[idx].context.deliverables = {};
-          // Write structured calc sheet for 1-CAL-XXXX
-          const calcDocId = findCalcDocId(arr[idx].context?.document_register);
-          arr[idx].context.deliverables[calcDocId] = JSON.stringify(
-            buildCalcSheet(arr[idx].processSteps, arr[idx].context?.document_register), null, 2
-          );
-          // Store markdown content for other process deliverables (e.g. 1-PRC-0001)
-          if (result.deliverables) {
-            for (const [docId, content] of Object.entries(result.deliverables)) {
-              if (!String(content).startsWith('[Generation failed')) {
-                arr[idx].context.deliverables[docId] = content;
-              }
+      const projects = loadProjects();
+      const idx = projects.findIndex(p => p.id === req.params.id);
+      if (idx >= 0) {
+        if (!projects[idx].docs) projects[idx].docs = buildDocs(projects[idx].context?.document_register);
+        const calId = findCalcDocId(projects[idx].context?.document_register);
+        // Store in agentChain for mechanical to read
+        projects[idx].agentChain = { ...(projects[idx].agentChain ?? {}), processOutput: result };
+        // Store in docs[calId].agentRun
+        if (!projects[idx].docs[calId]) projects[idx].docs[calId] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
+        projects[idx].docs[calId].agentRun = {
+          output: result,
+          steps: {
+            step1: { status: 'done', result: result.fluid_properties },
+            step2: { status: 'done', result: result.design_criteria },
+            step3: { status: 'done', result: result.hydraulic_results },
+            step4: { status: 'done', result: result.calc_summary },
+          },
+          ranAt: new Date().toISOString(),
+        };
+        // Write structured calc sheet content into the CAL doc
+        projects[idx].docs[calId].content = JSON.stringify(
+          buildCalcSheet({ step1: { result: result.fluid_properties }, step2: { result: result.design_criteria }, step3: { result: result.hydraulic_results }, step4: { result: result.calc_summary } }, projects[idx].context?.document_register), null, 2
+        );
+        // Update doc content for other process deliverables (e.g. 1-PRC-0001)
+        if (result.deliverables) {
+          for (const [docId, content] of Object.entries(result.deliverables)) {
+            if (projects[idx].docs[docId] && typeof content === 'string' && !content.startsWith('[Generation failed')) {
+              projects[idx].docs[docId].content = content;
+              if (projects[idx].docs[docId].status === 'pending') projects[idx].docs[docId].status = 'in_progress';
             }
           }
-          saveProjects(arr);
         }
+        // Set CAL doc to in_progress if it was pending
+        if (projects[idx].docs[calId].status === 'pending') projects[idx].docs[calId].status = 'in_progress';
+        saveProjects(projects);
+        broadcastSync('agent_done', { projectId: req.params.id, agent: 'process' });
       }
       res.write(`event: result\ndata: ${JSON.stringify(result)}\n\n`);
     } catch (parseErr) {
       const snippet = stdout.slice(-500) || '(empty stdout)';
       console.error('[process-agent] JSON parse failed:', parseErr && parseErr.message, 'stdout tail:', snippet);
-      res.write(`event: error\ndata: ${JSON.stringify({ error: `Could not parse process agent output: ${parseErr && parseErr.message} — stdout tail: ${snippet}` })}\n\n`);
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `Could not parse process agent output` })}\n\n`);
     }
     res.end();
   });
@@ -629,27 +769,39 @@ app.post('/api/agents/process', (req, res) => {
   });
 });
 
+// Legacy alias — keep for backward compat with old frontend code
+app.post('/api/agents/process', (req, res) => {
+  const { projectId } = req.body ?? {};
+  if (!projectId) return res.status(400).json({ error: 'projectId is required for this endpoint' });
+  // Delegate to new endpoint
+  req.params = { id: projectId };
+  // Manually forward to the new handler by constructing a simple internal redirect isn't clean in Express,
+  // so we just copy the logic inline via a simple redirect trick using the same app handler:
+  res.redirect(307, `/api/projects/${projectId}/run/process`);
+});
+
 
 // ---------------------------------------------------------------------------
-// POST /api/agents/process/step/:step
+// POST /api/projects/:id/run/process/step/:step
 // Runs a single process calculation step.
-// Body: { projectId }
 // ---------------------------------------------------------------------------
-app.post('/api/agents/process/step/:step', (req, res) => {
+app.post('/api/projects/:id/run/process/step/:step', (req, res) => {
   const stepNum = parseInt(req.params.step, 10);
   if (![1, 2, 3, 4].includes(stepNum)) return res.status(400).json({ error: 'Step must be 1–4' });
 
-  const { projectId } = req.body ?? {};
-  if (!projectId) return res.status(400).json({ error: 'projectId is required' });
-
+  const projectId = req.params.id;
   const arr = loadProjects();
   const proj = arr.find(p => p.id === projectId);
   if (!proj) return res.status(404).json({ error: 'Project not found' });
 
+  // Get prior steps from docs[calDocId].agentRun.steps
+  const calDocId = findCalcDocId(proj.context?.document_register);
+  const priorSteps = proj.docs?.[calDocId]?.agentRun?.steps ?? {};
+
   const tmpCtx   = path.join(os.tmpdir(), `ctx_${projectId}.json`);
   const tmpPrior = path.join(os.tmpdir(), `prior_${projectId}.json`);
   fs.writeFileSync(tmpCtx,   JSON.stringify(proj.context, null, 2));
-  fs.writeFileSync(tmpPrior, JSON.stringify(proj.processSteps ?? {}, null, 2));
+  fs.writeFileSync(tmpPrior, JSON.stringify(priorSteps, null, 2));
 
   const proc = spawn(
     PYTHON,
@@ -666,20 +818,22 @@ app.post('/api/agents/process/step/:step', (req, res) => {
       const stepResult = JSON.parse(stdout);
       const idx = arr.findIndex(p => p.id === projectId);
       if (idx >= 0) {
-        if (!arr[idx].processSteps) arr[idx].processSteps = {};
-        arr[idx].processSteps[`step${stepNum}`] = {
+        if (!arr[idx].docs) arr[idx].docs = buildDocs(arr[idx].context?.document_register);
+        const calId = findCalcDocId(arr[idx].context?.document_register);
+        if (!arr[idx].docs[calId]) arr[idx].docs[calId] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
+        if (!arr[idx].docs[calId].agentRun) arr[idx].docs[calId].agentRun = { output: null, steps: {}, ranAt: new Date().toISOString() };
+        if (!arr[idx].docs[calId].agentRun.steps) arr[idx].docs[calId].agentRun.steps = {};
+        arr[idx].docs[calId].agentRun.steps[`step${stepNum}`] = {
           status: 'done', result: stepResult.result, completedAt: new Date().toISOString(),
         };
-        // When step 4 completes, build the calc sheet deliverable
-        const steps = arr[idx].processSteps;
+        // When step 4 completes, build the calc sheet content
+        const steps = arr[idx].docs[calId].agentRun.steps;
         if (stepNum === 4 && steps.step1 && steps.step2 && steps.step3) {
-          const calcDocId = findCalcDocId(arr[idx].context?.document_register);
-          if (!arr[idx].context) arr[idx].context = {};
-          if (!arr[idx].context.deliverables) arr[idx].context.deliverables = {};
-          arr[idx].context.deliverables[calcDocId] = JSON.stringify(
+          arr[idx].docs[calId].content = JSON.stringify(
             buildCalcSheet(steps, arr[idx].context?.document_register), null, 2
           );
         }
+        if (arr[idx].docs[calId].status === 'pending') arr[idx].docs[calId].status = 'in_progress';
         saveProjects(arr);
       }
       res.json(stepResult);
@@ -691,83 +845,125 @@ app.post('/api/agents/process/step/:step', (req, res) => {
   proc.on('error', err => res.status(500).json({ error: err.message }));
 });
 
+// Legacy alias — keep for backward compat
+app.post('/api/agents/process/step/:step', (req, res) => {
+  const { projectId } = req.body ?? {};
+  if (!projectId) return res.status(400).json({ error: 'projectId is required' });
+  res.redirect(307, `/api/projects/${projectId}/run/process/step/${req.params.step}`);
+});
+
 
 // ---------------------------------------------------------------------------
-// POST /api/agents/mechanical
+// POST /api/projects/:id/run/mechanical
 // Runs mechanical_agent.py --json, saves output files, returns JSON.
 // ---------------------------------------------------------------------------
-app.post('/api/agents/mechanical', (req, res) => {
-  const { projectId } = req.body ?? {};
-  let contextPath = path.join(PROCESS_DIR, 'process_output.json');
+app.post('/api/projects/:id/run/mechanical', (req, res) => {
+  const arr = loadProjects();
+  const proj = arr.find(p => p.id === req.params.id);
+  if (!proj) return res.status(404).json({ error: 'Project not found' });
 
-  if (projectId) {
-    const proj = loadProjects().find(p => p.id === projectId);
-    if (!proj) return res.status(404).json({ error: 'Project not found' });
-    if (!proj.processOutput) return res.status(400).json({ error: 'Run Process agent first for this project' });
-    const tmpCtx = path.join(os.tmpdir(), `proc_${projectId}.json`);
-    fs.writeFileSync(tmpCtx, JSON.stringify(proj.processOutput, null, 2));
-    contextPath = tmpCtx;
+  // Permission: process CAL doc must be approved
+  const calDocId = findCalcDocId(proj.context?.document_register);
+  const processCalDoc = proj.docs?.[calDocId];
+  if (!processCalDoc || processCalDoc.status !== 'approved') {
+    return res.status(403).json({ error: 'Process calculations must be approved by PM before running mechanical calculations' });
   }
 
-  if (!fs.existsSync(contextPath)) {
-    return res.status(400).json({ error: 'process_output.json not found — run Process agent first' });
+  const processOutput = proj.agentChain?.processOutput;
+  if (!processOutput) return res.status(400).json({ error: 'Process output not found — run Process agent first' });
+
+  // Find mechanical CAL doc
+  const pumpCalDocId = findPumpCalcDocId(proj.context?.document_register);
+  const mechCalDoc = proj.docs?.[pumpCalDocId];
+  if (mechCalDoc && (mechCalDoc.status === 'under_review' || mechCalDoc.status === 'approved')) {
+    return res.status(403).json({ error: 'Document is under review or approved — cannot re-run' });
   }
 
-  const proc = spawn(PYTHON, [MECH_AGENT, '--json', '--context', contextPath], { cwd: RAG_ROOT });
-  let stdout = '', stderr = '';
+  const tmpCtx = path.join(os.tmpdir(), `proc_${proj.id}.json`);
+  fs.writeFileSync(tmpCtx, JSON.stringify(processOutput, null, 2));
+
+  // Stream SSE progress from stderr, final result from stdout
+  res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
+
+  const proc = spawn(PYTHON, [MECH_AGENT, '--json', '--context', tmpCtx], { cwd: RAG_ROOT });
+  let stdout = '', stderrBuf = '';
   proc.stdout.on('data', chunk => { stdout += chunk; });
-  proc.stderr.on('data', chunk => { stderr += chunk; });
+
+  proc.stderr.on('data', chunk => {
+    stderrBuf += chunk;
+    const lines = stderrBuf.split('\n');
+    stderrBuf = lines.pop();
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      try { JSON.parse(line); res.write(`event: progress\ndata: ${line}\n\n`); } catch {}
+    }
+  });
 
   proc.on('close', code => {
     if (code !== 0) {
-      console.error('[mech_agent stderr]', stderr.slice(-300));
-      return res.status(500).json({ error: 'Mechanical agent failed', detail: stderr.slice(-500) });
+      console.error('[mech_agent stderr]', stderrBuf.slice(-300));
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `Mechanical agent failed (exit ${code})`, detail: stderrBuf.slice(-500) })}\n\n`);
+      res.end(); return;
     }
     try {
       const result = JSON.parse(stdout);
       fs.writeFileSync(path.join(MECH_DIR, 'mechanical_output.json'), JSON.stringify(result, null, 2));
       fs.writeFileSync(path.join(MECH_DIR, 'pump_datasheet.md'), result.pump_datasheet || '');
-      const pumpCalcSheet  = buildPumpCalcSheet(result);
-      let   pumpCalcDocId  = '4-CAL-0001';
-      if (projectId) {
-        const arr = loadProjects();
-        const idx = arr.findIndex(p => p.id === projectId);
-        if (idx >= 0) {
-          pumpCalcDocId = findPumpCalcDocId(arr[idx].context?.document_register);
-          arr[idx].mechanicalOutput = result;
-          if (!arr[idx].context) arr[idx].context = {};
-          if (!arr[idx].context.deliverables) arr[idx].context.deliverables = {};
-          arr[idx].context.deliverables[pumpCalcDocId] = JSON.stringify(pumpCalcSheet, null, 2);
-          // Store text deliverables (4-PDS-XXXX markdown) for in-app viewing
-          if (result.deliverables) {
-            for (const [docId, content] of Object.entries(result.deliverables)) {
-              if (!String(content).startsWith('[Generation failed')) {
-                arr[idx].context.deliverables[docId] = content;
-              }
+      const pumpCalcSheet = buildPumpCalcSheet(result);
+      const projects = loadProjects();
+      const idx = projects.findIndex(p => p.id === req.params.id);
+      if (idx >= 0) {
+        if (!projects[idx].docs) projects[idx].docs = buildDocs(projects[idx].context?.document_register);
+        const pumpCalId = findPumpCalcDocId(projects[idx].context?.document_register);
+        projects[idx].agentChain = { ...(projects[idx].agentChain ?? {}), mechanicalOutput: result };
+        if (!projects[idx].docs[pumpCalId]) projects[idx].docs[pumpCalId] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
+        projects[idx].docs[pumpCalId].agentRun = { output: result, steps: null, ranAt: new Date().toISOString() };
+        projects[idx].docs[pumpCalId].content = JSON.stringify(pumpCalcSheet, null, 2);
+        if (result.deliverables) {
+          for (const [docId, content] of Object.entries(result.deliverables)) {
+            if (projects[idx].docs[docId] && typeof content === 'string' && !content.startsWith('[Generation failed')) {
+              projects[idx].docs[docId].content = content;
+              if (projects[idx].docs[docId].status === 'pending') projects[idx].docs[docId].status = 'in_progress';
             }
           }
-          saveProjects(arr);
         }
+        if (projects[idx].docs[pumpCalId].status === 'pending') projects[idx].docs[pumpCalId].status = 'in_progress';
+        saveProjects(projects);
+        broadcastSync('agent_done', { projectId: req.params.id, agent: 'mechanical' });
       }
-      return res.json({ ...result, pumpCalcSheet, pumpCalcDocId });
+      res.write(`event: result\ndata: ${JSON.stringify({ ...result, pumpCalcSheet, pumpCalcDocId: pumpCalDocId })}\n\n`);
     } catch {
-      return res.status(500).json({ error: 'Could not parse mechanical agent output', raw: stdout.slice(0, 500) });
+      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Could not parse mechanical agent output', raw: stdout.slice(0, 500) })}\n\n`);
     }
+    res.end();
   });
 
-  proc.on('error', err => res.status(500).json({ error: 'Failed to start Python', detail: err.message }));
+  proc.on('error', err => { res.write(`event: error\ndata: ${JSON.stringify({ error: 'Failed to start Python', detail: err.message })}\n\n`); res.end(); });
+});
+
+// Legacy alias — keep for backward compat
+app.post('/api/agents/mechanical', (req, res) => {
+  const { projectId } = req.body ?? {};
+  if (!projectId) return res.status(400).json({ error: 'projectId is required for this endpoint' });
+  res.redirect(307, `/api/projects/${projectId}/run/mechanical`);
 });
 
 
 // ---------------------------------------------------------------------------
 // GET /api/projects  — list all projects
 // ---------------------------------------------------------------------------
-// Return project list without heavy content (deliverables text + session content)
+// Return project list without heavy content (doc content text + session content)
 app.get('/api/projects', (_req, res) => {
   const projects = loadProjects().map(p => {
-    // Strip deliverable text content — just keep the keys so frontend knows which docs exist
-    const deliverableKeys = Object.keys(p.context?.deliverables ?? {});
-    const context = p.context ? { ...p.context, deliverables: Object.fromEntries(deliverableKeys.map(k => [k, true])) } : p.context;
+    // Strip doc content — just keep status, comments, submittedAt, approvedAt, hasContent, hasAgentRun
+    const docs = Object.fromEntries(
+      Object.entries(p.docs ?? {}).map(([docId, doc]) => [
+        docId,
+        docId === '__project'
+          ? doc
+          : { status: doc.status, comments: doc.comments, submittedAt: doc.submittedAt, approvedAt: doc.approvedAt, hasContent: !!doc.content, hasAgentRun: !!doc.agentRun },
+      ])
+    );
     // Strip session content from sessionsConfig
     const sessionsConfig = Object.fromEntries(
       Object.entries(p.sessionsConfig ?? {}).map(([docId, sessions]) => [
@@ -775,7 +971,7 @@ app.get('/api/projects', (_req, res) => {
         (sessions || []).map(s => { const { content: _c, ...rest } = s; return rest; }),
       ])
     );
-    return { ...p, context, sessionsConfig };
+    return { ...p, docs, sessionsConfig };
   });
   res.json(projects);
 });
@@ -796,8 +992,17 @@ app.post('/api/projects/:id/publish', (req, res) => {
   const arr = loadProjects();
   const idx = arr.findIndex(p => p.id === req.params.id);
   if (idx < 0) return res.status(404).json({ error: 'Project not found' });
-  arr[idx].docStatus.__project = { status: 'published', publishedAt: new Date().toISOString(), publishedBy: req.body.userName ?? 'PM' };
+  if (!arr[idx].docs) arr[idx].docs = buildDocs(arr[idx].context?.document_register);
+  arr[idx].docs.__project = { ...arr[idx].docs.__project, status: 'published', publishedAt: new Date().toISOString(), publishedBy: req.body.userName ?? 'PM' };
+  // Unlock process engineer docs to in_progress
+  const register = arr[idx].context?.document_register ?? [];
+  for (const d of register) {
+    if (d.assigned_to === 'Process Engineer' && arr[idx].docs[d.doc_id]) {
+      if (arr[idx].docs[d.doc_id].status === 'pending') arr[idx].docs[d.doc_id].status = 'in_progress';
+    }
+  }
   saveProjects(arr);
+  broadcastSync('project_published', { projectId: req.params.id });
   res.json({ success: true });
 });
 
@@ -843,7 +1048,10 @@ app.post('/api/projects/:id/build-reference', (req, res) => {
     const proj      = projects.find(p => p.id === projectId);
     if (!proj) return res.status(404).json({ error: 'Project not found' });
 
-    const deliverables = proj.context?.deliverables ?? {};
+    const deliverables = {};
+    for (const [docId, doc] of Object.entries(proj.docs ?? {})) {
+      if (docId !== '__project' && doc.content) deliverables[docId] = doc.content;
+    }
     const register     = proj.context?.document_register ?? [];
     const ps           = proj.context?.project_summary ?? {};
 
@@ -953,24 +1161,26 @@ app.put('/api/projects/:id/doc-status', (req, res) => {
   const idx = arr.findIndex(p => p.id === req.params.id);
   if (idx < 0) return res.status(404).json({ error: 'Project not found' });
 
-  const ds = arr[idx].docStatus;
-  if (!ds[docId]) ds[docId] = { status: 'pending', comments: [], lastUpdated: new Date().toISOString(), updatedBy: null };
+  if (!arr[idx].docs) arr[idx].docs = buildDocs(arr[idx].context?.document_register);
+  if (!arr[idx].docs[docId]) arr[idx].docs[docId] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
 
-  const prev = ds[docId].status;
-  ds[docId].status      = status;
-  ds[docId].lastUpdated = new Date().toISOString();
-  ds[docId].updatedBy   = userName ?? null;
+  const doc = arr[idx].docs[docId];
+  const prev = doc.status;
+  doc.status = status;
+  if (status === 'under_review') doc.submittedAt = new Date().toISOString();
+  if (status === 'approved') doc.approvedAt = new Date().toISOString();
 
   if (prev !== status) {
-    ds[docId].comments.push({
+    doc.comments.push({
       id: randomBytes(4).toString('hex'), type: 'system',
-      text: `Status changed from "${prev.replace(/_/g, ' ')}" to "${status.replace(/_/g, ' ')}"`,
+      text: `Status changed to "${status.replace(/_/g, ' ')}"`,
       author: userName ?? 'System', role: userRole ?? '', timestamp: new Date().toISOString(),
     });
   }
 
   saveProjects(arr);
-  res.json(ds[docId]);
+  broadcastSync('doc_status_changed', { projectId: req.params.id, docId, status });
+  res.json(doc);
 });
 
 
@@ -986,16 +1196,16 @@ app.post('/api/projects/:id/comment', (req, res) => {
   const idx = arr.findIndex(p => p.id === req.params.id);
   if (idx < 0) return res.status(404).json({ error: 'Project not found' });
 
-  const ds = arr[idx].docStatus;
-  if (!ds[docId]) ds[docId] = { status: 'pending', comments: [], lastUpdated: new Date().toISOString(), updatedBy: null };
+  if (!arr[idx].docs) arr[idx].docs = buildDocs(arr[idx].context?.document_register);
+  if (!arr[idx].docs[docId]) arr[idx].docs[docId] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
 
-  ds[docId].comments.push({
+  arr[idx].docs[docId].comments.push({
     id: randomBytes(4).toString('hex'), type: 'comment',
     text: text.trim(), author: userName ?? 'Unknown', role: userRole ?? '', timestamp: new Date().toISOString(),
   });
 
   saveProjects(arr);
-  res.json(ds[docId]);
+  res.json(arr[idx].docs[docId]);
 });
 
 
@@ -1011,12 +1221,100 @@ app.put('/api/projects/:id/deliverable', (req, res) => {
   const idx = arr.findIndex(p => p.id === req.params.id);
   if (idx < 0) return res.status(404).json({ error: 'Project not found' });
 
-  if (!arr[idx].context) arr[idx].context = {};
-  if (!arr[idx].context.deliverables) arr[idx].context.deliverables = {};
-  arr[idx].context.deliverables[docId] = content;
+  if (!arr[idx].docs) arr[idx].docs = buildDocs(arr[idx].context?.document_register);
+  if (!arr[idx].docs[docId]) arr[idx].docs[docId] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
+  arr[idx].docs[docId].content = content;
 
   saveProjects(arr);
   res.json({ success: true });
+});
+
+
+// ---------------------------------------------------------------------------
+// PUT /api/projects/:id/docs/:docId/content — set doc content directly
+// ---------------------------------------------------------------------------
+app.put('/api/projects/:id/docs/:docId/content', (req, res) => {
+  const { content } = req.body;
+  if (content == null) return res.status(400).json({ error: 'content is required' });
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+  if (!arr[idx].docs?.[req.params.docId]) return res.status(404).json({ error: 'Document not found' });
+  arr[idx].docs[req.params.docId].content = content;
+  saveProjects(arr);
+  res.json({ success: true });
+});
+
+
+// ---------------------------------------------------------------------------
+// POST /api/projects/:id/docs/:docId/submit — engineer submits for PM review
+// ---------------------------------------------------------------------------
+app.post('/api/projects/:id/docs/:docId/submit', (req, res) => {
+  const { userName, userRole } = req.body;
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+  const doc = arr[idx].docs?.[req.params.docId];
+  if (!doc) return res.status(404).json({ error: 'Document not found' });
+  if (doc.status !== 'in_progress') return res.status(400).json({ error: 'Only in_progress documents can be submitted' });
+  doc.status = 'under_review';
+  doc.submittedAt = new Date().toISOString();
+  doc.comments.push({ id: randomBytes(4).toString('hex'), type: 'system', text: 'Submitted for PM review', author: userName ?? userRole ?? 'Engineer', role: userRole ?? '', timestamp: new Date().toISOString() });
+  saveProjects(arr);
+  broadcastSync('doc_submitted', { projectId: req.params.id, docId: req.params.docId });
+  res.json(doc);
+});
+
+
+// ---------------------------------------------------------------------------
+// POST /api/projects/:id/docs/:docId/approve — PM approves a doc
+// ---------------------------------------------------------------------------
+app.post('/api/projects/:id/docs/:docId/approve', (req, res) => {
+  const { userName } = req.body;
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+  const doc = arr[idx].docs?.[req.params.docId];
+  if (!doc) return res.status(404).json({ error: 'Document not found' });
+  if (doc.status !== 'under_review') return res.status(400).json({ error: 'Only under_review documents can be approved' });
+  doc.status = 'approved';
+  doc.approvedAt = new Date().toISOString();
+  doc.comments.push({ id: randomBytes(4).toString('hex'), type: 'system', text: 'Approved by PM', author: userName ?? 'PM', role: 'pm', timestamp: new Date().toISOString() });
+  // If this is the Process CAL doc, unlock mechanical docs to in_progress
+  const calDocId = findCalcDocId(arr[idx].context?.document_register);
+  if (req.params.docId === calDocId) {
+    const register = arr[idx].context?.document_register ?? [];
+    for (const d of register) {
+      if (d.assigned_to === 'Mechanical Engineer' && arr[idx].docs[d.doc_id]) {
+        if (arr[idx].docs[d.doc_id].status === 'pending') arr[idx].docs[d.doc_id].status = 'in_progress';
+      }
+    }
+  }
+  saveProjects(arr);
+  broadcastSync('doc_approved', { projectId: req.params.id, docId: req.params.docId });
+  res.json(doc);
+});
+
+
+// ---------------------------------------------------------------------------
+// POST /api/projects/:id/docs/:docId/reject — PM rejects/sends back a doc
+// ---------------------------------------------------------------------------
+app.post('/api/projects/:id/docs/:docId/reject', (req, res) => {
+  const { userName, comment } = req.body;
+  const arr = loadProjects();
+  const idx = arr.findIndex(p => p.id === req.params.id);
+  if (idx < 0) return res.status(404).json({ error: 'Project not found' });
+  const doc = arr[idx].docs?.[req.params.docId];
+  if (!doc) return res.status(404).json({ error: 'Document not found' });
+  if (doc.status !== 'under_review') return res.status(400).json({ error: 'Only under_review documents can be rejected' });
+  doc.status = 'in_progress';
+  if (comment?.trim()) {
+    doc.comments.push({ id: randomBytes(4).toString('hex'), type: 'comment', text: comment.trim(), author: userName ?? 'PM', role: 'pm', timestamp: new Date().toISOString() });
+  }
+  doc.comments.push({ id: randomBytes(4).toString('hex'), type: 'system', text: 'Sent back for revision', author: userName ?? 'PM', role: 'pm', timestamp: new Date().toISOString() });
+  saveProjects(arr);
+  broadcastSync('doc_rejected', { projectId: req.params.id, docId: req.params.docId });
+  res.json(doc);
 });
 
 
@@ -1144,6 +1442,7 @@ app.put('/api/projects/:id/sessions-config', (req, res) => {
   arr[idx].sessionsConfig[docId] = sessions;
 
   saveProjects(arr);
+  broadcastSync('sessions_updated', { projectId: req.params.id, docId });
   res.json({ success: true, sessionsConfig: arr[idx].sessionsConfig });
 });
 
@@ -1204,7 +1503,7 @@ app.post('/api/projects/:id/suggest-sessions', async (req, res) => {
   const idx = arr.findIndex(p => p.id === req.params.id);
   if (idx < 0) return res.status(404).json({ error: 'Project not found' });
 
-  const content = arr[idx].context?.deliverables?.[docId];
+  const content = arr[idx].docs?.[docId]?.content ?? arr[idx].context?.deliverables?.[docId];
   if (!content || typeof content !== 'string') return res.status(400).json({ error: 'No deliverable content found for this doc' });
 
   // Run a small inline Python script that imports pm_agent and calls suggest_sessions_config
@@ -1337,7 +1636,10 @@ app.post('/api/projects/:id/summarize-deliverables', async (req, res) => {
   if (idx < 0) return res.status(404).json({ error: 'Project not found' });
 
   const proj = arr[idx];
-  const deliverables = proj.context?.deliverables ?? {};
+  const deliverables = {};
+  for (const [docId, doc] of Object.entries(proj.docs ?? {})) {
+    if (docId !== '__project' && doc.content) deliverables[docId] = doc.content;
+  }
   const docRegister  = proj.context?.document_register ?? [];
 
   const entries = Object.entries(deliverables).filter(([, v]) => typeof v === 'string' && v.length > 0);
