@@ -28,11 +28,13 @@ const INIT_FILE  = path.join(SKILLS_DIR, '__init__.py');
 const PM_AGENT      = path.join(RAG_ROOT, 'work_agents', 'Daniel - Project Manager ', 'pm_agent.py');
 const PROCESS_AGENT = path.join(RAG_ROOT, 'work_agents', 'Aria - Process Engineer', 'process_agent.py');
 const MECH_AGENT    = path.join(RAG_ROOT, 'work_agents', 'Hunter - Mechnical Engineer', 'mechanical_agent.py');
+const ELEC_AGENT    = path.join(RAG_ROOT, 'work_agents', 'Nova - Electrical Engineer', 'electrical_agent.py');
 
 // Agent output file paths
 const PM_DIR      = path.join(RAG_ROOT, 'work_agents', 'Daniel - Project Manager ');
 const PROCESS_DIR = path.join(RAG_ROOT, 'work_agents', 'Aria - Process Engineer');
 const MECH_DIR    = path.join(RAG_ROOT, 'work_agents', 'Hunter - Mechnical Engineer');
+const ELEC_DIR    = path.join(RAG_ROOT, 'work_agents', 'Nova - Electrical Engineer');
 
 // ── Project store ─────────────────────────────────────────────────────────
 // DATA_DIR is set on Railway/Docker; locally falls back to PM_DIR (original location)
@@ -239,6 +241,84 @@ function findPumpCalcDocId(docRegister) {
     d.assigned_to === 'Mechanical Engineer' && d.doc_id?.includes('CAL')
   );
   return doc?.doc_id || '4-CAL-0001';
+}
+
+const _notesToStr = (n) => Array.isArray(n) ? n.join('\n') : (n ?? '');
+
+// Build a UI calc sheet from ONE per-doc engine result (carries `_kind`).
+// Dispatches load / transformer / panelboard; each maps to inputs/calculated/outputs
+// buckets plus any table rows the panel renders.
+function buildElectricalCalcSheet(result) {
+  // Backward compat: old callers passed the whole agent output; unwrap the load board.
+  const r = (result && result._kind) ? result : (result?.electrical_calculations || result || {});
+  const kind = r._kind || 'load';
+  const base = { _type: 'calc_sheet', generated_at: new Date().toISOString(),
+                 calculation_notes: _notesToStr(r.calculation_notes) };
+
+  if (kind === 'transformer') {
+    const inp = r.inputs || {}, t = r.transformer || {}, tot = r.total || {};
+    return { ...base, _subtype: 'transformer_calc',
+      inputs: {
+        system_voltage_V: inp.u20_v ?? null, utility_sc_power_kVA: inp.psc_kva ?? null,
+        transformer_kVA: inp.sn_kva ?? null, short_circuit_voltage_pct: inp.usc_pct ?? null,
+        copper_loss_W: inp.pcu_w ?? null,
+      },
+      calculated: {
+        rated_current_A: t.in_a ?? null, transformer_Z_mohm: t.z_mohm ?? null,
+        total_Z_mohm: tot.z_mohm ?? null,
+      },
+      outputs: { short_circuit_current_kA: r.isc_ka ?? null, method: r.method ?? null },
+      rows: [],
+    };
+  }
+
+  if (kind === 'panelboard') {
+    const panels = Array.isArray(r.panels) ? r.panels : [];
+    const circuits = Array.isArray(r.circuits) ? r.circuits : [];
+    return { ...base, _subtype: 'panelboard_calc',
+      inputs: { panels: panels.length, circuits_checked: circuits.length },
+      calculated: {
+        total_connected_va: panels.reduce((a, p) => a + (p.total_connected_va || 0), 0),
+        total_demand_va:    panels.reduce((a, p) => a + (p.total_demand_va || 0), 0),
+      },
+      outputs: { method: r.method ?? null },
+      panels, circuits, rows: [],
+    };
+  }
+
+  // default: load
+  const rooms = Array.isArray(r.rooms) ? r.rooms : [];
+  const sum = (key) => rooms.reduce((a, x) => a + (typeof x[key] === 'number' ? x[key] : 0), 0);
+  const fc = r.footer_check || null;
+  return { ...base, _subtype: 'electrical_calc',
+    inputs: {
+      offices: r.row_count ?? rooms.length ?? null,
+      total_area_m2: rooms.length ? Math.round(sum('area_m2') * 10) / 10 : null,
+      density_C6_va_m2: 188, density_C7_va_m2: 176, demand_factor: 0.6,
+    },
+    calculated: {
+      total_connected_kva: rooms.length ? Math.round(sum('connected_kva') * 100) / 100 : null,
+      additional_ac_kva:   rooms.length ? Math.round(sum('additional_kva') * 100) / 100 : null,
+      total_demand_kva:    r.total_demand_kva ?? null,
+      max_voltage_drop_pct: r.max_vd_pct ?? null,
+    },
+    outputs: {
+      method: r.method ?? null,
+      footer_printed_kva:     fc ? fc.footer_printed_kva : null,
+      footer_discrepancy_kva: fc ? fc.difference_kva : null,
+    },
+    rows: rooms,
+  };
+}
+
+function findElectricalCalcDocId(docRegister) {
+  const reg = docRegister || [];
+  // The Phase-2 engine produces the LOAD calc (EL-CAL-5002) specifically; prefer it
+  // over other electrical CAL docs (LUX 5001, cable tray 5003, ...).
+  const load = reg.find(d => d.assigned_to === 'Electrical Engineer' && d.doc_id?.includes('CAL-5002'));
+  if (load) return load.doc_id;
+  const anyCal = reg.find(d => d.assigned_to === 'Electrical Engineer' && d.doc_id?.includes('CAL'));
+  return anyCal?.doc_id || 'PRJ.23026-EL-CAL-5002';
 }
 
 const app = express();
@@ -455,6 +535,13 @@ const DISCIPLINE_NAMES = {
   '7':  'Coatings',
   '8':  'Instrumentation & Control',
   '9':  'Electrical',
+  // Building-project disciplines (commercial_building project type)
+  '10': 'Architecture',
+  '11': 'Structural',
+  '12': 'HVAC',
+  '13': 'Plumbing',
+  '14': 'Fire Fighting',
+  '15': 'Low Current',
 };
 
 app.get('/api/library', (_req, res) => {
@@ -948,6 +1035,172 @@ app.post('/api/agents/mechanical', (req, res) => {
   res.redirect(307, `/api/projects/${projectId}/run/mechanical`);
 });
 
+// ---------------------------------------------------------------------------
+// POST /api/projects/:id/run/electrical
+// Runs electrical_agent.py --json. Unlike mechanical, electrical has no upstream
+// engineer stage; it reads the PM context + its SQLite room store. Gate: the
+// electrical CAL doc must exist and not already be under review / approved.
+// ---------------------------------------------------------------------------
+app.post('/api/projects/:id/run/electrical', (req, res) => {
+  const arr = loadProjects();
+  const proj = arr.find(p => p.id === req.params.id);
+  if (!proj) return res.status(404).json({ error: 'Project not found' });
+
+  const elecCalDocId = findElectricalCalcDocId(proj.context?.document_register);
+  const elecCalDoc = proj.docs?.[elecCalDocId];
+  if (elecCalDoc && (elecCalDoc.status === 'under_review' || elecCalDoc.status === 'approved')) {
+    return res.status(403).json({ error: 'Document is under review or approved — cannot re-run' });
+  }
+
+  // Feed the PM context (with the real project id) so the agent keys its SQLite store per project.
+  const ctxForAgent = { ...(proj.context ?? {}), project_id: proj.id };
+  const tmpCtx = path.join(os.tmpdir(), `pmctx_${proj.id}.json`);
+  fs.writeFileSync(tmpCtx, JSON.stringify(ctxForAgent, null, 2));
+
+  res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
+
+  const proc = spawn(PYTHON, [ELEC_AGENT, '--json', '--context', tmpCtx], { cwd: RAG_ROOT });
+  let stdout = '', stderrBuf = '';
+  proc.stdout.on('data', chunk => { stdout += chunk; });
+
+  proc.stderr.on('data', chunk => {
+    stderrBuf += chunk;
+    const lines = stderrBuf.split('\n');
+    stderrBuf = lines.pop();
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      try { JSON.parse(line); res.write(`event: progress\ndata: ${line}\n\n`); } catch {}
+    }
+  });
+
+  proc.on('close', code => {
+    if (code !== 0) {
+      console.error('[elec_agent stderr]', stderrBuf.slice(-300));
+      res.write(`event: error\ndata: ${JSON.stringify({ error: `Electrical agent failed (exit ${code})`, detail: stderrBuf.slice(-500) })}\n\n`);
+      res.end(); return;
+    }
+    try {
+      const result = JSON.parse(stdout);
+      fs.writeFileSync(path.join(ELEC_DIR, 'electrical_output.json'), JSON.stringify(result, null, 2));
+      fs.writeFileSync(path.join(ELEC_DIR, 'electrical_datasheet.md'), result.electrical_datasheet || '');
+
+      // One calc sheet per engine result (keyed by doc_id). Falls back to the single
+      // load result for backward compat if `results` is absent.
+      const perDoc = result.results || { [findElectricalCalcDocId(proj.context?.document_register)]: result.electrical_calculations };
+      const sheets = {};
+      for (const [docId, r] of Object.entries(perDoc)) sheets[docId] = buildElectricalCalcSheet(r);
+      const elecCalcSheet = sheets[elecCalDocId];   // the load sheet (frontend result event)
+
+      const projects = loadProjects();
+      const idx = projects.findIndex(p => p.id === req.params.id);
+      if (idx >= 0) {
+        if (!projects[idx].docs) projects[idx].docs = buildDocs(projects[idx].context?.document_register);
+        projects[idx].agentChain = { ...(projects[idx].agentChain ?? {}), electricalOutput: result };
+
+        // Store each calc doc's own interactive sheet + its engine result.
+        for (const [docId, r] of Object.entries(perDoc)) {
+          if (!projects[idx].docs[docId]) projects[idx].docs[docId] = { content: '', status: 'pending', comments: [], agentRun: null, submittedAt: null, approvedAt: null };
+          projects[idx].docs[docId].agentRun = { output: { ...result, electrical_calculations: r }, steps: null, ranAt: new Date().toISOString() };
+          projects[idx].docs[docId].content = JSON.stringify(sheets[docId], null, 2);
+          if (projects[idx].docs[docId].status === 'pending') projects[idx].docs[docId].status = 'in_progress';
+        }
+        // Report markdown for docs that are NOT interactive calc sheets (downloadable body).
+        if (result.deliverables) {
+          for (const [docId, content] of Object.entries(result.deliverables)) {
+            if (perDoc[docId]) continue;   // calc docs keep their interactive sheet
+            if (projects[idx].docs[docId] && typeof content === 'string' && !content.startsWith('[Generation failed')) {
+              projects[idx].docs[docId].content = content;
+              if (projects[idx].docs[docId].status === 'pending') projects[idx].docs[docId].status = 'in_progress';
+            }
+          }
+        }
+        saveProjects(projects);
+        broadcastSync('agent_done', { projectId: req.params.id, agent: 'electrical' });
+      }
+      res.write(`event: result\ndata: ${JSON.stringify({ ...result, elecCalcSheet, elecCalcDocId: elecCalDocId, sheets })}\n\n`);
+    } catch (e) {
+      console.error('[elec parse/store error]', e && e.stack ? e.stack : e);
+      res.write(`event: error\ndata: ${JSON.stringify({ error: 'Could not parse electrical agent output', detail: String(e && e.message), raw: stdout.slice(0, 500) })}\n\n`);
+    }
+    res.end();
+  });
+
+  proc.on('error', err => { res.write(`event: error\ndata: ${JSON.stringify({ error: 'Failed to start Python', detail: err.message })}\n\n`); res.end(); });
+});
+
+// Legacy alias
+app.post('/api/agents/electrical', (req, res) => {
+  const { projectId } = req.body ?? {};
+  if (!projectId) return res.status(400).json({ error: 'projectId is required for this endpoint' });
+  res.redirect(307, `/api/projects/${projectId}/run/electrical`);
+});
+
+// ---------------------------------------------------------------------------
+// PATCH /api/projects/:id/electrical/rooms/:name — change propagation (Phase 4)
+// Change one room area → recompute downstream (load board + transformer loading) →
+// mark affected docs stale (approved → back to in_progress = needs re-review).
+// Deterministic + instant, so plain JSON (no SSE).
+// ---------------------------------------------------------------------------
+app.patch('/api/projects/:id/electrical/rooms/:name', (req, res) => {
+  const arr = loadProjects();
+  const proj = arr.find(p => p.id === req.params.id);
+  if (!proj) return res.status(404).json({ error: 'Project not found' });
+  const area = Number(req.body?.area_m2);
+  if (!isFinite(area) || area <= 0) return res.status(400).json({ error: 'area_m2 must be a positive number' });
+
+  const ctxForAgent = { ...(proj.context ?? {}), project_id: proj.id };
+  const tmpCtx = path.join(os.tmpdir(), `pmctx_${proj.id}.json`);
+  fs.writeFileSync(tmpCtx, JSON.stringify(ctxForAgent, null, 2));
+
+  const proc = spawn(PYTHON, [ELEC_AGENT, '--context', tmpCtx,
+                              '--change-room', req.params.name, '--area', String(area)], { cwd: RAG_ROOT });
+  let stdout = '', stderr = '';
+  proc.stdout.on('data', c => { stdout += c; });
+  proc.stderr.on('data', c => { stderr += c; });
+  proc.on('error', err => res.status(500).json({ error: 'Failed to start Python', detail: err.message }));
+  proc.on('close', code => {
+    if (code !== 0) {
+      console.error('[elec change-room stderr]', stderr.slice(-300));
+      return res.status(500).json({ error: `Propagation failed (exit ${code})`, detail: stderr.slice(-400) });
+    }
+    let result;
+    try { result = JSON.parse(stdout); } catch (e) {
+      return res.status(500).json({ error: 'Could not parse propagation output', raw: stdout.slice(0, 400) });
+    }
+    if (result.error) return res.status(400).json(result);
+
+    const perDoc = result.results || {};
+    const sheets = {};
+    for (const [docId, r] of Object.entries(perDoc)) sheets[docId] = buildElectricalCalcSheet(r);
+    const staleReason = `Upstream input changed: ${result.changed_room} area ${result.old_area} → ${result.new_area} m²`;
+
+    const projects = loadProjects();
+    const idx = projects.findIndex(p => p.id === req.params.id);
+    if (idx >= 0) {
+      if (!projects[idx].docs) projects[idx].docs = buildDocs(projects[idx].context?.document_register);
+      projects[idx].agentChain = { ...(projects[idx].agentChain ?? {}), electricalOutput: result };
+      const ranAt = new Date().toISOString();
+      for (const [docId, r] of Object.entries(perDoc)) {
+        const prev = projects[idx].docs[docId] ?? { status: 'pending', comments: [], agentRun: null };
+        const wasApproved = prev.status === 'approved';
+        projects[idx].docs[docId] = {
+          ...prev,
+          content: JSON.stringify(sheets[docId], null, 2),
+          agentRun: { output: { ...result, electrical_calculations: r }, steps: null, ranAt },
+          stale: true,
+          staleReason,
+          // Approved docs are knocked back to in_progress — the change invalidates the sign-off.
+          status: wasApproved ? 'in_progress' : (prev.status === 'pending' ? 'in_progress' : prev.status),
+        };
+      }
+      saveProjects(projects);
+      broadcastSync('room_changed', { projectId: req.params.id, room: req.params.name });
+    }
+    res.json({ trace: result.trace, sheets, staleDocIds: result.stale_doc_ids, changedRoom: result.changed_room,
+               oldArea: result.old_area, newArea: result.new_area });
+  });
+});
+
 
 // ---------------------------------------------------------------------------
 // GET /api/projects  — list all projects
@@ -1038,8 +1291,17 @@ app.put('/api/projects/:id/complete', (req, res) => {
 // Convert a completed agent project's deliverables into a user_project wiki.
 // Writes wiki pages directly (no LLM needed — deliverables are already markdown).
 // ---------------------------------------------------------------------------
-const ROLE_TO_DISC      = { 'PM': 0, 'Process Engineer': 1, 'Mechanical Engineer': 4 };
-const DISC_TO_NAME      = { 0: 'Administration', 1: 'Process Technology', 4: 'Equipment' };
+const ROLE_TO_DISC      = {
+  'PM': 0, 'Process Engineer': 1, 'Mechanical Engineer': 4, 'Electrical Engineer': 9,
+  // Building-project disciplines (commercial_building)
+  'Architect': 10, 'Structural Engineer': 11, 'HVAC Engineer': 12,
+  'Plumbing Engineer': 13, 'Fire Fighting Engineer': 14, 'Low Current Engineer': 15,
+};
+const DISC_TO_NAME      = {
+  0: 'Administration', 1: 'Process Technology', 4: 'Equipment', 9: 'Electrical',
+  10: 'Architecture', 11: 'Structural', 12: 'HVAC',
+  13: 'Plumbing', 14: 'Fire Fighting', 15: 'Low Current',
+};
 
 app.post('/api/projects/:id/build-reference', (req, res) => {
   try {
@@ -1326,6 +1588,8 @@ const EXPORT_DOCX_SCRIPT = path.join(RAG_ROOT, 'export_docx.py');
 
 // Map doc ID prefix to deliverable directory and static URL base
 function resolveDeliverableDir(docId) {
+  // Electrical building docs use the real register format (PRJ.23026-EL-...), not <disc>-...
+  if (/(^|[-.])EL-/.test(docId)) return { dir: path.join(ELEC_DIR, 'deliverables'), urlBase: '/files/electrical-deliverables' };
   const disc = docId.split('-')[0];
   if (disc === '0') return { dir: path.join(PM_DIR,      'deliverables'), urlBase: '/files/pm-deliverables' };
   if (disc === '1') return { dir: path.join(PROCESS_DIR, 'deliverables'), urlBase: '/files/process-deliverables' };
@@ -2489,6 +2753,7 @@ app.delete('/api/user-projects/:id', (req, res) => {
 app.use('/files/pm-deliverables',           express.static(path.join(PM_DIR,      'deliverables')));
 app.use('/files/process-deliverables',      express.static(path.join(PROCESS_DIR, 'deliverables')));
 app.use('/files/mechanical-deliverables',   express.static(path.join(MECH_DIR,    'deliverables')));
+app.use('/files/electrical-deliverables',   express.static(path.join(ELEC_DIR,    'deliverables')));
 
 // ---------------------------------------------------------------------------
 // Multi-tenant App — /api/app/*

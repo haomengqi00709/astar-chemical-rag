@@ -15,6 +15,7 @@ const ROLE_LABELS: Record<string, string> = {
   pm:         'Project Manager',
   process:    'Process Engineer',
   mechanical: 'Mechanical Engineer',
+  electrical: 'Electrical Engineer',
   owner:      'Knowledge Base Owner',
 };
 

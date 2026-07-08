@@ -6,6 +6,7 @@ import {
   ArrowLeft, Upload, Play, Loader2, FlaskConical, Wrench,
   Briefcase, FileText, X, ChevronDown, ChevronUp,
   Users, MessageCircle, Send, Trash2, Eye, BookmarkPlus, BookCheck, Bell,
+  Zap, Building2, Layers, Wind, Droplet, Flame, Radio,
 } from 'lucide-react';
 import { User, AgentStatus, Role, PendingTask } from '../types';
 
@@ -52,6 +53,42 @@ const ROLE_OWNER: Record<string, string> = {
   'Process Engineer': 'Aria',
   'Mechanical Engineer': 'Hunter',
 };
+
+// Per-role display metadata. Persona `name` only for the original pump agents;
+// building disciplines show the role label. Icon/colour keyed by role.
+const ROLE_META: Record<string, { name?: string; Icon: any; bg: string; text: string }> = {
+  'PM':                    { name: 'Daniel', Icon: Briefcase,    bg: 'bg-blue-50',    text: 'text-blue-500'   },
+  'Process Engineer':      { name: 'Aria',   Icon: FlaskConical, bg: 'bg-emerald-50', text: 'text-emerald-600'},
+  'Mechanical Engineer':   { name: 'Hunter', Icon: Wrench,       bg: 'bg-orange-50',  text: 'text-orange-600' },
+  'Electrical Engineer':   {                 Icon: Zap,          bg: 'bg-yellow-50',  text: 'text-yellow-600' },
+  'Architect':             {                 Icon: Building2,    bg: 'bg-slate-50',   text: 'text-slate-600'  },
+  'Structural Engineer':   {                 Icon: Layers,       bg: 'bg-stone-50',   text: 'text-stone-600'  },
+  'HVAC Engineer':         {                 Icon: Wind,         bg: 'bg-cyan-50',    text: 'text-cyan-600'   },
+  'Plumbing Engineer':     {                 Icon: Droplet,      bg: 'bg-sky-50',     text: 'text-sky-600'    },
+  'Fire Fighting Engineer':{                 Icon: Flame,        bg: 'bg-red-50',     text: 'text-red-600'    },
+  'Low Current Engineer':  {                 Icon: Radio,        bg: 'bg-violet-50',  text: 'text-violet-600' },
+};
+
+// Derive the engineering team (non-PM) from a document register: distinct owners,
+// ordered by ROLE_META, each with icon/colour and deliverable count.
+function deriveTeam(register: any[]): { role: string; name: string; Icon: any; bg: string; text: string; count: number }[] {
+  const counts: Record<string, number> = {};
+  for (const d of (register ?? [])) {
+    const r = d?.assigned_to;
+    if (!r || r === 'PM') continue;
+    counts[r] = (counts[r] ?? 0) + 1;
+  }
+  const order = Object.keys(ROLE_META);
+  return Object.keys(counts)
+    .sort((a, b) => {
+      const ia = order.indexOf(a), ib = order.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    })
+    .map(r => {
+      const m = ROLE_META[r] ?? { Icon: Users, bg: 'bg-slate-50', text: 'text-slate-500' };
+      return { role: r, name: m.name ?? r, Icon: m.Icon, bg: m.bg, text: m.text, count: counts[r] };
+    });
+}
 
 function docStatus(
   doc: any,
@@ -139,6 +176,48 @@ function getStatusCfg(status: string, userRole: Role, assignedTo: string) {
 
 // ─── Expandable Doc Row ─────────────────────────────────────────────────────
 
+// Shows what a document still needs before it can be produced: upstream deliverables
+// that aren't approved yet (who owns each), plus any genuinely-missing input data.
+const MissingInputHint: React.FC<{ doc: any; allDocs: any[]; docStatusMap: Record<string, any> }> = ({ doc, allDocs, docStatusMap }) => {
+  const status = docStatusMap[doc.doc_id]?.status ?? 'pending';
+  if (status === 'approved' || status === 'under_review') return null;   // done / in review — no need
+
+  const byId = React.useMemo(() => Object.fromEntries(allDocs.map(d => [d.doc_id, d])), [allDocs]);
+  const unmet = (doc.depends_on || [])
+    .filter((id: string) => id !== '__project' && docStatusMap[id]?.status !== 'approved')
+    .map((id: string) => {
+      const up = byId[id];
+      const owner = up ? (ROLE_OWNER[up.assigned_to] ?? up.discipline_name ?? up.assigned_to) : null;
+      return { id, title: up?.title ?? id, owner };
+    });
+  const blocked = doc.blocked_reason;
+  if (unmet.length === 0 && !blocked) return null;
+
+  return (
+    <div className="mb-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-800 space-y-1.5">
+      {unmet.length > 0 && (
+        <div className="flex items-start gap-2">
+          <Clock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-semibold">Waiting on input:</span>
+            <ul className="mt-1 space-y-0.5">
+              {unmet.map((u: any) => (
+                <li key={u.id}>• {u.title}{u.owner ? <span className="text-amber-600"> — from {u.owner}</span> : null}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+      {blocked && (
+        <div className="flex items-start gap-2">
+          <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+          <div><span className="font-semibold">Missing data:</span> {blocked}</div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const DocRow: React.FC<{
   doc: any;
   entry: { status: string; comments: any[] } | null;
@@ -152,10 +231,11 @@ const DocRow: React.FC<{
   onStatusChange: (status: string) => void;
   onAddComment:   (text: string)   => void;
   extraContent?: React.ReactNode;
+  dependencyHint?: React.ReactNode;
   onSendForReview?: () => void;
   onEngineerApprove?: () => void;
   onEngineerReject?: (comment: string) => void;
-}> = ({ doc, entry, isMine, canEdit, canApprove, isReleased, userRole, generatedContent, onViewDocument, onStatusChange, onAddComment, extraContent, onSendForReview, onEngineerApprove, onEngineerReject }) => {
+}> = ({ doc, entry, isMine, canEdit, canApprove, isReleased, userRole, generatedContent, onViewDocument, onStatusChange, onAddComment, extraContent, dependencyHint, onSendForReview, onEngineerApprove, onEngineerReject }) => {
   const [expanded,              setExpanded]              = useState(false);
   const [commentText,           setCommentText]           = useState('');
   const [submitting,            setSubmitting]            = useState(false);
@@ -193,6 +273,11 @@ const DocRow: React.FC<{
           <span className="text-[10px] text-slate-400 hidden sm:block">{ROLE_OWNER[doc.assigned_to] ?? doc.assigned_to}</span>
           <span className="text-[10px] font-mono text-slate-400 w-24">{doc.planned_date}</span>
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${cfg.bg} ${cfg.color}`}>{cfg.label}</span>
+          {(entry as any)?.stale && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700" title={(entry as any).staleReason}>
+              <AlertTriangle className="w-3 h-3" /> Needs re-review
+            </span>
+          )}
           {/* Comment count (Gate 2 only) */}
           {isReleased && comments.filter(c => c.type === 'comment').length > 0 && (
             <span className="flex items-center gap-0.5 text-[10px] text-slate-400">
@@ -206,6 +291,16 @@ const DocRow: React.FC<{
       {/* Expanded panel */}
       {expanded && (
         <div className="px-6 pb-4 pt-2 bg-white/60 space-y-3 border-l-4 border-slate-100 ml-6">
+
+          {/* What this doc still needs (unmet upstream + missing data) */}
+          {dependencyHint}
+
+          {(entry as any)?.stale && (
+            <div className="mb-3 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 text-xs text-yellow-800 flex items-start gap-2">
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              <div><span className="font-semibold">Recomputed — needs re-review.</span> {(entry as any).staleReason}</div>
+            </div>
+          )}
 
           {/* Extra content (e.g. ProcessStepsPanel) — always shown when expanded */}
           {extraContent}
@@ -696,8 +791,12 @@ const ProjectDetailView: React.FC<{
   onBack: () => void;
   processOutput: any;
   mechanicalOutput: any;
-  onRunAgent: (agentType?: 'process' | 'mechanical') => void;
-  runningAgent: 'process' | 'mechanical' | null;
+  electricalOutput: any;
+  onRunAgent: (agentType?: 'process' | 'mechanical' | 'electrical') => void;
+  runningAgent: 'process' | 'mechanical' | 'electrical' | null;
+  onChangeRoomArea: (name: string, area: number) => void;
+  changingRoom: boolean;
+  propagationTrace: any[] | null;
   agentError: string;
   docStatusMap: Record<string, any>;
   deliverables: Record<string, string>;
@@ -717,6 +816,7 @@ const ProjectDetailView: React.FC<{
   stepError: string;
   stepProgress: Record<number, 'running' | 'done'>;
   mechStepProgress: Record<number, 'running' | 'done'>;
+  elecStepProgress: Record<number, 'running' | 'done'>;
   onPublish: () => void;
   onMarkComplete: () => void;
   onDelete: () => void;
@@ -724,7 +824,7 @@ const ProjectDetailView: React.FC<{
   onViewSummary: (entry: { version: number; content: string; createdAt: string }) => void;
   isCompleted: boolean;
   isInLibrary: boolean;
-}> = ({ project, projectId, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, onRunAgent, runningAgent, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onSubmitDoc, onApproveDoc, onRejectDoc, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, mechStepProgress, onPublish, onMarkComplete, onDelete, onBuildReference, onViewSummary, isCompleted, isInLibrary }) => {
+}> = ({ project, projectId, status, userRole, sessionsConfig, onBack, processOutput, mechanicalOutput, electricalOutput, onRunAgent, runningAgent, onChangeRoomArea, changingRoom, propagationTrace, agentError, docStatusMap, deliverables, processSteps, onDocStatusChange, onDocComment, onSubmitDoc, onApproveDoc, onRejectDoc, onViewDocument, onReleaseSession, onSuggestSessions, suggestingSession, onRunStep, stepRunning, stepError, stepProgress, mechStepProgress, elecStepProgress, onPublish, onMarkComplete, onDelete, onBuildReference, onViewSummary, isCompleted, isInLibrary }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [buildRefStatus, setBuildRefStatus] = useState<'idle' | 'building' | 'done' | 'error'>('idle');
   const [buildRefPages,  setBuildRefPages]  = useState(0);
@@ -759,7 +859,7 @@ const ProjectDetailView: React.FC<{
   );
 
   // For non-PM roles: replace PM docs with their session slice cards
-  const roleDocOwnerStr: Record<Role, string> = { pm: 'PM', process: 'Process Engineer', mechanical: 'Mechanical Engineer', owner: 'Owner', admin: 'Admin', viewer: 'Viewer' };
+  const roleDocOwnerStr: Record<Role, string> = { pm: 'PM', process: 'Process Engineer', mechanical: 'Mechanical Engineer', electrical: 'Electrical Engineer', owner: 'Owner', admin: 'Admin', viewer: 'Viewer' };
   // Sessions are now nested sub-items inside PM doc rows — not top-level cards
   const docs = allDocs;
   const flags = project.risk_flags_fired ?? [];
@@ -793,6 +893,14 @@ const ProjectDetailView: React.FC<{
   const canShowPumpPanel = isUnlocked && processCalStatus === 'approved' && (
     userRole === 'mechanical' ||
     (userRole === 'pm' && (pumpCalStatus === 'under_review' || pumpCalStatus === 'approved'))
+  );
+
+  // Electrical has no upstream engineer stage — it unlocks once the project is released.
+  const elecCalDoc = allDocs.find(d => d.assigned_to === 'Electrical Engineer' && d.doc_id?.includes('CAL-5002'));
+  const elecCalStatus = elecCalDoc ? docStatusMap[elecCalDoc.doc_id]?.status : null;
+  const canShowElectricalPanel = isUnlocked && (
+    userRole === 'electrical' ||
+    (userRole === 'pm' && (elecCalStatus === 'under_review' || elecCalStatus === 'approved'))
   );
 
   const roleDocOwner = roleDocOwnerStr;
@@ -979,6 +1087,7 @@ const ProjectDetailView: React.FC<{
                 onSendForReview={undefined}
                 onEngineerApprove={undefined}
                 onEngineerReject={undefined}
+                dependencyHint={<MissingInputHint doc={doc} allDocs={allDocs} docStatusMap={docStatusMap} />}
                 extraContent={
                   doc.assigned_to === 'PM'
                     ? (
@@ -1025,6 +1134,26 @@ const ProjectDetailView: React.FC<{
                         mechStepProgress={mechStepProgress}
                       />
                     )
+                  : canShowElectricalPanel && doc.assigned_to === 'Electrical Engineer'
+                      && (doc.doc_id.includes('CAL-5002') || doc.doc_id.includes('CAL-5006') || doc.doc_id.includes('PBS-5001'))
+                    ? (
+                      <ElectricalCalcPanel
+                        electricalOutput={docStatusMap[doc.doc_id]?.agentRun?.output
+                          ?? (doc.doc_id.includes('CAL-5002') ? electricalOutput : null)}
+                        onRun={() => onRunAgent('electrical')}
+                        running={runningAgent === 'electrical'}
+                        error={agentError}
+                        canRun={userRole === 'electrical'}
+                        docStatus={docStatusMap[doc.doc_id]?.status}
+                        onSubmit={() => onSubmitDoc(doc.doc_id)}
+                        onApprove={() => onApproveDoc(doc.doc_id)}
+                        onReject={(comment) => onRejectDoc(doc.doc_id, comment)}
+                        elecStepProgress={elecStepProgress}
+                        onChangeRoomArea={doc.doc_id.includes('CAL-5002') ? onChangeRoomArea : undefined}
+                        changing={changingRoom}
+                        propagationTrace={doc.doc_id.includes('CAL-5002') ? propagationTrace : null}
+                      />
+                    )
                   : undefined
                 }
               />
@@ -1036,26 +1165,42 @@ const ProjectDetailView: React.FC<{
         {/* Right panel */}
         <div className="col-span-12 lg:col-span-5 space-y-4">
 
-          {/* Team */}
+          {/* Team — PM + whichever engineering disciplines this project actually has */}
           <section className="bg-white rounded-2xl p-5 shadow-soft">
             <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-4">Team</p>
             <div className="space-y-3">
-              {[
-                { icon: <Briefcase className="w-4 h-4 text-blue-500" />, name: 'Daniel', title: 'Project Manager', done: status.pm.project_context, bg: 'bg-blue-50' },
-                { icon: <FlaskConical className="w-4 h-4 text-emerald-500" />, name: 'Aria', title: 'Process Engineer', done: status.process.process_output, bg: 'bg-emerald-50' },
-                { icon: <Wrench className="w-4 h-4 text-orange-500" />, name: 'Hunter', title: 'Mechanical Engineer', done: status.mechanical.mechanical_output, bg: 'bg-orange-50' },
-              ].map(m => (
-                <div key={m.name} className={`flex items-center gap-3 ${m.bg} rounded-xl px-4 py-3`}>
-                  <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center shadow-sm">{m.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-slate-900">{m.name}</p>
-                    <p className="text-xs text-slate-500">{m.title}</p>
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${m.done ? 'bg-emerald-100 text-emerald-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                    {m.done ? 'Complete' : 'Pending'}
-                  </span>
+              {/* PM always present */}
+              <div className="flex items-center gap-3 bg-blue-50 rounded-xl px-4 py-3">
+                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                  <Briefcase className="w-4 h-4 text-blue-500" />
                 </div>
-              ))}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-slate-900">Daniel</p>
+                  <p className="text-xs text-slate-500">Project Manager</p>
+                </div>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${status.pm.project_context ? 'bg-emerald-100 text-emerald-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                  {status.pm.project_context ? 'Complete' : 'Pending'}
+                </span>
+              </div>
+              {/* Engineering disciplines derived from the register */}
+              {deriveTeam(allDocs).map(m => {
+                const done = (m.role === 'Process Engineer' && !!status.process?.process_output)
+                          || (m.role === 'Mechanical Engineer' && !!status.mechanical?.mechanical_output);
+                return (
+                  <div key={m.role} className={`flex items-center gap-3 ${m.bg} rounded-xl px-4 py-3`}>
+                    <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                      <m.Icon className={`w-4 h-4 ${m.text}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-slate-900 truncate">{m.name}</p>
+                      <p className="text-xs text-slate-500">{m.count} deliverable{m.count !== 1 ? 's' : ''}</p>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${done ? 'bg-emerald-100 text-emerald-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                      {done ? 'Complete' : 'Pending'}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </section>
 
@@ -1561,7 +1706,247 @@ const PUMP_CALC_SECTIONS = [
   },
 ];
 
-function CalcSectionTable({ sections, data }: { sections: typeof CALC_SECTIONS | typeof PUMP_CALC_SECTIONS, data: any }) {
+const ELEC_CALC_SECTIONS = [
+  {
+    key: 'inputs',
+    title: 'INPUT',
+    color: 'text-blue-600',
+    rows: [
+      ['Offices',            'offices',          null, null,    'Extracted office rooms on board MDB-OFFICES (from the architecture / load register)'],
+      ['Total Office Area',  'total_area_m2',    null, 'm²',    'Σ of extracted office areas'],
+      ['Density — Coffee (C6)', 'density_C6_va_m2', null, 'VA/m²', 'DPS 2022 Table 19, category C6'],
+      ['Density — Office (C7)', 'density_C7_va_m2', null, 'VA/m²', 'DPS 2022 Table 19, category C7'],
+      ['Demand Factor',      'demand_factor',    null, null,    'DPS 2022 Table 20 (offices = 0.6)'],
+    ],
+  },
+  {
+    key: 'calculated',
+    title: 'CALC',
+    color: 'text-emerald-600',
+    rows: [
+      ['Total Connected',    'total_connected_kva', null, 'kVA', 'Σ (area × VA/m² / 1000) per office'],
+      ['Additional AC Load', 'additional_ac_kva',   null, 'kVA', 'Double-height offices: Σ (height − 3.5 m) × area × 24 VA/m³ / 1000'],
+      ['Total Demand',       'total_demand_kva',    null, 'kVA', 'Σ (total connected × demand factor) — the true sum of all 54 office rows'],
+      ['Max Voltage Drop',   'max_voltage_drop_pct', null, '%',  'Highest feeder VD% — cables are sized to keep every feeder ≤ 4.0% (real EL-CAL-5002 convention)'],
+    ],
+  },
+  {
+    key: 'outputs',
+    title: 'OUTPUT',
+    color: 'text-orange-600',
+    rows: [
+      ['Method',                'method',                 null, null,   'Power-density load method per DPS 2022'],
+      ['Footer printed on PDF', 'footer_printed_kva',     null, 'kVA',  'The board total printed in the source calculation report'],
+      ['Footer vs rows (Δ)',    'footer_discrepancy_kva', null, 'kVA',  'True row sum minus the printed footer — a data-quality flag when non-zero'],
+    ],
+  },
+];
+
+const TRANSFORMER_CALC_SECTIONS = [
+  {
+    key: 'inputs', title: 'INPUT', color: 'text-blue-600',
+    rows: [
+      ['System Voltage U20',   'system_voltage_V',          null, 'V',   'LV side voltage'],
+      ['Utility SC Power Psc',  'utility_sc_power_kVA',      null, 'kVA', 'Given by SEC/DPS at the 13.8 kV MV terminals'],
+      ['Transformer Rating Sn', 'transformer_kVA',           null, 'kVA', 'Dry-type transformer nameplate'],
+      ['SC Voltage Usc',        'short_circuit_voltage_pct', null, '%',   'Transformer impedance voltage'],
+      ['Copper Loss Pcu',       'copper_loss_W',             null, 'W',   'Transformer load loss'],
+    ],
+  },
+  {
+    key: 'calculated', title: 'CALC', color: 'text-emerald-600',
+    rows: [
+      ['Rated Current In',     'rated_current_A',   null, 'A',  'In = Sn / (√3 × U20)'],
+      ['Transformer Z',        'transformer_Z_mohm', null, 'mΩ', 'Z = U20² × Usc% / (Sn × 100)'],
+      ['Total Impedance Zₜ',   'total_Z_mohm',       null, 'mΩ', 'Supply + transformer impedance in series'],
+    ],
+  },
+  {
+    key: 'outputs', title: 'OUTPUT', color: 'text-orange-600',
+    rows: [
+      ['Short-Circuit Current Isc', 'short_circuit_current_kA', null, 'kA', 'Isc = U20 / (√3 × Zₜ) — sizes breaking capacity'],
+      ['Method',                    'method',                   null, null, 'IEC 60909 short-circuit'],
+    ],
+  },
+];
+
+const PANELBOARD_CALC_SECTIONS = [
+  {
+    key: 'inputs', title: 'INPUT', color: 'text-blue-600',
+    rows: [
+      ['Panels',           'panels',           null, null, 'Panelboards rolled up'],
+      ['Circuits checked', 'circuits_checked', null, null, 'Sample branch circuits sized'],
+    ],
+  },
+  {
+    key: 'calculated', title: 'CALC', color: 'text-emerald-600',
+    rows: [
+      ['Total Connected', 'total_connected_va', null, 'VA', 'Σ classification connected load'],
+      ['Total Demand',    'total_demand_va',    null, 'VA', 'Σ (connected × classification DF)'],
+    ],
+  },
+  {
+    key: 'outputs', title: 'OUTPUT', color: 'text-orange-600',
+    rows: [['Method', 'method', null, null, 'Real EL-PBS single-phase convention']],
+  },
+];
+
+// Panel roll-up table (panelboard_calc).
+function PanelSummaryTable({ panels, circuits }: { panels: any[]; circuits: any[] }) {
+  const f = (x: any, nd = 1) => (typeof x === 'number' ? x.toFixed(nd) : '—');
+  return (
+    <>
+      {Array.isArray(panels) && panels.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="px-4 py-2 border-b border-slate-100">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">Panel Roll-ups</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-400">
+                <tr>
+                  <th className="px-3 py-2 text-left font-semibold">Panel</th>
+                  <th className="px-3 py-2 text-right font-semibold">Connected VA</th>
+                  <th className="px-3 py-2 text-right font-semibold">Demand VA</th>
+                  <th className="px-3 py-2 text-right font-semibold">Demand A</th>
+                  <th className="px-3 py-2 text-right font-semibold">Min Main A</th>
+                  <th className="px-3 py-2 text-right font-semibold">Mains A</th>
+                </tr>
+              </thead>
+              <tbody>
+                {panels.map((p, i) => (
+                  <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
+                    <td className="px-3 py-1.5 text-slate-700">{p.ref}</td>
+                    <td className="px-3 py-1.5 text-right text-slate-600">{f(p.total_connected_va)}</td>
+                    <td className="px-3 py-1.5 text-right font-semibold text-slate-800">{f(p.total_demand_va)}</td>
+                    <td className="px-3 py-1.5 text-right text-slate-600">{f(p.demand_current_a, 2)}</td>
+                    <td className="px-3 py-1.5 text-right text-slate-400">{p.min_main_breaker_a ?? '—'}</td>
+                    <td className="px-3 py-1.5 text-right font-bold text-orange-600">{p.mains_rating_a ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      {Array.isArray(circuits) && circuits.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="px-4 py-2 border-b border-slate-100">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">Circuit Selection</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-400">
+                <tr>
+                  <th className="px-3 py-2 text-left font-semibold">Circuit</th>
+                  <th className="px-3 py-2 text-center font-semibold">Type</th>
+                  <th className="px-3 py-2 text-right font-semibold">Current A</th>
+                  <th className="px-3 py-2 text-right font-semibold">Breaker A</th>
+                  <th className="px-3 py-2 text-right font-semibold">Wire mm²</th>
+                </tr>
+              </thead>
+              <tbody>
+                {circuits.map((c, i) => (
+                  <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
+                    <td className="px-3 py-1.5 text-slate-700">{c.desc}</td>
+                    <td className="px-3 py-1.5 text-center text-slate-400">{c.type}</td>
+                    <td className="px-3 py-1.5 text-right text-slate-600">{f(c.current_a, 1)}</td>
+                    <td className="px-3 py-1.5 text-right font-bold text-orange-600">{c.breaker_a ?? '—'}</td>
+                    <td className="px-3 py-1.5 text-right text-slate-600">{c.wire_mm2 ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// The 54-office load schedule (electrical_calc only).
+// Editable area cell — click to type a new value; Enter/blur commits.
+const EditableArea: React.FC<{ value: any; onCommit: (n: number) => void; busy?: boolean }> = ({ value, onCommit, busy }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const f = (x: any) => (typeof x === 'number' ? x.toFixed(1) : '—');
+  const commit = () => {
+    const n = Number(draft);
+    setEditing(false);
+    if (isFinite(n) && n > 0 && n !== value) onCommit(n);
+  };
+  if (editing) {
+    return (
+      <input autoFocus type="number" value={draft}
+        onChange={e => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }}
+        className="w-16 text-right text-xs border border-yellow-400 rounded px-1 py-0.5 bg-yellow-50 focus:outline-none" />
+    );
+  }
+  return (
+    <button disabled={busy} onClick={() => { setDraft(String(value ?? '')); setEditing(true); }}
+      className="text-right text-slate-700 underline decoration-dotted decoration-yellow-500 underline-offset-2 hover:text-yellow-700 disabled:opacity-50"
+      title="Click to change this office's area — downstream recomputes">
+      {f(value)}
+    </button>
+  );
+};
+
+function ElecLoadTable({ rows, onCommitArea, busy }: { rows: any[]; onCommitArea?: (name: string, area: number) => void; busy?: boolean }) {
+  if (!Array.isArray(rows) || rows.length === 0) return null;
+  const f = (x: any, nd = 2) => (typeof x === 'number' ? x.toFixed(nd) : '—');
+  return (
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
+        <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">
+          Load Schedule — MDB-OFFICES ({rows.length} offices)
+        </p>
+        {onCommitArea && <p className="text-[10px] text-yellow-600">Area is editable · change propagates</p>}
+      </div>
+      <div className="overflow-x-auto max-h-[28rem] overflow-y-auto">
+        <table className="w-full text-xs">
+          <thead className="sticky top-0 bg-slate-50">
+            <tr className="text-[10px] uppercase tracking-wider text-slate-400">
+              <th className="px-3 py-2 text-left font-semibold">Office</th>
+              <th className="px-3 py-2 text-right font-semibold">Area m²</th>
+              <th className="px-3 py-2 text-center font-semibold">Cat</th>
+              <th className="px-3 py-2 text-right font-semibold">Conn kVA</th>
+              <th className="px-3 py-2 text-right font-semibold">Add'l</th>
+              <th className="px-3 py-2 text-right font-semibold">Demand kVA</th>
+              <th className="px-3 py-2 text-right font-semibold">Current A</th>
+              <th className="px-3 py-2 text-right font-semibold">Breaker A</th>
+              <th className="px-3 py-2 text-right font-semibold">Cable mm²</th>
+              <th className="px-3 py-2 text-right font-semibold">VD %</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
+                <td className="px-3 py-1.5 text-slate-700">{r.name}</td>
+                <td className="px-3 py-1.5 text-right text-slate-500">
+                  {onCommitArea
+                    ? <EditableArea value={r.area_m2} busy={busy} onCommit={(n) => onCommitArea(r.name, n)} />
+                    : f(r.area_m2, 1)}
+                </td>
+                <td className="px-3 py-1.5 text-center text-slate-400">{r.category ?? '—'}</td>
+                <td className="px-3 py-1.5 text-right text-slate-600">{f(r.connected_kva)}</td>
+                <td className="px-3 py-1.5 text-right text-slate-400">{f(r.additional_kva)}</td>
+                <td className="px-3 py-1.5 text-right font-semibold text-slate-800">{f(r.demand_kva)}</td>
+                <td className="px-3 py-1.5 text-right text-slate-600">{f(r.current_690_a)}</td>
+                <td className="px-3 py-1.5 text-right font-bold text-orange-600">{r.breaker_a ?? '—'}</td>
+                <td className="px-3 py-1.5 text-right text-slate-600">{r.cable_csa_mm2 ?? '—'}</td>
+                <td className={`px-3 py-1.5 text-right ${typeof r.vd_pct === 'number' && r.vd_pct > 4 ? 'font-bold text-red-600' : 'text-slate-500'}`}>{f(r.vd_pct, 1)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function CalcSectionTable({ sections, data }: { sections: typeof CALC_SECTIONS | typeof PUMP_CALC_SECTIONS | typeof ELEC_CALC_SECTIONS | typeof TRANSFORMER_CALC_SECTIONS | typeof PANELBOARD_CALC_SECTIONS, data: any }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const toggle = (key: string) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -1627,7 +2012,19 @@ const CalcSheetView: React.FC<{ data: any }> = ({ data }) => (
   <div className="flex-1 overflow-y-auto p-5 space-y-6 bg-slate-50/50">
     {data._subtype === 'pump_calc'
       ? <CalcSectionTable sections={PUMP_CALC_SECTIONS} data={data} />
-      : <CalcSectionTable sections={CALC_SECTIONS} data={data} />
+      : data._subtype === 'electrical_calc'
+        ? <>
+            <CalcSectionTable sections={ELEC_CALC_SECTIONS} data={data} />
+            <ElecLoadTable rows={data.rows} />
+          </>
+      : data._subtype === 'transformer_calc'
+        ? <CalcSectionTable sections={TRANSFORMER_CALC_SECTIONS} data={data} />
+      : data._subtype === 'panelboard_calc'
+        ? <>
+            <CalcSectionTable sections={PANELBOARD_CALC_SECTIONS} data={data} />
+            <PanelSummaryTable panels={data.panels} circuits={data.circuits} />
+          </>
+        : <CalcSectionTable sections={CALC_SECTIONS} data={data} />
     }
 
     {(data.calc_summary || data.calculation_notes) && (
@@ -2434,6 +2831,200 @@ const PumpCalcPanel: React.FC<{
 };
 
 
+// ─── Electrical Calc Panel ─────────────────────────────────────────────────
+
+const ELEC_STEP_LABELS: Record<number, string> = {
+  1: 'Loading office room data',
+  2: 'Electrical load calculation',
+  3: 'Transformer / short-circuit',
+  4: 'Panelboard schedule',
+  5: 'Saving deliverables',
+};
+
+// Per-kind title/subtitle for the electrical panel.
+const ELEC_KIND_META: Record<string, { title: string; subtitle: string }> = {
+  load:        { title: 'Electrical Load Calculation', subtitle: 'DPS power-density · per-office demand · main breaker' },
+  transformer: { title: 'Transformer & Short-Circuit', subtitle: 'Supply + transformer impedance · Isc' },
+  panelboard:  { title: 'Panelboard Schedule',         subtitle: 'Classification demand factor · breaker/wire selection' },
+};
+
+const ElectricalCalcPanel: React.FC<{
+  electricalOutput: any;
+  onRun: () => void;
+  running: boolean;
+  error: string;
+  canRun?: boolean;
+  docStatus?: string;
+  onSubmit?: () => void;
+  onApprove?: () => void;
+  onReject?: (comment: string) => void;
+  elecStepProgress?: Record<number, 'running' | 'done'>;
+  onChangeRoomArea?: (name: string, area: number) => void;
+  changing?: boolean;
+  propagationTrace?: any[] | null;
+}> = ({ electricalOutput, onRun, running, error, canRun = true, docStatus, onSubmit, onApprove, onReject, elecStepProgress = {}, onChangeRoomArea, changing, propagationTrace }) => {
+  const board = electricalOutput?.electrical_calculations ?? {};
+  const kind  = board._kind || 'load';
+  // The raw engine output keys the per-office list as `rooms`; the derived calc
+  // sheet renames it to `rows`. Accept either so the panel works with both.
+  const rows  = Array.isArray(board.rooms) ? board.rooms : (Array.isArray(board.rows) ? board.rows : []);
+  const done  = kind === 'transformer' ? board.isc_ka != null
+              : kind === 'panelboard'  ? (Array.isArray(board.panels) && board.panels.length > 0)
+              : rows.length > 0;
+  const fc    = board.footer_check;
+  const meta  = ELEC_KIND_META[kind] ?? ELEC_KIND_META.load;
+  const [rejectComment, setRejectComment] = useState('');
+  const [showRejectBox, setShowRejectBox] = useState(false);
+
+  return (
+    <section className="bg-white rounded-2xl shadow-soft overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div>
+          <p className="font-bold text-slate-900">{meta.title}</p>
+          <p className="text-xs text-slate-400 font-mono">
+            {canRun ? meta.subtitle : 'Completed by Electrical Engineer — PM review'}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {canRun && docStatus !== 'under_review' && docStatus !== 'approved' && (
+            <button onClick={onRun} disabled={running}
+              className="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+              {running
+                ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Running…</>
+                : done ? <><Play className="w-3.5 h-3.5" /> Re-run</> : <><Play className="w-3.5 h-3.5" /> Run Calculation</>}
+            </button>
+          )}
+          {canRun && done && docStatus === 'in_progress' && onSubmit && (
+            <button onClick={onSubmit}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+              Submit for Review
+            </button>
+          )}
+          {canRun && docStatus === 'under_review' && (
+            <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <Clock className="w-3.5 h-3.5" /> Awaiting PM Review
+            </span>
+          )}
+          {canRun && docStatus === 'approved' && (
+            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+            </span>
+          )}
+          {!canRun && docStatus === 'under_review' && onApprove && (
+            <button onClick={onApprove}
+              className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approve
+            </button>
+          )}
+          {!canRun && docStatus === 'under_review' && onReject && (
+            <button onClick={() => setShowRejectBox(v => !v)}
+              className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+              Reject
+            </button>
+          )}
+          {!canRun && docStatus === 'approved' && (
+            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs px-3 py-1.5 rounded-xl">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+            </span>
+          )}
+        </div>
+      </div>
+      {showRejectBox && !canRun && (
+        <div className="px-6 py-3 bg-red-50 border-b border-red-100 flex gap-2">
+          <input value={rejectComment} onChange={e => setRejectComment(e.target.value)}
+            placeholder="Rejection reason (optional)"
+            className="flex-1 text-sm border border-red-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-red-300" />
+          <button onClick={() => { onReject?.(rejectComment); setShowRejectBox(false); setRejectComment(''); }}
+            className="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-1.5 rounded-lg transition-colors">Send</button>
+        </div>
+      )}
+
+      {running && (
+        <div className="divide-y divide-slate-50">
+          {Object.entries(ELEC_STEP_LABELS).map(([num, label]) => {
+            const n = Number(num);
+            const s = elecStepProgress[n];
+            return (
+              <div key={n} className={`px-6 py-3 flex items-center gap-3 transition-colors ${s === 'running' ? 'bg-yellow-50/60' : ''}`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${
+                  s === 'done' ? 'bg-emerald-100 text-emerald-700' : s === 'running' ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-400'}`}>
+                  {s === 'done' ? '✓' : s === 'running' ? <Loader2 className="w-3 h-3 animate-spin" /> : n}
+                </div>
+                <span className={`text-sm ${s === 'done' ? 'text-slate-700 font-medium' : s === 'running' ? 'text-yellow-700 font-semibold' : 'text-slate-400'}`}>{label}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {done && (
+        <div className="px-6 py-4 space-y-4">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 text-xs">
+            {(kind === 'transformer'
+              ? [
+                  ['Rated Current', board.transformer?.in_a != null ? `${board.transformer.in_a} A` : null],
+                  ['Total Z',       board.total?.z_mohm != null ? `${board.total.z_mohm} mΩ` : null],
+                  ['Short-Circuit Isc', board.isc_ka != null ? `${board.isc_ka} kA` : null],
+                  ['Method',        board.method ?? null],
+                ]
+              : kind === 'panelboard'
+              ? [
+                  ['Panels',   Array.isArray(board.panels) ? `${board.panels.length}` : null],
+                  ['Circuits', Array.isArray(board.circuits) ? `${board.circuits.length}` : null],
+                  ['Method',   board.method ?? null],
+                ]
+              : [
+                  ['Offices',      board.row_count != null ? `${board.row_count}` : null],
+                  ['Total Demand', board.total_demand_kva != null ? `${board.total_demand_kva} kVA` : null],
+                  ['Method',       board.method ?? null],
+                ]
+            ).map(([label, val]) => val != null && (
+              <div key={label as string} className="flex justify-between border-b border-slate-50 py-0.5">
+                <span className="text-slate-400 font-mono">{label}</span>
+                <span className="font-semibold text-slate-900">{val}</span>
+              </div>
+            ))}
+          </div>
+          {fc && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 text-xs text-amber-800 flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{fc.message}</span>
+            </div>
+          )}
+          {kind === 'load' && Array.isArray(propagationTrace) && propagationTrace.length > 0 && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl overflow-hidden">
+              <div className="px-4 py-2 border-b border-yellow-200 flex items-center gap-2">
+                <Zap className="w-3.5 h-3.5 text-yellow-600" />
+                <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-yellow-700">Change propagated</p>
+              </div>
+              <div className="divide-y divide-yellow-100">
+                {propagationTrace.filter((s: any) => s.changed).map((s: any, i: number) => (
+                  <div key={i} className="px-4 py-1.5 flex items-center justify-between text-xs">
+                    <span className="text-slate-600">{s.record} · <span className="text-slate-400">{s.field}</span></span>
+                    <span className="font-mono">
+                      <span className="text-slate-400">{typeof s.before === 'number' ? s.before.toFixed(2) : s.before}</span>
+                      <span className="text-yellow-600 mx-1.5">→</span>
+                      <span className="font-bold text-slate-900">{typeof s.after === 'number' ? s.after.toFixed(2) : s.after}</span>
+                      {s.status && <span className={`ml-2 text-[10px] font-bold ${s.status === 'OVERLOAD' ? 'text-red-600' : s.status === 'WARNING' ? 'text-amber-600' : 'text-emerald-600'}`}>{s.status}</span>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {kind === 'load'       && <ElecLoadTable rows={rows} onCommitArea={canRun ? onChangeRoomArea : undefined} busy={changing} />}
+          {kind === 'panelboard' && <PanelSummaryTable panels={board.panels} circuits={board.circuits} />}
+        </div>
+      )}
+
+      {error && (
+        <div className="px-6 py-3 bg-red-50 border-t border-red-100 text-xs text-red-600">{error}</div>
+      )}
+    </section>
+  );
+};
+
+
 // ─── New Project Modal ─────────────────────────────────────────────────────
 
 const NewProjectModal: React.FC<{
@@ -2592,14 +3183,15 @@ const NewProjectModal: React.FC<{
               <div>
                 <p className="text-xs font-semibold text-slate-600 mb-2">Suggested Team</p>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-3 bg-emerald-50 rounded-lg p-3">
-                    <FlaskConical className="w-4 h-4 text-emerald-600" />
-                    <div><p className="text-sm font-bold">Aria</p><p className="text-xs text-slate-500">Process Engineer</p></div>
-                  </div>
-                  <div className="flex items-center gap-3 bg-orange-50 rounded-lg p-3">
-                    <Wrench className="w-4 h-4 text-orange-600" />
-                    <div><p className="text-sm font-bold">Hunter</p><p className="text-xs text-slate-500">Mechanical Engineer</p></div>
-                  </div>
+                  {deriveTeam(result.document_register).map(m => (
+                    <div key={m.role} className={`flex items-center gap-3 ${m.bg} rounded-lg p-3`}>
+                      <m.Icon className={`w-4 h-4 ${m.text}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold truncate">{m.name}</p>
+                        <p className="text-xs text-slate-500">{m.count} deliverable{m.count !== 1 ? 's' : ''}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
               {result.handoff_brief && (
@@ -2743,12 +3335,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
   const [showDetail,     setShowDetail]     = useState(false);
   const [loaded,         setLoaded]         = useState(false);
   const [showNewProject, setShowNewProject] = useState(false);
-  const [runningAgent,     setRunningAgent]     = useState<'process' | 'mechanical' | null>(null);
+  const [runningAgent,     setRunningAgent]     = useState<'process' | 'mechanical' | 'electrical' | null>(null);
+  const [changingRoom,     setChangingRoom]     = useState(false);
+  const [propagationTrace, setPropagationTrace] = useState<any[] | null>(null);
   const [agentError,       setAgentError]       = useState('');
   const [stepRunning,      setStepRunning]      = useState<number | null>(null);
   const [stepError,        setStepError]        = useState('');
   const [stepProgress,     setStepProgress]     = useState<Record<number, 'running' | 'done'>>({});
   const [mechStepProgress, setMechStepProgress] = useState<Record<number, 'running' | 'done'>>({});
+  const [elecStepProgress, setElecStepProgress] = useState<Record<number, 'running' | 'done'>>({});
   const [docModal,       setDocModal]       = useState<{ docId: string; doc: any; readOnly?: boolean; session?: any; _content?: string } | null>(null);
   const [toasts,         setToasts]         = useState<{ id: string; message: string }[]>([]);
   const prevTaskCountRef = useRef<number>(-1);
@@ -2781,10 +3376,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
   const register = projectContext?.document_register ?? [];
   const calDocId = register.find((d: any) => d.assigned_to === 'Process Engineer' && d.doc_id?.includes('CAL'))?.doc_id;
   const pumpCalDocId = register.find((d: any) => d.assigned_to === 'Mechanical Engineer' && d.doc_id?.includes('CAL'))?.doc_id;
+  const elecCalDocId = register.find((d: any) => d.assigned_to === 'Electrical Engineer' && d.doc_id?.includes('CAL-5002'))?.doc_id;
   const processCalDoc = calDocId ? docsMap[calDocId] : null;
   const mechCalDoc = pumpCalDocId ? docsMap[pumpCalDocId] : null;
+  const elecCalDoc = elecCalDocId ? docsMap[elecCalDocId] : null;
   const processOutput = processCalDoc?.agentRun?.output ?? selectedProject?.agentChain?.processOutput ?? selectedProject?.processOutput ?? null;
   const mechanicalOutput = mechCalDoc?.agentRun?.output ?? selectedProject?.agentChain?.mechanicalOutput ?? selectedProject?.mechanicalOutput ?? null;
+  const electricalOutput = elecCalDoc?.agentRun?.output ?? selectedProject?.agentChain?.electricalOutput ?? null;
 
   // Derive processSteps from docs[calDocId].agentRun.steps (new) or top-level processSteps (legacy)
   const processSteps = (processCalDoc?.agentRun?.steps ?? selectedProject?.processSteps ?? {}) as Record<string, any>;
@@ -2957,7 +3555,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     if (!selectedProject) return;
     const doc = (selectedProject.context?.document_register ?? []).find((d: any) => d.doc_id === docId);
     if (!doc) return;
-    const ownerRole: Record<string, Role> = { 'PM': 'pm', 'Process Engineer': 'process', 'Mechanical Engineer': 'mechanical' };
+    const ownerRole: Record<string, Role> = { 'PM': 'pm', 'Process Engineer': 'process', 'Mechanical Engineer': 'mechanical', 'Electrical Engineer': 'electrical' };
     if (session) {
       // Session mode: readOnly if user can't edit this session
       const canEdit = session.permissions?.edit?.includes(user.role) ?? false;
@@ -3099,9 +3697,33 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
     } catch (e) { console.error('reject failed', e); }
   };
 
-  const runAgent = async (agentType?: 'process' | 'mechanical') => {
+  // Change propagation: edit a room area → PATCH recomputes downstream. The server
+  // persists the recomputed sheets + stale flags and broadcasts a `sync`, which the
+  // EventSource listener turns into a re-fetch. Here we just show the trace + a toast.
+  const handleChangeRoomArea = async (roomName: string, area: number) => {
     if (!selectedId) return;
-    const target = agentType ?? (user.role === 'process' ? 'process' : 'mechanical');
+    setChangingRoom(true); setAgentError(''); setPropagationTrace(null);
+    try {
+      const resp = await fetch(`/api/projects/${selectedId}/electrical/rooms/${encodeURIComponent(roomName)}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ area_m2: area }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) { setAgentError(data.error || 'Change failed'); return; }
+      setPropagationTrace(data.trace || []);
+      if (selectedId) await fetchProjectDetail(selectedId);   // pull recomputed docs + stale flags
+      const brk = (data.trace || []).find((s: any) => s.field === 'breaker_a');
+      const tx  = (data.trace || []).find((s: any) => s.record?.startsWith('Transformer'));
+      const id = Date.now().toString();
+      const msg = `${data.changedRoom} ${data.oldArea}→${data.newArea} m² · feeder ${brk?.before}→${brk?.after}A · transformer ${tx?.before}→${tx?.after}%`;
+      setToasts(prev => [...prev, { id, message: msg }]);
+      setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 5000);
+    } catch (e: any) { setAgentError(e.message); }
+    finally { setChangingRoom(false); }
+  };
+
+  const runAgent = async (agentType?: 'process' | 'mechanical' | 'electrical') => {
+    if (!selectedId) return;
+    const target = agentType ?? (user.role === 'process' ? 'process' : user.role === 'electrical' ? 'electrical' : 'mechanical');
     setRunningAgent(target); setAgentError(''); setStepProgress({});
 
     if (target === 'process') {
@@ -3143,6 +3765,37 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
         });
       } catch (e: any) { setAgentError(e.message); }
       finally { setRunningAgent(null); }
+      return;
+    }
+
+    if (target === 'electrical') {
+      setElecStepProgress({});
+      try {
+        const data = await streamPmAgent(
+          `/api/projects/${selectedId}/run/electrical`, {},
+          (step) => { setElecStepProgress(prev => ({ ...prev, [step.step]: step.status as 'running' | 'done' })); }
+        );
+        updateProject(selectedId, p => {
+          // The agent fills multiple calc docs (load / transformer / panelboard).
+          // `data.sheets` maps each doc_id -> its interactive calc sheet; `data.results`
+          // holds each engine result. Write each doc's own sheet + agentRun output.
+          const sheets = data.sheets || (data.elecCalcDocId ? { [data.elecCalcDocId]: data.elecCalcSheet } : {});
+          const results = data.results || {};
+          const nextDocs: any = { ...(p.docs ?? {}) };
+          const ranAt = new Date().toISOString();
+          for (const [docId, sheet] of Object.entries(sheets)) {
+            const prev = nextDocs[docId] ?? { status: 'in_progress', comments: [], submittedAt: null, approvedAt: null };
+            nextDocs[docId] = {
+              ...prev,
+              content: sheet ? JSON.stringify(sheet, null, 2) : '',
+              status: (prev.status === 'pending' || !prev.status) ? 'in_progress' : prev.status,
+              agentRun: { output: { ...data, electrical_calculations: results[docId] ?? data.electrical_calculations }, steps: null, ranAt },
+            };
+          }
+          return { ...p, agentChain: { ...(p.agentChain ?? {}), electricalOutput: data }, docs: nextDocs };
+        });
+      } catch (e: any) { setAgentError(e.message); }
+      finally { setRunningAgent(null); setElecStepProgress({}); }
       return;
     }
 
@@ -3314,7 +3967,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
             onBack={() => { setShowDetail(false); setAgentError(''); setStepError(''); setStepProgress({}); }}
             processOutput={processOutput}
             mechanicalOutput={mechanicalOutput}
+            electricalOutput={electricalOutput}
             onRunAgent={runAgent}
+            onChangeRoomArea={handleChangeRoomArea}
+            changingRoom={changingRoom}
+            propagationTrace={propagationTrace}
             runningAgent={runningAgent}
             agentError={agentError}
             docStatusMap={docStatusMap}
@@ -3334,6 +3991,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, isAdmin = false, onG
             stepError={stepError}
             stepProgress={stepProgress}
             mechStepProgress={mechStepProgress}
+            elecStepProgress={elecStepProgress}
             onPublish={handlePublish}
             onMarkComplete={handleMarkComplete}
             onDelete={handleDelete}

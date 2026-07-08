@@ -1,0 +1,34 @@
+{
+  "_meta": {
+    "standard": "DPS 2022 — Saudi Electricity Company Distribution Planning Standard",
+    "note": "Values used by the real Y-Tower EL-CAL-5002 load calculation. Indicative — an engineer confirms per project. FLAG: DPS 2022 is a Saudi standard but the project is in Egypt; confirm applicable code with the design office.",
+    "editable": true
+  },
+  "power_density_va_per_m2": {
+    "_source": "DPS 2022 Table 19, p.27",
+    "_note": "Only C6 (coffee shop) and C7 (offices) appear in the real report; other categories referenced but not enumerated there.",
+    "C6": 188,
+    "C7": 176
+  },
+  "demand_factor": {
+    "_source": "DPS 2022 Table 20, p.29",
+    "office": 0.6,
+    "service": 0.7,
+    "emergency": 0.8,
+    "transformer_coincidence": 0.8
+  },
+  "double_height_adder": {
+    "_source": "DPS 2022, p.26",
+    "rate_va_per_m3": 24,
+    "standard_height_m": 3.5
+  },
+  "breaker_ladder_a": {
+    "_source": "DPS 2022 Table 27, p.45",
+    "values": [20, 30, 40, 50, 70, 100, 125, 150, 200, 250, 300, 400, 500, 600, 800]
+  },
+  "load_table_current_divisor": {
+    "_source": "EL-CAL-5002 LV-01 table header: Demand Load*1000/(3*230)",
+    "_note": "The load table divides by 3*230=690 (drives breaker choice). The prose on p.6 says 3*220=660 — a source typo; the table and printed values use 690.",
+    "divisor": 690
+  }
+}

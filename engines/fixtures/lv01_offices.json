@@ -1,0 +1,1091 @@
+{
+  "_meta": {
+    "source": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+    "footer_total_kva": 846.33216,
+    "note": "footer_total is the stale printed value; true row sum differs (~877.37)."
+  },
+  "rooms_input": [
+    {
+      "name": "Coffee shop",
+      "area_m2": 197.8,
+      "category": "C6",
+      "is_double_height": true,
+      "height_m": 7.0,
+      "feeder_length_m": 55,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Double H(38)",
+      "area_m2": 208,
+      "category": "C7",
+      "is_double_height": true,
+      "height_m": 7.0,
+      "feeder_length_m": 65,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(37,62)",
+      "area_m2": 169,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 65,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Double H(34,65)",
+      "area_m2": 121,
+      "category": "C7",
+      "is_double_height": true,
+      "height_m": 7.0,
+      "feeder_length_m": 80,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(39)",
+      "area_m2": 175,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 80,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(54)",
+      "area_m2": 179,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 85,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(84)",
+      "area_m2": 79,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 90,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(79,112)",
+      "area_m2": 245,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 90,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(86)",
+      "area_m2": 203,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 75,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(82)",
+      "area_m2": 101,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 75,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(111)",
+      "area_m2": 79,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 95,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(113)",
+      "area_m2": 201,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 80,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(99)",
+      "area_m2": 151,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 80,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(127)",
+      "area_m2": 145,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 100,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Double H(128,383)",
+      "area_m2": 200,
+      "category": "C7",
+      "is_double_height": true,
+      "height_m": 7.0,
+      "feeder_length_m": 85,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(145,129)",
+      "area_m2": 263,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 85,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(142)",
+      "area_m2": 146,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 105,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(157)",
+      "area_m2": 166,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 90,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Double H(152)",
+      "area_m2": 142,
+      "category": "C7",
+      "is_double_height": true,
+      "height_m": 7.0,
+      "feeder_length_m": 110,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(175)",
+      "area_m2": 163,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 95,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(370)",
+      "area_m2": 91,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 120,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(379)",
+      "area_m2": 154,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 105,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(377)",
+      "area_m2": 136,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 120,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(281,359)",
+      "area_m2": 158,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 110,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Double H(283)",
+      "area_m2": 133,
+      "category": "C7",
+      "is_double_height": true,
+      "height_m": 7.0,
+      "feeder_length_m": 125,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(290)",
+      "area_m2": 136,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 110,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(360)",
+      "area_m2": 135,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 115,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(262)",
+      "area_m2": 92,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 120,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(271)",
+      "area_m2": 133,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 120,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(270)",
+      "area_m2": 129,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 135,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(241)",
+      "area_m2": 127,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 140,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(242)",
+      "area_m2": 131,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 125,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(247,357)",
+      "area_m2": 158,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 125,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(254)",
+      "area_m2": 125,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 145,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(256)",
+      "area_m2": 128,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 130,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(396)",
+      "area_m2": 126,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 135,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(395)",
+      "area_m2": 123,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 150,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(393,409)",
+      "area_m2": 158,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 135,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(402)",
+      "area_m2": 99,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 155,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(404)",
+      "area_m2": 124,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 140,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(415)",
+      "area_m2": 92,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 145,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(421)",
+      "area_m2": 99,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 160,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(422)",
+      "area_m2": 122,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 145,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(450)",
+      "area_m2": 74,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 150,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(453)",
+      "area_m2": 142,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 165,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(452)",
+      "area_m2": 69,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 150,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(440)",
+      "area_m2": 74,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 175,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(441)",
+      "area_m2": 136,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 160,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(442)",
+      "area_m2": 64,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 175,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(449)",
+      "area_m2": 74,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 165,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(448)",
+      "area_m2": 414,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 180,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(33)",
+      "area_m2": 74,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 170,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office Duplex(197,415)",
+      "area_m2": 379,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 175,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    },
+    {
+      "name": "Office(430)",
+      "area_m2": 74,
+      "category": "C7",
+      "is_double_height": false,
+      "height_m": null,
+      "feeder_length_m": 175,
+      "source_doc": "PRJ.23026-EL-CAL-5002-01, LV-01 MDB-OFFICES table (pp.10-13)",
+      "feeder_length_source": "PRJ.23026-EL-CAL-5002-01, LV-01 cable/voltage-drop sheet (p.15)"
+    }
+  ],
+  "expected": [
+    {
+      "name": "Coffee shop",
+      "connected_kva": 37.1864,
+      "additional_kva": 16.6152,
+      "demand_kva": 32.2809,
+      "current_690_a": 46.784,
+      "breaker_a": 50,
+      "cable_csa": 25,
+      "vd_pct": 0.9
+    },
+    {
+      "name": "Office Double H(38)",
+      "connected_kva": 36.608,
+      "additional_kva": 17.472,
+      "demand_kva": 32.448,
+      "current_690_a": 47.026087,
+      "breaker_a": 50,
+      "cable_csa": 25,
+      "vd_pct": 1.1
+    },
+    {
+      "name": "Office Duplex(37,62)",
+      "connected_kva": 29.744,
+      "additional_kva": 0.0,
+      "demand_kva": 17.8464,
+      "current_690_a": 25.8643478,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 1.5
+    },
+    {
+      "name": "Office Double H(34,65)",
+      "connected_kva": 21.296,
+      "additional_kva": 10.164,
+      "demand_kva": 18.876,
+      "current_690_a": 27.3565217,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 1.9
+    },
+    {
+      "name": "Office(39)",
+      "connected_kva": 30.8,
+      "additional_kva": 0.0,
+      "demand_kva": 18.48,
+      "current_690_a": 26.7826087,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 1.9
+    },
+    {
+      "name": "Office(54)",
+      "connected_kva": 31.504,
+      "additional_kva": 0.0,
+      "demand_kva": 18.9024,
+      "current_690_a": 27.3947826,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.0
+    },
+    {
+      "name": "Office(84)",
+      "connected_kva": 13.904,
+      "additional_kva": 0.0,
+      "demand_kva": 8.3424,
+      "current_690_a": 12.0904348,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 1.6
+    },
+    {
+      "name": "Office Duplex(79,112)",
+      "connected_kva": 43.12,
+      "additional_kva": 0.0,
+      "demand_kva": 25.872,
+      "current_690_a": 37.4956522,
+      "breaker_a": 40,
+      "cable_csa": 16,
+      "vd_pct": 1.8
+    },
+    {
+      "name": "Office(86)",
+      "connected_kva": 35.728,
+      "additional_kva": 0.0,
+      "demand_kva": 21.4368,
+      "current_690_a": 31.0678261,
+      "breaker_a": 40,
+      "cable_csa": 16,
+      "vd_pct": 1.3
+    },
+    {
+      "name": "Office(82)",
+      "connected_kva": 17.776,
+      "additional_kva": 0.0,
+      "demand_kva": 10.6656,
+      "current_690_a": 15.4573913,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 1.7
+    },
+    {
+      "name": "Office(111)",
+      "connected_kva": 13.904,
+      "additional_kva": 0.0,
+      "demand_kva": 8.3424,
+      "current_690_a": 12.0904348,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 1.7
+    },
+    {
+      "name": "Office(113)",
+      "connected_kva": 35.376,
+      "additional_kva": 0.0,
+      "demand_kva": 21.2256,
+      "current_690_a": 30.7617391,
+      "breaker_a": 40,
+      "cable_csa": 16,
+      "vd_pct": 1.3
+    },
+    {
+      "name": "Office(99)",
+      "connected_kva": 26.576,
+      "additional_kva": 0.0,
+      "demand_kva": 15.9456,
+      "current_690_a": 23.1095652,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 1.6
+    },
+    {
+      "name": "Office(127)",
+      "connected_kva": 25.52,
+      "additional_kva": 0.0,
+      "demand_kva": 15.312,
+      "current_690_a": 22.1913043,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 1.9
+    },
+    {
+      "name": "Office Double H(128,383)",
+      "connected_kva": 35.2,
+      "additional_kva": 16.8,
+      "demand_kva": 31.2,
+      "current_690_a": 45.2173913,
+      "breaker_a": 50,
+      "cable_csa": 25,
+      "vd_pct": 1.3
+    },
+    {
+      "name": "Office Duplex(145,129)",
+      "connected_kva": 46.288,
+      "additional_kva": 0.0,
+      "demand_kva": 27.7728,
+      "current_690_a": 40.2504348,
+      "breaker_a": 50,
+      "cable_csa": 25,
+      "vd_pct": 1.2
+    },
+    {
+      "name": "Office(142)",
+      "connected_kva": 25.696,
+      "additional_kva": 0.0,
+      "demand_kva": 15.4176,
+      "current_690_a": 22.3443478,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.0
+    },
+    {
+      "name": "Office(157)",
+      "connected_kva": 29.216,
+      "additional_kva": 0.0,
+      "demand_kva": 17.5296,
+      "current_690_a": 25.4052174,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.0
+    },
+    {
+      "name": "Office Double H(152)",
+      "connected_kva": 24.992,
+      "additional_kva": 11.928,
+      "demand_kva": 22.152,
+      "current_690_a": 32.1043478,
+      "breaker_a": 40,
+      "cable_csa": 16,
+      "vd_pct": 1.9
+    },
+    {
+      "name": "Office(175)",
+      "connected_kva": 28.688,
+      "additional_kva": 0.0,
+      "demand_kva": 17.2128,
+      "current_690_a": 24.946087,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.1
+    },
+    {
+      "name": "Office(370)",
+      "connected_kva": 16.016,
+      "additional_kva": 0.0,
+      "demand_kva": 9.6096,
+      "current_690_a": 13.9269565,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.4
+    },
+    {
+      "name": "Office(379)",
+      "connected_kva": 27.104,
+      "additional_kva": 0.0,
+      "demand_kva": 16.2624,
+      "current_690_a": 23.5686957,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.2
+    },
+    {
+      "name": "Office(377)",
+      "connected_kva": 23.936,
+      "additional_kva": 0.0,
+      "demand_kva": 14.3616,
+      "current_690_a": 20.813913,
+      "breaker_a": 30,
+      "cable_csa": 6,
+      "vd_pct": 3.6
+    },
+    {
+      "name": "Office Duplex(281,359)",
+      "connected_kva": 27.808,
+      "additional_kva": 0.0,
+      "demand_kva": 16.6848,
+      "current_690_a": 24.1808696,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.3
+    },
+    {
+      "name": "Office Double H(283)",
+      "connected_kva": 23.408,
+      "additional_kva": 11.172,
+      "demand_kva": 20.748,
+      "current_690_a": 30.0695652,
+      "breaker_a": 40,
+      "cable_csa": 16,
+      "vd_pct": 2.1
+    },
+    {
+      "name": "Office(290)",
+      "connected_kva": 23.936,
+      "additional_kva": 0.0,
+      "demand_kva": 14.3616,
+      "current_690_a": 20.813913,
+      "breaker_a": 30,
+      "cable_csa": 6,
+      "vd_pct": 3.3
+    },
+    {
+      "name": "Office(360)",
+      "connected_kva": 23.76,
+      "additional_kva": 0.0,
+      "demand_kva": 14.256,
+      "current_690_a": 20.6608696,
+      "breaker_a": 30,
+      "cable_csa": 6,
+      "vd_pct": 3.4
+    },
+    {
+      "name": "Office(262)",
+      "connected_kva": 16.192,
+      "additional_kva": 0.0,
+      "demand_kva": 9.7152,
+      "current_690_a": 14.08,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.4
+    },
+    {
+      "name": "Office(271)",
+      "connected_kva": 23.408,
+      "additional_kva": 0.0,
+      "demand_kva": 14.0448,
+      "current_690_a": 20.3547826,
+      "breaker_a": 30,
+      "cable_csa": 6,
+      "vd_pct": 3.5
+    },
+    {
+      "name": "Office(270)",
+      "connected_kva": 22.704,
+      "additional_kva": 0.0,
+      "demand_kva": 13.6224,
+      "current_690_a": 19.7426087,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.8
+    },
+    {
+      "name": "Office(241)",
+      "connected_kva": 22.352,
+      "additional_kva": 0.0,
+      "demand_kva": 13.4112,
+      "current_690_a": 19.4365217,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.9
+    },
+    {
+      "name": "Office(242)",
+      "connected_kva": 23.056,
+      "additional_kva": 0.0,
+      "demand_kva": 13.8336,
+      "current_690_a": 20.0486957,
+      "breaker_a": 30,
+      "cable_csa": 6,
+      "vd_pct": 3.6
+    },
+    {
+      "name": "Office Duplex(247,357)",
+      "connected_kva": 27.808,
+      "additional_kva": 0.0,
+      "demand_kva": 16.6848,
+      "current_690_a": 24.1808696,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.6
+    },
+    {
+      "name": "Office(254)",
+      "connected_kva": 22.0,
+      "additional_kva": 0.0,
+      "demand_kva": 13.2,
+      "current_690_a": 19.1304348,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 4.0
+    },
+    {
+      "name": "Office(256)",
+      "connected_kva": 22.528,
+      "additional_kva": 0.0,
+      "demand_kva": 13.5168,
+      "current_690_a": 19.5895652,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.7
+    },
+    {
+      "name": "Office(396)",
+      "connected_kva": 22.176,
+      "additional_kva": 0.0,
+      "demand_kva": 13.3056,
+      "current_690_a": 19.2834783,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.8
+    },
+    {
+      "name": "Office(395)",
+      "connected_kva": 21.648,
+      "additional_kva": 0.0,
+      "demand_kva": 12.9888,
+      "current_690_a": 18.8243478,
+      "breaker_a": 20,
+      "cable_csa": 10,
+      "vd_pct": 2.5
+    },
+    {
+      "name": "Office Duplex(393,409)",
+      "connected_kva": 27.808,
+      "additional_kva": 0.0,
+      "demand_kva": 16.6848,
+      "current_690_a": 24.1808696,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.8
+    },
+    {
+      "name": "Office(402)",
+      "connected_kva": 17.424,
+      "additional_kva": 0.0,
+      "demand_kva": 10.4544,
+      "current_690_a": 15.1513043,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.4
+    },
+    {
+      "name": "Office(404)",
+      "connected_kva": 21.824,
+      "additional_kva": 0.0,
+      "demand_kva": 13.0944,
+      "current_690_a": 18.9773913,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.8
+    },
+    {
+      "name": "Office(415)",
+      "connected_kva": 16.192,
+      "additional_kva": 0.0,
+      "demand_kva": 9.7152,
+      "current_690_a": 14.08,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.9
+    },
+    {
+      "name": "Office(421)",
+      "connected_kva": 17.424,
+      "additional_kva": 0.0,
+      "demand_kva": 10.4544,
+      "current_690_a": 15.1513043,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.5
+    },
+    {
+      "name": "Office(422)",
+      "connected_kva": 21.472,
+      "additional_kva": 0.0,
+      "demand_kva": 12.8832,
+      "current_690_a": 18.6713043,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 3.9
+    },
+    {
+      "name": "Office(450)",
+      "connected_kva": 13.024,
+      "additional_kva": 0.0,
+      "demand_kva": 7.8144,
+      "current_690_a": 11.3252174,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.5
+    },
+    {
+      "name": "Office(453)",
+      "connected_kva": 24.992,
+      "additional_kva": 0.0,
+      "demand_kva": 14.9952,
+      "current_690_a": 21.7321739,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 3.1
+    },
+    {
+      "name": "Office(452)",
+      "connected_kva": 12.144,
+      "additional_kva": 0.0,
+      "demand_kva": 7.2864,
+      "current_690_a": 10.56,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.3
+    },
+    {
+      "name": "Office(440)",
+      "connected_kva": 13.024,
+      "additional_kva": 0.0,
+      "demand_kva": 7.8144,
+      "current_690_a": 11.3252174,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.9
+    },
+    {
+      "name": "Office(441)",
+      "connected_kva": 23.936,
+      "additional_kva": 0.0,
+      "demand_kva": 14.3616,
+      "current_690_a": 20.813913,
+      "breaker_a": 30,
+      "cable_csa": 10,
+      "vd_pct": 2.9
+    },
+    {
+      "name": "Office(442)",
+      "connected_kva": 11.264,
+      "additional_kva": 0.0,
+      "demand_kva": 6.7584,
+      "current_690_a": 9.79478261,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.5
+    },
+    {
+      "name": "Office(449)",
+      "connected_kva": 13.024,
+      "additional_kva": 0.0,
+      "demand_kva": 7.8144,
+      "current_690_a": 11.3252174,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.7
+    },
+    {
+      "name": "Office Duplex(448)",
+      "connected_kva": 72.864,
+      "additional_kva": 0.0,
+      "demand_kva": 43.7184,
+      "current_690_a": 63.36,
+      "breaker_a": 70,
+      "cable_csa": 35,
+      "vd_pct": 3.1
+    },
+    {
+      "name": "Office(33)",
+      "connected_kva": 13.024,
+      "additional_kva": 0.0,
+      "demand_kva": 7.8144,
+      "current_690_a": 11.3252174,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.8
+    },
+    {
+      "name": "Office Duplex(197,415)",
+      "connected_kva": 66.704,
+      "additional_kva": 0.0,
+      "demand_kva": 40.0224,
+      "current_690_a": 58.0034783,
+      "breaker_a": 70,
+      "cable_csa": 35,
+      "vd_pct": 2.8
+    },
+    {
+      "name": "Office(430)",
+      "connected_kva": 13.024,
+      "additional_kva": 0.0,
+      "demand_kva": 7.8144,
+      "current_690_a": 11.3252174,
+      "breaker_a": 20,
+      "cable_csa": 6,
+      "vd_pct": 2.9
+    }
+  ]
+}

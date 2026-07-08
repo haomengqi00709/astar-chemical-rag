@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "standard": "IEC 60364 / IEC 60947 — as encoded in the Hunter Electrical Templates Master (2-Ref-Tables)",
+    "note": "Used by the itemized load method (Templates Master DB-1 worked example). Indicative Cu/PVC values — replace with the project cable schedule at issue.",
+    "editable": true
+  },
+  "breaker_ladder_a": {
+    "_source": "Templates Master 2-Ref-Tables, BreakerList",
+    "values": [6, 10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250, 320, 400]
+  },
+  "breaker_to_min_cable_mm2": {
+    "_source": "Templates Master 2-Ref-Tables, BreakerCable",
+    "_note": "key = breaker rating (A), value = minimum cable CSA (mm2)",
+    "6": 1.5, "10": 1.5, "16": 2.5, "20": 4, "25": 6, "32": 6, "40": 10,
+    "50": 10, "63": 16, "80": 25, "100": 35, "125": 50, "160": 70,
+    "200": 95, "250": 120, "320": 185, "400": 240
+  },
+  "cable_props": {
+    "_source": "Templates Master 2-Ref-Tables, CableProps (Cu/PVC)",
+    "_note": "key = cable CSA (mm2); ampacity_a = A; mv_per_a_per_m = voltage-drop coefficient",
+    "1.5":  {"ampacity_a": 17,  "mv_per_a_per_m": 29},
+    "2.5":  {"ampacity_a": 24,  "mv_per_a_per_m": 18},
+    "4":    {"ampacity_a": 32,  "mv_per_a_per_m": 11},
+    "6":    {"ampacity_a": 41,  "mv_per_a_per_m": 7.3},
+    "10":   {"ampacity_a": 57,  "mv_per_a_per_m": 4.4},
+    "16":   {"ampacity_a": 76,  "mv_per_a_per_m": 2.8},
+    "25":   {"ampacity_a": 101, "mv_per_a_per_m": 1.75},
+    "35":   {"ampacity_a": 125, "mv_per_a_per_m": 1.25},
+    "50":   {"ampacity_a": 151, "mv_per_a_per_m": 0.93},
+    "70":   {"ampacity_a": 192, "mv_per_a_per_m": 0.63},
+    "95":   {"ampacity_a": 232, "mv_per_a_per_m": 0.46},
+    "120":  {"ampacity_a": 269, "mv_per_a_per_m": 0.36},
+    "185":  {"ampacity_a": 324, "mv_per_a_per_m": 0.25},
+    "240":  {"ampacity_a": 380, "mv_per_a_per_m": 0.19}
+  },
+  "itemized_defaults": {
+    "_source": "Templates Master LOAD-Calc constants",
+    "power_factor": 0.9,
+    "system_voltage_ll": 400,
+    "continuous_factor": 1.25
+  }
+}

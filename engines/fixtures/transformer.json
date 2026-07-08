@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "source": "PRJ.23026-EL-CAL-5002-01, Short-Circuit & Voltage-Drop calc sheet (pp.15-16); transformer/SC header identical on LV-01 and LV-02 pages",
+    "note": "Real Y-Tower transformer short-circuit inputs and printed answers. Psc (utility 3-ph SC power at 13.8 kV) is a given SEC/DPS figure. Isc printed 23.19 kA; exact recompute ~23.28 (rounding) -> assert +/-0.5 kA."
+  },
+  "inputs": {
+    "u20_v": 400,
+    "psc_kva": 500000,
+    "sn_kva": 1000,
+    "usc_pct": 6,
+    "pcu_w": 9400
+  },
+  "expected": {
+    "supply_z_mohm": 0.32,
+    "supply_x_mohm": 0.3184,
+    "supply_r_mohm": 0.03184,
+    "tx_in_a": 1443.38,
+    "tx_z_mohm": 9.6,
+    "tx_r_mohm": 1.504,
+    "tx_x_mohm": 9.4815,
+    "total_r_mohm": 1.54,
+    "total_x_mohm": 9.80,
+    "total_z_mohm": 9.92,
+    "isc_ka_printed": 23.19,
+    "isc_ka_tolerance": 0.5
+  }
+}

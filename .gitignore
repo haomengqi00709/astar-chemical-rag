@@ -26,6 +26,14 @@ frontend/app/dist/
 # App runtime data
 app_db.json
 
+# Electrical engine SQLite (runtime; self-seeds from fixtures on first run)
+engines/electrical.db
+engines/electrical.db-*
+
+# Backup files
+*.bak
+*.bak*
+
 # Parsed data caches
 llm_review_queue.json
 parsed_chunks_doc.json

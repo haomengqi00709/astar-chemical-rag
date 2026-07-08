@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Briefcase, FlaskConical, Wrench, ArrowLeft } from 'lucide-react';
+import { Shield, Briefcase, FlaskConical, Wrench, Zap, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import { User } from '../types';
 
@@ -28,18 +28,28 @@ const ROLES: User[] = [
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop',
     color: 'from-orange-500 to-orange-700',
   },
+  {
+    id: 'nova',
+    name: 'Nova',
+    role: 'electrical',
+    title: 'Electrical Engineer',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop',
+    color: 'from-yellow-500 to-yellow-700',
+  },
 ];
 
 const ROLE_ICONS = {
   pm: Briefcase,
   process: FlaskConical,
   mechanical: Wrench,
+  electrical: Zap,
 };
 
 const ROLE_DESCRIPTIONS = {
   pm: 'Submit SOWs, manage the project pipeline, assign engineers, and track deliverables.',
   process: 'Run process calculations, identify fluid properties, and hand off hydraulic data.',
   mechanical: 'Execute pump calculations, select materials, and generate datasheets.',
+  electrical: 'Run electrical load calculations from the office register and size the main breakers.',
 };
 
 interface SignInProps {

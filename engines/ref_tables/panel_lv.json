@@ -1,0 +1,33 @@
+{
+  "_meta": {
+    "standard": "Real Y-Tower panelboard convention (EL-PBS-5001) — single-phase 230 V final branch circuits",
+    "note": "Different from the Templates Master DB-1 3-phase itemized scheme. Classification demand factors and the breaker/wire selection reproduce the real 'FINAL BRANCH CIRCUIT PANELBOARD' schedules. Indicative — engineer confirms per project.",
+    "editable": true
+  },
+  "classification_demand_factor": {
+    "_source": "EL-PBS-5001 panel rollups (per load type)",
+    "LTG": 0.9,
+    "S.O": 0.4,
+    "MTR": 0.8,
+    "MTR_single": 1.0,
+    "MSC": 1.0
+  },
+  "branch_defaults": {
+    "_source": "EL-PBS-5001 header",
+    "phase_voltage_v": 230,
+    "system_voltage_ll": 400,
+    "power_factor": 0.85,
+    "lighting_min_breaker_a": 10
+  },
+  "breaker_ladder_a": {
+    "_source": "Standard MCB/MCCB ratings used on the real panels",
+    "values": [10, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250, 320, 400]
+  },
+  "breaker_to_wire_mm2": {
+    "_source": "EL-PBS-5001 wire-size column vs breaker rating",
+    "_note": "key = breaker rating (A), value = wire CSA (mm2)",
+    "10": 2.5, "16": 4, "20": 6, "25": 6, "32": 10, "40": 10,
+    "50": 16, "63": 16, "80": 25, "100": 35, "125": 50, "160": 70,
+    "200": 95, "250": 120, "320": 185, "400": 240
+  }
+}

@@ -179,9 +179,14 @@ SOW:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def match_project_type(summary: dict, catalog: dict) -> tuple[str, dict] | tuple[None, None]:
-    equipment = (summary.get('equipment_type') or '').lower()
-    fluid     = (summary.get('fluid') or '').lower()
-    combined  = f"{equipment} {fluid}"
+    # Search triggers across ALL string fields of the summary, not just
+    # equipment+fluid. A pump SOW carries its signal in equipment_type; an
+    # electrical/building SOW carries it in project_title / scope /
+    # special_requirements (equipment_type is often null there). Joining every
+    # string value keeps this generic for any discipline.
+    combined = ' '.join(
+        str(v).lower() for v in summary.values() if isinstance(v, str) and v.strip()
+    )
 
     best_match = None
     best_score = 0
@@ -256,22 +261,36 @@ def build_document_register(ptype_data: dict, fired_flags: list[dict],
     docs = [dict(d) for d in ptype_data['required_docs']]
     existing_ids = {d['doc_id'] for d in docs}
 
+    # Flag-added docs may carry a full definition in the project type's `flag_docs`.
+    # Otherwise fall back to the project's primary (last non-PM) discipline agent —
+    # NOT a hardcoded discipline, so this works for any project type.
+    flag_docs = ptype_data.get('flag_docs', {})
+    non_pm_agents = [a for a in ptype_data.get('agents', []) if a != 'PM']
+    default_agent = non_pm_agents[-1] if non_pm_agents else 'PM'
+    default_disc = (ptype_data.get('disciplines_involved') or [0])[-1]
+
     # Add extra docs from fired risk flags
     for flag in fired_flags:
         for extra_id in flag.get('additional_docs', []):
-            if extra_id not in existing_ids:
-                docs.append({
+            if extra_id in existing_ids:
+                continue
+            if extra_id in flag_docs:
+                doc = dict(flag_docs[extra_id])
+                doc.setdefault('reason', f'Added due to risk flag: {flag["condition"]}')
+            else:
+                doc = {
                     'doc_id': extra_id,
                     'type': 'SPC',
                     'title': f'Additional document — {flag["condition"]}',
-                    'discipline': 4,
-                    'discipline_name': 'Equipment',
-                    'assigned_to': 'Mechanical Engineer',
+                    'discipline': default_disc,
+                    'discipline_name': 'Additional',
+                    'assigned_to': default_agent,
                     'reason': f'Added due to risk flag: {flag["condition"]}',
                     'depends_on': [],
                     'weeks_before_end': 2,
-                })
-                existing_ids.add(extra_id)
+                }
+            docs.append(doc)
+            existing_ids.add(extra_id)
 
     # Calculate planned dates
     for doc in docs:
@@ -286,42 +305,105 @@ def build_document_register(ptype_data: dict, fired_flags: list[dict],
 # Step 5 — Build task assignments
 # ─────────────────────────────────────────────────────────────────────────────
 
-def build_task_assignments(summary: dict, register: list[dict]) -> dict:
-    process_docs    = [d for d in register if d['assigned_to'] == 'Process Engineer']
-    mechanical_docs = [d for d in register if d['assigned_to'] == 'Mechanical Engineer']
-    process_ids     = [d['doc_id'] for d in process_docs]
-    equipment       = summary.get('equipment_type', 'equipment')
-    fluid           = summary.get('fluid', 'TBD')
-    flow            = summary.get('flow_rate_m3h', 'TBD')
+# Task key + per-role instruction templates. Adding a discipline = add a row here;
+# the bucketing logic below is generic (works for any assigned_to in the register).
+ROLE_TASK_KEY = {
+    'Process Engineer':     'process_task',
+    'Mechanical Engineer':  'mechanical_task',
+    'Electrical Engineer':  'electrical_task',
+    'Architect':            'architecture_task',
+    'Structural Engineer':  'structural_task',
+    'HVAC Engineer':        'hvac_task',
+    'Plumbing Engineer':    'plumbing_task',
+    'Fire Fighting Engineer':'firefighting_task',
+    'Low Current Engineer': 'lowcurrent_task',
+}
 
-    return {
-        'process_task': {
-            'agent': 'Process Engineer',
-            'deliverables': process_docs,
-            'project_summary': summary,
-            'instructions': (
-                f"Complete process engineering deliverables for the {equipment} project. "
-                f"Fluid: {fluid}. Flow rate: {flow} m³/h. "
-                "1. Identify fluid code from 1-LST-0002. "
-                "2. Fill in 1-PRC-0001 Process Design Criteria. "
-                "3. Produce 1-CAL-6510 process calculation summary."
-            ),
-        },
-        'mechanical_task': {
-            'agent': 'Mechanical Engineer',
-            'deliverables': mechanical_docs,
-            'project_summary': summary,
-            'wait_for': process_ids,
-            'instructions': (
-                f"Perform pump engineering deliverables for the {equipment} project. "
-                "Wait for Process Calculations before starting. "
-                "1. Run full pump hydraulic calculation using Pump_Calculation_Template. "
-                "2. Check corrosion allowance against 5-LST-0003. "
-                "3. Generate pump datasheet (4-DST-XXXX). "
-                "4. Assemble technical bid package."
-            ),
-        },
+def _instructions_for(role: str, summary: dict) -> str:
+    equipment = summary.get('equipment_type', 'the') or 'the'
+    if role == 'Process Engineer':
+        return (
+            f"Complete process engineering deliverables for the {equipment} project. "
+            f"Fluid: {summary.get('fluid', 'TBD')}. Flow rate: {summary.get('flow_rate_m3h', 'TBD')} m³/h. "
+            "1. Identify fluid code from 1-LST-0002. "
+            "2. Fill in 1-PRC-0001 Process Design Criteria. "
+            "3. Produce 1-CAL-6510 process calculation summary."
+        )
+    if role == 'Mechanical Engineer':
+        return (
+            f"Perform pump engineering deliverables for the {equipment} project. "
+            "Wait for Process Calculations before starting. "
+            "1. Run full pump hydraulic calculation using Pump_Calculation_Template. "
+            "2. Check corrosion allowance against 5-LST-0003. "
+            "3. Generate pump datasheet (4-DST-XXXX). "
+            "4. Assemble technical bid package."
+        )
+    if role == 'Electrical Engineer':
+        return (
+            "Complete electrical engineering deliverables for the building project. "
+            "1. LUX / illuminance calculation (EL-CAL-5001) per room. "
+            "2. Electrical load calculation (EL-CAL-5002) — power-density at floor level, "
+            "consuming lighting load and cross-discipline HVAC/plumbing/firefighting equipment loads. "
+            "3. Panelboard schedules (EL-PBS-5001) and single line diagram (EL-SLD-5001). "
+            "4. Cable-tray, earthing/LPS and emergency-lighting calculations. "
+            "5. General notes, legend and BOQ."
+        )
+    # Building-discipline instruction templates (Y-Tower). Others fall to the generic line.
+    _BUILDING = {
+        'Architect':
+            "Produce architecture deliverables: floor plans (AR-ARP-1001, the base xref for all "
+            "disciplines), elevations, sections, stair/wet-area/wall details, general drawings, "
+            "BOQ and the LOD-350 Revit model.",
+        'Structural Engineer':
+            "Produce structural deliverables: run ETABS/SAFE analysis from the architecture model and "
+            "soil borings; calculation report and column/shear-wall/retaining-wall calcs; structural "
+            "plans, cores/slab rebar details, general notes, BOQs (total/sub/super) and Revit model.",
+        'HVAC Engineer':
+            "Produce HVAC deliverables: heat-load, ventilation, exhaust, pressurization and smoke-"
+            "evacuation calculations; duct/pipe work, riser and schematic drawings; system plans, "
+            "details, legend, BOQ and Revit model. Hand equipment motor loads to Electrical.",
+        'Plumbing Engineer':
+            "Produce plumbing deliverables: demand calculation; water-supply and drainage layouts; "
+            "pump-room and tank drawings; schematics, toilet/general details, legend, BOQ and Revit "
+            "model. Hand pump motor loads to Electrical.",
+        'Fire Fighting Engineer':
+            "Produce fire-fighting deliverables: sprinkler report and gas-suppression (CO2/FM-200) "
+            "calculations sized from electrical/low-current room volumes; system layouts, schematics, "
+            "pump-room and tank drawings, details, BOQ and model.",
+        'Low Current Engineer':
+            "Produce low-current deliverables: fire-alarm (integrating fire-fighting and HVAC), CCTV, "
+            "access-control, public-address and structured-cabling system drawings; risers, schematics, "
+            "legend, BOQ and models.",
     }
+    if role in _BUILDING:
+        return _BUILDING[role]
+    return f"Complete {role} deliverables for this project."
+
+
+def build_task_assignments(summary: dict, register: list[dict]) -> dict:
+    # Group every non-PM deliverable by its owner, preserving first-seen order.
+    by_agent: dict[str, list[dict]] = {}
+    for d in register:
+        role = d.get('assigned_to')
+        if not role or role == 'PM':
+            continue
+        by_agent.setdefault(role, []).append(d)
+
+    tasks: dict[str, dict] = {}
+    for role, docs in by_agent.items():
+        own_ids = {d['doc_id'] for d in docs}
+        # wait_for = dependencies this agent's docs need that another agent owns.
+        wait_for = sorted({dep for d in docs for dep in d.get('depends_on', [])
+                           if dep not in own_ids})
+        key = ROLE_TASK_KEY.get(role, role.lower().replace(' ', '_') + '_task')
+        tasks[key] = {
+            'agent': role,
+            'deliverables': docs,
+            'project_summary': summary,
+            'wait_for': wait_for,
+            'instructions': _instructions_for(role, summary),
+        }
+    return tasks
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -505,6 +587,28 @@ def read_template_file(path: Path) -> str:
     return ''
 
 
+def sanitize_markdown(text: str) -> str:
+    """Repair runaway LLM markdown output.
+
+    LLMs occasionally emit a table separator row (|:---|) or horizontal rule with
+    tens of thousands of dashes, bloating the document. Collapse any run of 4+ of
+    the markdown fill chars (- = _ *) back to a safe length, per line, so tables
+    and rules stay valid without the runaway.
+    """
+    if not text:
+        return ''
+    out_lines = []
+    for line in text.split('\n'):
+        for ch in '-=_*':
+            # collapse runs of 4+ identical fill chars to exactly 3
+            line = re.sub(re.escape(ch) + r'{4,}', ch * 3, line)
+        # hard safety cap: no single line should exceed a sane length
+        if len(line) > 2000:
+            line = line[:2000]
+        out_lines.append(line)
+    return '\n'.join(out_lines).strip()
+
+
 def generate_deliverable_content(doc: dict, context: dict,
                                   rag_snippets: str, template_text: str,
                                   client: genai.Client) -> str:
@@ -557,7 +661,7 @@ The first line must be exactly:  # {doc['doc_id']} — {doc['title']}"""
         contents=prompt,
         config=types.GenerateContentConfig(temperature=0.2),
     )
-    return resp.text.strip()
+    return sanitize_markdown(resp.text)
 
 
 def extract_session_content_py(full_content: str, headings: list[str]) -> str:
@@ -741,41 +845,44 @@ def generate_handoff_brief(context: dict, client: genai.Client) -> str:
     flags     = context['risk_flags_fired']
     end_date  = context['project_end_date']
 
-    process_docs    = [f"{d['doc_id']} — {d['title']} (due {d['planned_date']})"
-                       for d in tasks['process_task']['deliverables']]
-    mechanical_docs = [f"{d['doc_id']} — {d['title']} (due {d['planned_date']})"
-                       for d in tasks['mechanical_task']['deliverables']]
-    wait_for        = tasks['mechanical_task'].get('wait_for', [])
-    flag_lines      = [f"- {f['condition']}: {f['warning']}" for f in flags]
+    # Build one block per engineering task, generically (any number of disciplines).
+    task_blocks = []
+    for t in tasks.values():
+        lines = [f"  {d['doc_id']} — {d['title']} (due {d.get('planned_date','TBD')})"
+                 for d in t['deliverables']]
+        wf = t.get('wait_for', [])
+        wf_line = f"\n  (waits for: {', '.join(wf)})" if wf else ""
+        task_blocks.append(f"{t['agent']} deliverables:\n" + "\n".join(lines) + wf_line)
+    tasks_section = "\n\n".join(task_blocks) if task_blocks else "(no engineering tasks)"
+
+    # Compact project detail line — only non-empty fields (works for any discipline).
+    detail_fields = [
+        ('Client', summary.get('client')), ('Project', summary.get('project_title')),
+        ('Location', summary.get('location')), ('Type', summary.get('equipment_type')),
+        ('Fluid', summary.get('fluid')), ('Flow', summary.get('flow_rate_m3h')),
+        ('Pressure(bar)', summary.get('design_pressure_bar')), ('Temp(°C)', summary.get('temperature_c')),
+        ('Special', summary.get('special_requirements')),
+    ]
+    detail_lines = "\n".join(f"- {k}: {v}" for k, v in detail_fields if v not in (None, '', 'TBD'))
+    flag_lines   = [f"- {f['condition']}: {f['warning']}" for f in flags]
 
     prompt = f"""You are a senior Project Manager writing a concise internal handoff brief for an engineering project.
 
 Project details:
-- Client: {summary.get('client')}
-- Project: {summary.get('project_title')}
-- Location: {summary.get('location')}
-- Equipment: {summary.get('equipment_type')}
-- Fluid: {summary.get('fluid')}
-- Flow: {summary.get('flow_rate_m3h')} m³/h  |  Pressure: {summary.get('design_pressure_bar')} bar  |  Temp: {summary.get('temperature_c')} °C
+{detail_lines}
 - Project end date: {end_date}
-- Special requirements: {summary.get('special_requirements')}
 
-Process Engineer deliverables:
-{chr(10).join(process_docs)}
-
-Mechanical Engineer deliverables:
-{chr(10).join(mechanical_docs)}
-(Mechanical must wait for: {', '.join(wait_for)} before starting pump calculations)
+Engineering tasks and deliverables:
+{tasks_section}
 
 Active risk flags:
 {chr(10).join(flag_lines) if flag_lines else '- None'}
 
 Write a clear, professional handoff brief with these sections:
 1. Project Overview — 2-3 sentences summarising what this project is and what needs to be delivered
-2. Process Engineer Tasks — what they need to do, what inputs they work from, and what they hand off to Mechanical
-3. Mechanical Engineer Tasks — what they need to do, what they are waiting for from Process, and what the final deliverables are
-4. Risk Flags & Engineering Implications — for each active flag, explain what it means for the work (material selection, testing requirements, additional documents needed)
-5. Key Dates — a short ordered list of the critical milestones
+2. Discipline Tasks — for EACH engineering discipline above, what they need to do, what inputs they work from, and what they hand off (respect the 'waits for' dependencies)
+3. Risk Flags & Engineering Implications — for each active flag, explain what it means for the work (design implications, additional documents needed)
+4. Key Dates — a short ordered list of the critical milestones
 
 Write in plain English. Be specific. Do not use bullet points for everything — use short paragraphs where appropriate."""
 

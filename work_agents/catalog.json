@@ -6,7 +6,9 @@
     "4-SPC-0002_centrifugal_pump_spec",
     "4-SPC-0001_general_equipment_requirements",
     "4-PRC-0007_pump_calculation_procedure",
-    "pump_calculation_template"
+    "pump_calculation_template",
+    "electrical_y_tower_register",
+    "y_tower_full_register"
   ],
   "project_types": {
     "centrifugal_pump": {
@@ -79,7 +81,7 @@
           "discipline": 1,
           "discipline_name": "Process Technology",
           "assigned_to": "Process Engineer",
-          "reason": "The purpose of this document is to record the owner\u2019s process requirements for the project and present a summary of the process design criteria and contractual requirements for the project team. (1-PRC-0001_process_design_criteria)",
+          "reason": "The purpose of this document is to record the owner’s process requirements for the project and present a summary of the process design criteria and contractual requirements for the project team. (1-PRC-0001_process_design_criteria)",
           "inputs_from": [],
           "outputs_to": [
             "1-CAL-XXXX",
@@ -272,6 +274,2157 @@
         }
       ],
       "scheduling_notes": "The workflow begins with foundational project documents such as the Document Register (0-LST-0001), Project Execution Plan (0-PRC-2003), and Project Schedule (0-DAT-3001.0). The Process Design Criteria (1-PRC-0001) is a critical early deliverable, establishing project process requirements and feeding into subsequent process and equipment design. Process Calculations (1-CAL-XXXX) follow, providing necessary data for equipment design. The Pump Calculation Procedure (4-PRC-0007) guides the Mechanical Engineer in performing Pump Calculations (4-CAL-0001). These calculations, along with the Process Design Criteria, are used to create Pump Data Sheets (4-DST-XXXX). The Horizontal Centrifugal Pumps specification (4-SPC-0002) is then developed, referencing the data sheets. Finally, Equipment Bid Tabulations (4-TAB-XXXX) are prepared based on the completed specifications and data. The General Equipment Requirements (4-SPC-0001) is a standing document that may be referenced throughout the equipment design phase, especially when specific risk flags are triggered."
+    },
+    "commercial_building": {
+      "description": "Full multi-discipline detailed design for a commercial / office building: architecture, structural, HVAC, plumbing, fire-fighting, low-current and electrical, plus concept reports. Grounded in the real Y-Tower (Wahat Offices Tower) document register.",
+      "triggers": [
+        "office building",
+        "office tower",
+        "commercial building",
+        "high-rise",
+        "building",
+        "tower",
+        "mep",
+        "multi-discipline",
+        "detailed design",
+        "architecture",
+        "structural",
+        "hvac",
+        "plumbing",
+        "fire fighting",
+        "low current",
+        "electrical",
+        "mixed use"
+      ],
+      "disciplines_involved": [
+        0,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "agents": [
+        "PM",
+        "Architect",
+        "Structural Engineer",
+        "HVAC Engineer",
+        "Plumbing Engineer",
+        "Fire Fighting Engineer",
+        "Low Current Engineer",
+        "Electrical Engineer"
+      ],
+      "required_docs": [
+        {
+          "doc_id": "0-LST-0001",
+          "type": "LST",
+          "title": "Document Register",
+          "discipline": 0,
+          "discipline_name": "Documentation",
+          "assigned_to": "PM",
+          "reason": "Master register of all deliverables produced on the project.",
+          "inputs_from": [],
+          "outputs_to": [
+            "0-DAT-3001.0"
+          ],
+          "depends_on": [],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "0-PRC-2003",
+          "type": "PRC",
+          "title": "Project Execution Plan",
+          "discipline": 0,
+          "discipline_name": "Project Administration",
+          "assigned_to": "PM",
+          "reason": "Outlines the plan for executing the project (WBS 0-2).",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 18
+        },
+        {
+          "doc_id": "0-DAT-3001.0",
+          "type": "DAT",
+          "title": "Project Schedule",
+          "discipline": 0,
+          "discipline_name": "Project Administration",
+          "assigned_to": "PM",
+          "reason": "Milestone schedule derived from the document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [
+            "0-LST-0001"
+          ],
+          "weeks_before_end": 17
+        },
+        {
+          "doc_id": "PRJ.23026-GE-REP-0001",
+          "type": "REP",
+          "title": "Architectural and Structural Concept Design Report",
+          "discipline": 0,
+          "discipline_name": "Administration",
+          "assigned_to": "PM",
+          "reason": "Administration deliverable (Architectural and Structural Concept Design Report) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 22
+        },
+        {
+          "doc_id": "PRJ.23026-GE-REP-0002",
+          "type": "REP",
+          "title": "MEP Concept Design Report",
+          "discipline": 0,
+          "discipline_name": "Administration",
+          "assigned_to": "PM",
+          "reason": "Administration deliverable (MEP Concept Design Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0001"
+          ],
+          "weeks_before_end": 22
+        },
+        {
+          "doc_id": "PRJ.23026-AR-DWP-1001",
+          "type": "DWP",
+          "title": "Schematic Architecture Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Schematic Architecture Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0001"
+          ],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "PRJ.23026-AR-ARP-1001",
+          "type": "ARP",
+          "title": "Architecture Plans Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture Plans Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "weeks_before_end": 16
+        },
+        {
+          "doc_id": "PRJ.23026-AR-ARE-1001",
+          "type": "ARE",
+          "title": "Architecture Elevations Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture Elevations Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 14
+        },
+        {
+          "doc_id": "PRJ.23026-AR-ARS-1001",
+          "type": "ARS",
+          "title": "Architecture Sections Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture Sections Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 14
+        },
+        {
+          "doc_id": "PRJ.23026-AR-ASD-1001",
+          "type": "ASD",
+          "title": "Architecture Stair Details Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture Stair Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-AR-AWD-1001",
+          "type": "AWD",
+          "title": "Architecture Wet Areas Details Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture Wet Areas Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-AR-AWS-1001",
+          "type": "AWS",
+          "title": "Architecture Wall Sections Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture Wall Sections Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-AR-GEN-1001",
+          "type": "GEN",
+          "title": "Architecture General Drawings",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture General Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-AR-BOQ-1001",
+          "type": "BOQ",
+          "title": "Architecture Bill Of Quantity",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architecture Bill Of Quantity) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-AR-MOD-1001",
+          "type": "MODEL",
+          "title": "Architectural Revit Model (LOD 350)",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architectural Revit Model (LOD 350)) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-AR-3DS-1001",
+          "type": "MODEL",
+          "title": "3D Shots",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (3D Shots) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "weeks_before_end": 18
+        },
+        {
+          "doc_id": "PRJ.23026-AR-3DV-1001",
+          "type": "MODEL",
+          "title": "3D Views",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (3D Views) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "weeks_before_end": 18
+        },
+        {
+          "doc_id": "PRJ.23026-AR-PSP-1001",
+          "type": "MODEL",
+          "title": "Perspectives",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Perspectives) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "weeks_before_end": 18
+        },
+        {
+          "doc_id": "PRJ.23026-AR-BSP-1001",
+          "type": "MODEL",
+          "title": "Basement Sections (Presentation)",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Basement Sections (Presentation)) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARS-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARS-1001"
+          ],
+          "weeks_before_end": 14
+        },
+        {
+          "doc_id": "PRJ.23026-AR-ECP-1001",
+          "type": "MODEL",
+          "title": "Elevation Comparison",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Elevation Comparison) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARE-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARE-1001"
+          ],
+          "weeks_before_end": 14
+        },
+        {
+          "doc_id": "PRJ.23026-AR-CVR-1001",
+          "type": "GEN",
+          "title": "Cover Page",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Cover Page) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-AR-PRS-1001",
+          "type": "MODEL",
+          "title": "Architectural Presentation",
+          "discipline": 10,
+          "discipline_name": "Architecture",
+          "assigned_to": "Architect",
+          "reason": "Architecture deliverable (Architectural Presentation) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-DWP-1001"
+          ],
+          "weeks_before_end": 18
+        },
+        {
+          "doc_id": "PRJ.23026-ST-DWP-9001",
+          "type": "DWP",
+          "title": "Schematic Structural Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Schematic Structural Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0001"
+          ],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "PRJ.23026-ST-REP-9001",
+          "type": "REP",
+          "title": "Structural Calculation Report",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-DWP-9001",
+            "PRJ.23026-ST-SOB-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-DWP-9001",
+            "PRJ.23026-ST-SOB-9001"
+          ],
+          "weeks_before_end": 15
+        },
+        {
+          "doc_id": "PRJ.23026-ST-CAL-9001",
+          "type": "CAL",
+          "title": "ETABS Columns Design Calculations",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (ETABS Columns Design Calculations) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-REP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-REP-9001"
+          ],
+          "weeks_before_end": 13
+        },
+        {
+          "doc_id": "PRJ.23026-ST-CAL-9002",
+          "type": "CAL",
+          "title": "ETABS Shear Wall Design Calculations",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (ETABS Shear Wall Design Calculations) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-REP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-REP-9001"
+          ],
+          "weeks_before_end": 13
+        },
+        {
+          "doc_id": "PRJ.23026-ST-CAL-9003",
+          "type": "CAL",
+          "title": "ETABS Retaining Walls Design Calculations",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (ETABS Retaining Walls Design Calculations) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-REP-9001",
+            "PRJ.23026-ST-SOB-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-REP-9001",
+            "PRJ.23026-ST-SOB-9001"
+          ],
+          "weeks_before_end": 13
+        },
+        {
+          "doc_id": "PRJ.23026-ST-STP-9001",
+          "type": "STP",
+          "title": "Structural Plans Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural Plans Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-ST-CAL-9001",
+            "PRJ.23026-ST-CAL-9002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-ST-CAL-9001",
+            "PRJ.23026-ST-CAL-9002"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-ST-COL-9001",
+          "type": "COL",
+          "title": "Columns & Axis Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Columns & Axis Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-CAL-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-CAL-9001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-ST-DGN-9001",
+          "type": "DGN",
+          "title": "Structural General Notes Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural General Notes Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-ST-GED-9001",
+          "type": "GED",
+          "title": "Structural General Details Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural General Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-ST-RCD-9001",
+          "type": "RCD",
+          "title": "RFT. Cores Details Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (RFT. Cores Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-CAL-9002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-CAL-9002"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-ST-RFS-9001",
+          "type": "RFS",
+          "title": "RFT. Slab Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (RFT. Slab Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-ST-SOB-9001",
+          "type": "SOB",
+          "title": "Soil Borings Drawings",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Soil Borings Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 18
+        },
+        {
+          "doc_id": "PRJ.23026-ST-BOQ-9001",
+          "type": "BOQ",
+          "title": "Structural Bill Of Quantity",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural Bill Of Quantity) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-ST-BOQ-9002",
+          "type": "BOQ",
+          "title": "Structural Bill Of Quantity For Sub Floors",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural Bill Of Quantity For Sub Floors) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-ST-BOQ-9003",
+          "type": "BOQ",
+          "title": "Structural Bill Of Quantity For Super Floors",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural Bill Of Quantity For Super Floors) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-ST-CRS-9001",
+          "type": "CRS",
+          "title": "Structural Comment Response Sheet",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural Comment Response Sheet) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 4
+        },
+        {
+          "doc_id": "PRJ.23026-ST-ETB-9001",
+          "type": "MODEL",
+          "title": "ETABS Models",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (ETABS Models) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 14
+        },
+        {
+          "doc_id": "PRJ.23026-ST-ETB-9002",
+          "type": "MODEL",
+          "title": "Structural ETABS Models",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural ETABS Models) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 14
+        },
+        {
+          "doc_id": "PRJ.23026-ST-SAF-9001",
+          "type": "MODEL",
+          "title": "Structural SAFE Models",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural SAFE Models) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 14
+        },
+        {
+          "doc_id": "PRJ.23026-ST-MOD-9001",
+          "type": "MODEL",
+          "title": "Structural Revit Model (LOD 350)",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Structural Revit Model (LOD 350)) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-ST-MOD-9002",
+          "type": "MODEL",
+          "title": "Revit Model Structural",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (Revit Model Structural) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-ST-CRR-9001",
+          "type": "CRS",
+          "title": "CRS Reply",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (CRS Reply) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-CRS-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-CRS-9001"
+          ],
+          "weeks_before_end": 4
+        },
+        {
+          "doc_id": "PRJ.23026-ST-CRD-9001",
+          "type": "CRS",
+          "title": "CRS (Owner)",
+          "discipline": 11,
+          "discipline_name": "Structural",
+          "assigned_to": "Structural Engineer",
+          "reason": "Structural deliverable (CRS (Owner)) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-ST-STP-9001"
+          ],
+          "weeks_before_end": 4
+        },
+        {
+          "doc_id": "PRJ.23026-HV-DWP-3001",
+          "type": "DWP",
+          "title": "Schematic HVAC Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (Schematic HVAC Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "PRJ.23026-HV-CAL-3001",
+          "type": "CAL",
+          "title": "Heat Load Calculation Report",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (Heat Load Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 13
+        },
+        {
+          "doc_id": "PRJ.23026-HV-CAL-3002",
+          "type": "CAL",
+          "title": "Exhaust Calculation Report",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (Exhaust Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-HV-CAL-3003",
+          "type": "CAL",
+          "title": "Pressurization Calculation Report",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (Pressurization Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-HV-CAL-3004",
+          "type": "CAL",
+          "title": "Ventilation Calculation Report",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (Ventilation Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-HV-CAL-3005",
+          "type": "CAL",
+          "title": "Smoke Evacuation Calculation Report",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (Smoke Evacuation Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-HV-DKS-3001",
+          "type": "DKS",
+          "title": "HVAC Duct Work System Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Duct Work System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-HV-CAL-3001",
+            "PRJ.23026-HV-CAL-3004"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-HV-CAL-3001",
+            "PRJ.23026-HV-CAL-3004"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-HV-PWS-3001",
+          "type": "PWS",
+          "title": "HVAC Pipe Work System Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Pipe Work System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-HV-CAL-3001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-HV-CAL-3001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-HV-HRD-3001",
+          "type": "HRD",
+          "title": "HVAC Riser Diagram Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Riser Diagram Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-HV-CAL-3001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-HV-CAL-3001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-HV-HSC-3001",
+          "type": "HSC",
+          "title": "HVAC Schematics Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Schematics Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-HV-CAL-3001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-HV-CAL-3001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-HV-HSP-3001",
+          "type": "HSP",
+          "title": "HVAC System Plan Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC System Plan Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-HV-DKS-3001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-HV-DKS-3001"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-HV-HGD-3001",
+          "type": "HGD",
+          "title": "HVAC General Details Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC General Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-HV-LEG-3001",
+          "type": "LEG",
+          "title": "HVAC Legend Drawings",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Legend Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-HV-BOQ-3001",
+          "type": "BOQ",
+          "title": "HVAC Bill Of Quantity",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Bill Of Quantity) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-HV-DKS-3001",
+            "PRJ.23026-HV-PWS-3001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-HV-DKS-3001",
+            "PRJ.23026-HV-PWS-3001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-HV-MOD-3001",
+          "type": "MODEL",
+          "title": "HVAC Model",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Model) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-HV-MOD-3002",
+          "type": "MODEL",
+          "title": "HVAC Revit Model",
+          "discipline": 12,
+          "discipline_name": "HVAC",
+          "assigned_to": "HVAC Engineer",
+          "reason": "HVAC deliverable (HVAC Revit Model) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-PL-DWP-7001",
+          "type": "DWP",
+          "title": "Schematic Plumbing Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Schematic Plumbing Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "PRJ.23026-PL-CAL-7001",
+          "type": "CAL",
+          "title": "Plumbing Calculation Report",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Plumbing Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 13
+        },
+        {
+          "doc_id": "PRJ.23026-PL-WSS-7001",
+          "type": "WSS",
+          "title": "Water Supply System Layout Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Water Supply System Layout Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-PL-DSL-7001",
+          "type": "DSL",
+          "title": "Drainage System Layout Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Drainage System Layout Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-PL-WSR-7001",
+          "type": "WSR",
+          "title": "Water Supply Pump Room Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Water Supply Pump Room Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-PL-WST-7001",
+          "type": "WST",
+          "title": "Water Supply Tank Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Water Supply Tank Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-PL-PSC-7001",
+          "type": "PSC",
+          "title": "Plumbing Schematics Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Plumbing Schematics Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-PL-TOD-7001",
+          "type": "TOD",
+          "title": "Toilet Details Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Toilet Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-PL-PGD-7001",
+          "type": "PGD",
+          "title": "Plumbing General Details Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Plumbing General Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-PL-LEG-7001",
+          "type": "LEG",
+          "title": "Plumbing Legend Drawings",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Plumbing Legend Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-PL-BOQ-7001",
+          "type": "BOQ",
+          "title": "Plumbing Bill Of Quantity",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Plumbing Bill Of Quantity) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-PL-WSS-7001",
+            "PRJ.23026-PL-DSL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-PL-WSS-7001",
+            "PRJ.23026-PL-DSL-7001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-PL-MOD-7001",
+          "type": "MODEL",
+          "title": "Plumbing Model",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Plumbing Model) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-PL-MOD-7002",
+          "type": "MODEL",
+          "title": "Plumbing Revit Model",
+          "discipline": 13,
+          "discipline_name": "Plumbing",
+          "assigned_to": "Plumbing Engineer",
+          "reason": "Plumbing deliverable (Plumbing Revit Model) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-FF-DWP-4001",
+          "type": "DWP",
+          "title": "Schematic Fire Fighting Drawings",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Schematic Fire Fighting Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "PRJ.23026-FF-REP-4001",
+          "type": "REP",
+          "title": "Elec & LC Room CO2 Calculation Report",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Elec & LC Room CO2 Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-DGN-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-DGN-5001"
+          ],
+          "weeks_before_end": 11
+        },
+        {
+          "doc_id": "PRJ.23026-FF-REP-4002",
+          "type": "REP",
+          "title": "Fire Sprinkler Report",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Sprinkler Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "weeks_before_end": 12
+        },
+        {
+          "doc_id": "PRJ.23026-FF-REP-4003",
+          "type": "REP",
+          "title": "Generator Room CO2 Calculation Report",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Generator Room CO2 Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "weeks_before_end": 11
+        },
+        {
+          "doc_id": "PRJ.23026-FF-REP-4004",
+          "type": "REP",
+          "title": "Transformer-MDB & Main LC FM-200 Calculation Report",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Transformer-MDB & Main LC FM-200 Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "weeks_before_end": 11
+        },
+        {
+          "doc_id": "PRJ.23026-FF-REP-4005",
+          "type": "REP",
+          "title": "Transformer CO2 Calculation Report",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Transformer CO2 Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "weeks_before_end": 11
+        },
+        {
+          "doc_id": "PRJ.23026-FF-FFS-4001",
+          "type": "FFS",
+          "title": "Fire Fighting System Layout Drawings",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Fighting System Layout Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-FF-REP-4002",
+            "PRJ.23026-HV-DKS-3001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-FF-REP-4002",
+            "PRJ.23026-HV-DKS-3001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-FF-FSC-4001",
+          "type": "FSC",
+          "title": "Fire Fighting Schematics Drawings",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Fighting Schematics Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-FF-REP-4002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-FF-REP-4002"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-FF-FGD-4001",
+          "type": "FGD",
+          "title": "Fire Fighting General Details Drawings",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Fighting General Details Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-FF-FPR-4001",
+          "type": "FPR",
+          "title": "Fire Fighting Pump Room Drawings",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Fighting Pump Room Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-FF-REP-4002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-FF-REP-4002"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-FF-FFT-4001",
+          "type": "FFT",
+          "title": "Fire Fighting Tanks Drawings",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Fighting Tanks Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-FF-REP-4002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-FF-REP-4002"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-FF-BOQ-4001",
+          "type": "BOQ",
+          "title": "Fire Fighting Bill Of Quantity",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Fighting Bill Of Quantity) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-FF-FFS-4001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-FF-FFS-4001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-FF-MOD-4001",
+          "type": "MODEL",
+          "title": "Fire Fighting Model",
+          "discipline": 14,
+          "discipline_name": "Fire Fighting",
+          "assigned_to": "Fire Fighting Engineer",
+          "reason": "Fire Fighting deliverable (Fire Fighting Model) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-LC-DWP-6001",
+          "type": "DWP",
+          "title": "Schematic Low Current Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Schematic Low Current Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "PRJ.23026-LC-FAS-6001",
+          "type": "FAS",
+          "title": "Fire Alarm System Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Fire Alarm System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-FF-FFS-4001",
+            "PRJ.23026-HV-DKS-3001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-FF-FFS-4001",
+            "PRJ.23026-HV-DKS-3001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-LC-CTS-6001",
+          "type": "CTS",
+          "title": "CCTV System Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (CCTV System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-LC-ACS-6001",
+          "type": "ACS",
+          "title": "Access Control System Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Access Control System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-LC-PAS-6001",
+          "type": "PAS",
+          "title": "Public Address System Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Public Address System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-LC-SCS-6001",
+          "type": "SCS",
+          "title": "Structured Cabling System Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Structured Cabling System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 9
+        },
+        {
+          "doc_id": "PRJ.23026-LC-LRD-6001",
+          "type": "LRD",
+          "title": "Low Current Riser Diagram Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Low Current Riser Diagram Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-LC-SCS-6001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-LC-SCS-6001"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-LC-LSC-6001",
+          "type": "LSC",
+          "title": "Low Current Schematics Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Low Current Schematics Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-LC-FAS-6001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-LC-FAS-6001"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-LC-LEG-6001",
+          "type": "LEG",
+          "title": "Low Current Legend Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Low Current Legend Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-LC-BOQ-6001",
+          "type": "BOQ",
+          "title": "Low Current Bill Of Quantity",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Low Current Bill Of Quantity) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-LC-FAS-6001",
+            "PRJ.23026-LC-CTS-6001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-LC-FAS-6001",
+            "PRJ.23026-LC-CTS-6001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-LC-MOD-6001",
+          "type": "MODEL",
+          "title": "Low Current Model",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Low Current Model) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-LC-MOD-6002",
+          "type": "MODEL",
+          "title": "Model For Detailed Low Current Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Model For Detailed Low Current Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-LC-MOD-6003",
+          "type": "MODEL",
+          "title": "Model For Low Current Schematic Drawings",
+          "discipline": 15,
+          "discipline_name": "Low Current",
+          "assigned_to": "Low Current Engineer",
+          "reason": "Low Current deliverable (Model For Low Current Schematic Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-EL-DWP-5001",
+          "type": "DWP",
+          "title": "Schematic Electrical Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Schematic Electrical Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 20
+        },
+        {
+          "doc_id": "PRJ.23026-EL-CAL-5001",
+          "type": "CAL",
+          "title": "LUX Calculations",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (LUX Calculations) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-GE-REP-0002"
+          ],
+          "weeks_before_end": 12,
+          "blocked_reason": "DIALux radiosity model — not delivered; lumen-method inputs (room dims, UF/MF, reflectances) absent, so real illuminance is not reproducible."
+        },
+        {
+          "doc_id": "PRJ.23026-EL-CAL-5002",
+          "type": "CAL",
+          "title": "Electrical Calculations Report (Load)",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Calculations Report (Load)) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        },
+        {
+          "doc_id": "PRJ.23026-EL-CAL-5003",
+          "type": "CAL",
+          "title": "Electrical Cable Tray Calculation Report",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Cable Tray Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-CAL-5002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-CAL-5002",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "weeks_before_end": 6,
+          "blocked_reason": "Cable route lengths — need drawing geometry (EL-ECR containment routing) not yet available as data."
+        },
+        {
+          "doc_id": "PRJ.23026-EL-CAL-5004",
+          "type": "CAL",
+          "title": "Earthing Calculation Report",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Earthing Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "weeks_before_end": 6,
+          "blocked_reason": "Soil resistivity ρ — not extracted from the geotechnical report (ST-SOB); needed for earthing/LPS per IEC 62305."
+        },
+        {
+          "doc_id": "PRJ.23026-EL-CAL-5005",
+          "type": "CAL",
+          "title": "Lighting Calculation Report",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Lighting Calculation Report) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-CAL-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-CAL-5001"
+          ],
+          "weeks_before_end": 6
+        },
+        {
+          "doc_id": "PRJ.23026-EL-DGN-5001",
+          "type": "DGN",
+          "title": "Electrical Drawing General Notes",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Drawing General Notes) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-EL-ELS-5001",
+          "type": "ELS",
+          "title": "Electrical Schematics Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Schematics Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-EL-SLD-5001",
+          "type": "SLD",
+          "title": "Single Line Diagram Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Single Line Diagram Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-CAL-5002",
+            "PRJ.23026-EL-PBS-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-CAL-5002",
+            "PRJ.23026-EL-PBS-5001"
+          ],
+          "weeks_before_end": 8,
+          "blocked_reason": "Distribution hierarchy tree (source→board→panel) — an engineer decision; several source docs disagree (2.5MVA vs 2×1MVA)."
+        },
+        {
+          "doc_id": "PRJ.23026-EL-PBS-5001",
+          "type": "PBS",
+          "title": "Panelboard Schedule Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Panelboard Schedule Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-CAL-5002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-CAL-5002"
+          ],
+          "weeks_before_end": 8
+        },
+        {
+          "doc_id": "PRJ.23026-EL-LSL-5001",
+          "type": "LSL",
+          "title": "Electrical Lighting System Layout Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Lighting System Layout Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-EL-CAL-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-EL-CAL-5001"
+          ],
+          "weeks_before_end": 7
+        },
+        {
+          "doc_id": "PRJ.23026-EL-LSL-5002",
+          "type": "LSL",
+          "title": "Emergency Lighting Plans Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Emergency Lighting Plans Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-CAL-5005"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-CAL-5005"
+          ],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-EL-SPS-5001",
+          "type": "SPS",
+          "title": "Electrical Small Power System Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Small Power System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-EL-CAL-5002"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-EL-CAL-5002"
+          ],
+          "weeks_before_end": 7
+        },
+        {
+          "doc_id": "PRJ.23026-EL-MPS-5001",
+          "type": "MPS",
+          "title": "Mechanical Power System Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Mechanical Power System Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-HV-CAL-3001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001",
+            "PRJ.23026-HV-CAL-3001",
+            "PRJ.23026-PL-CAL-7001"
+          ],
+          "weeks_before_end": 6
+        },
+        {
+          "doc_id": "PRJ.23026-EL-ECR-5001",
+          "type": "ECR",
+          "title": "Electrical Cable Routing Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Cable Routing Drawings) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-EL-PBS-5001",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-EL-PBS-5001",
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "weeks_before_end": 6
+        },
+        {
+          "doc_id": "PRJ.23026-EL-LEG-5001",
+          "type": "LEG",
+          "title": "Electrical Legend Drawings",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Legend Drawings) from the Y-Tower document register.",
+          "inputs_from": [],
+          "outputs_to": [],
+          "depends_on": [],
+          "weeks_before_end": 5
+        },
+        {
+          "doc_id": "PRJ.23026-EL-MOD-5001",
+          "type": "MODEL",
+          "title": "Electrical Model",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Electrical deliverable (Electrical Model) from the Y-Tower document register.",
+          "inputs_from": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "outputs_to": [],
+          "depends_on": [
+            "PRJ.23026-AR-ARP-1001"
+          ],
+          "weeks_before_end": 10
+        }
+      ],
+      "risk_flags": [
+        {
+          "condition": "medium_voltage_intake",
+          "description": "Building fed at medium voltage requiring transformer(s) and MV switchgear.",
+          "sow_keywords": [
+            "medium voltage",
+            "mv intake",
+            "11kv",
+            "13.8kv",
+            "22kv",
+            "33kv",
+            "high voltage",
+            "transformer",
+            "substation",
+            "rmu",
+            "ring main unit"
+          ],
+          "sow_thresholds": {},
+          "additional_docs": [
+            "PRJ.23026-EL-CAL-5006"
+          ],
+          "warning": "MV intake requires transformer sizing, MV switchgear/RMU selection and MV cable sizing. Adds EL-CAL-5006.",
+          "rag_query": "Medium-voltage intake, transformer sizing, RMU and MV switchgear for a commercial building."
+        },
+        {
+          "condition": "standby_power_required",
+          "description": "Life-safety / essential loads requiring standby generator and/or UPS.",
+          "sow_keywords": [
+            "generator",
+            "standby",
+            "ups",
+            "backup power",
+            "emergency power",
+            "diesel",
+            "essential loads",
+            "life safety",
+            "fire pump",
+            "uninterruptible"
+          ],
+          "sow_thresholds": {},
+          "additional_docs": [],
+          "warning": "Essential/life-safety loads segregated onto an emergency/standby board fed from generator/UPS. Confirm sizing (ISO 8528, EN 1838).",
+          "rag_query": "Standby generator and UPS sizing and essential load segregation for a commercial building."
+        },
+        {
+          "condition": "high_rise",
+          "description": "High-rise: vertical distribution, lightning protection, smoke/pressurization, pumped water.",
+          "sow_keywords": [
+            "high-rise",
+            "high rise",
+            "tower",
+            "highrise",
+            "storeys",
+            "stories",
+            "floors"
+          ],
+          "sow_thresholds": {},
+          "additional_docs": [],
+          "warning": "High-rise: rising busway sizing, voltage drop over verticals, lightning protection (IEC 62305), stair pressurization and pumped water zones.",
+          "rag_query": "High-rise building electrical/mechanical vertical distribution, lightning protection and pressurization."
+        },
+        {
+          "condition": "deep_basement",
+          "description": "Multiple basement levels requiring retaining walls, sump drainage and garage ventilation.",
+          "sow_keywords": [
+            "basement",
+            "basements",
+            "underground",
+            "retaining wall",
+            "shoring",
+            "car park",
+            "parking",
+            "garage"
+          ],
+          "sow_thresholds": {},
+          "additional_docs": [],
+          "warning": "Deep basements: retaining-wall design (ST-CAL-9003), sump/drainage pumps, and garage CO ventilation (HV exhaust).",
+          "rag_query": "Deep basement retaining walls, sump drainage and garage ventilation for a commercial building."
+        }
+      ],
+      "flag_docs": {
+        "PRJ.23026-EL-CAL-5006": {
+          "doc_id": "PRJ.23026-EL-CAL-5006",
+          "type": "CAL",
+          "title": "Transformer / MV Sizing Calculation",
+          "discipline": 9,
+          "discipline_name": "Electrical",
+          "assigned_to": "Electrical Engineer",
+          "reason": "Transformer kVA and MV switchgear/cable sizing for an MV intake (added when MV risk flag fires).",
+          "inputs_from": [
+            "PRJ.23026-EL-CAL-5002"
+          ],
+          "outputs_to": [
+            "PRJ.23026-EL-SLD-5001"
+          ],
+          "depends_on": [
+            "PRJ.23026-EL-CAL-5002"
+          ],
+          "weeks_before_end": 9
+        }
+      },
+      "scheduling_notes": "Concept reports (GE-REP-0001 arch+struct, GE-REP-0002 MEP) set the design basis. Architecture plans (AR-ARP-1001) are the base xref for structural and all MEP layouts; each re-issue ripples into all disciplines. Structural runs ETABS/SAFE from architecture + soil borings. Electrical load (EL-CAL-5002) consumes lighting (EL-CAL-5001) plus HVAC/plumbing equipment loads via mechanical power (EL-MPS). Fire-fighting gas-suppression calcs take electrical/LC room volumes; low-current fire alarm (LC-FAS) integrates fire-fighting and HVAC. Only the Electrical discipline currently has an automation engine; the others are placeholders."
     }
   }
 }

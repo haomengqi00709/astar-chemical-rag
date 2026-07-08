@@ -1,0 +1,28 @@
+{
+  "_meta": {
+    "source": "PRJ.23026-EL-PBS-5001-01, Final Branch Circuit Panelboard schedules (pp.4-8)",
+    "note": "Real Y-Tower panels. Classification connected loads (VA) reproduce the printed Total Demand and demand current. Per-class connected split is derived to match the printed Total Demand (LTG connected back-solved from LTG demand). Per-circuit cases test the breaker/wire selection rule (single-phase, LTG min 10A)."
+  },
+  "panels": [
+    {
+      "ref": "EPP-SERVICE-8",
+      "mains_rating_a": 50,
+      "classifications_connected_va": { "MTR": 24500, "LTG": 2446.9 },
+      "expected": { "total_connected_va": 26946.9, "total_demand_va": 21802.2, "demand_current_a": 31.5 }
+    },
+    {
+      "ref": "EPP-SERVICE-BS-02",
+      "mains_rating_a": 20,
+      "classifications_connected_va": { "LTG": 3666.3, "MTR": 300 },
+      "expected": { "total_connected_va": 3966.3, "total_demand_va": 3539.7, "demand_current_a": 5.1 }
+    }
+  ],
+  "circuits": [
+    { "desc": "Lighting circuit (small)", "type": "LTG", "current_a": 3.2,  "expected_breaker_a": 10, "expected_wire_mm2": 2.5 },
+    { "desc": "Exit sign / emergency",    "type": "LTG", "current_a": 0.5,  "expected_breaker_a": 10, "expected_wire_mm2": 2.5 },
+    { "desc": "Motor feed SP-01",         "type": "MTR", "current_a": 13.0, "expected_breaker_a": 16, "expected_wire_mm2": 4 },
+    { "desc": "ODU motor 20A",            "type": "MTR", "current_a": 18.0, "expected_breaker_a": 20, "expected_wire_mm2": 6 },
+    { "desc": "ODU motor 30A",            "type": "MTR", "current_a": 27.0, "expected_breaker_a": 32, "expected_wire_mm2": 10 },
+    { "desc": "Socket outlet",            "type": "S.O", "current_a": 12.0, "expected_breaker_a": 16, "expected_wire_mm2": 4 }
+  ]
+}
