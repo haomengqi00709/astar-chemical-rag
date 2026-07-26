@@ -34,6 +34,18 @@ load_dotenv()
 EMBEDDING_MODEL = 'models/gemini-embedding-001'
 COLLECTION_NAME = 'compliance_docs'
 BATCH_SIZE = 50           # Smaller batches to stay within rate limits
+MAX_RETRIES = 6           # Per batch, before giving up on a rate limit
+
+# Substrings that mark a failure no amount of waiting will clear.
+_FATAL_ERRORS = (
+    'spending cap',
+    'api key not valid',
+    'api_key_invalid',
+    'permission denied',
+    'permission_denied',
+    'billing',
+)
+
 CHROMA_PATH = Path(__file__).parent / 'chroma_db'
 CHUNKS_PATH = Path(__file__).parent / 'parsed_chunks.json'
 
@@ -94,16 +106,28 @@ def embed_all(client: genai.Client, texts: list[str]) -> list[list[float]]:
         end = i + len(batch)
         print(f'  Embedding {end}/{total}...', end='\r')
 
-        while True:
+        for attempt in range(MAX_RETRIES):
             try:
                 all_embeddings.extend(embed_batch(client, batch))
                 break
             except Exception as e:
                 err = str(e)
+                # A blown quota or a bad key returns 429/403 forever — retrying
+                # just hangs. Only genuine rate limits are worth waiting out.
+                if any(s in err.lower() for s in _FATAL_ERRORS):
+                    raise RuntimeError(
+                        f'Embedding failed with a non-retryable error — check the '
+                        f'API key and Gemini quota:\n  {err}'
+                    ) from e
+                if attempt == MAX_RETRIES - 1:
+                    raise RuntimeError(
+                        f'Embedding still failing after {MAX_RETRIES} attempts:\n  {err}'
+                    ) from e
                 # Parse retry delay from 429 response (e.g. "retry in 25.04s")
                 match = re.search(r'retry[^\d]*(\d+(?:\.\d+)?)\s*s', err, re.IGNORECASE)
                 wait = float(match.group(1)) + 2 if match else 30
-                print(f'\n  Rate limited — waiting {wait:.0f}s...')
+                print(f'\n  Rate limited — waiting {wait:.0f}s '
+                      f'(attempt {attempt + 1}/{MAX_RETRIES})...')
                 time.sleep(wait)
 
     print(f'  Embedded {total}/{total} chunks.          ')
