@@ -25,12 +25,10 @@ RUN cd frontend/AK_chemetics_Company_rag && npm install --prefer-offline 2>/dev/
 COPY frontend/app/package.json frontend/app/package-lock.json* ./frontend/app/
 RUN cd frontend/app && npm install --prefer-offline 2>/dev/null || npm install
 
-COPY parsed_chunks.json .
-COPY load_vectorstore.py .
-
-ARG GOOGLE_API_KEY
-RUN GOOGLE_API_KEY=${GOOGLE_API_KEY} python3 load_vectorstore.py
-
+# The ChromaDB vector store is deliberately NOT built here — see the note in
+# ./Dockerfile. It lives on the Railway volume and is symlinked into
+# /app/chroma_db by docker-entrypoint.sh; regenerate it by running
+# load_vectorstore.py locally, never during a build.
 COPY . .
 
 # Build only the new app
@@ -38,7 +36,11 @@ RUN cd frontend/app && npm run build
 
 ENV PYTHON_PATH=/usr/local/bin/python3
 ENV SERVE_NEW_APP=true
+ENV PYTHONUNBUFFERED=1
+
+RUN chmod +x /app/docker-entrypoint.sh
 
 EXPOSE 3001
 
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["node", "frontend/AK_chemetics_Company_rag/server.js"]
